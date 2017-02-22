@@ -9,8 +9,18 @@
  
   <name>Messenger recommendation bot</name>
   <url>http://hycom.pl</url>
- 
+
+  <parent>
+	<groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.1.RELEASE</version>
+  </parent>
+
   <dependencies>
+	<dependency>
+        	<groupId>org.springframework.boot</groupId>
+        	<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
   </dependencies>
 
 </project>
