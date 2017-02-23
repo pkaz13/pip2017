@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@SpringBootApplication
 public class Application {
 
 	@RequestMapping("/")
@@ -16,7 +15,4 @@ public class Application {
 		return "Hello World!";
 	}
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
 }
