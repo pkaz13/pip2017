@@ -15,9 +15,9 @@ public class WebhookMessenger
     @ResponseBody
     String verify(HttpServletRequest request)
     {
-        String verifyToken = request.getParameter("hub.verify_token");
-        String mode = request.getParameter("hub.mode");
-        String response=request.getParameter("hub.challenge ");
+        String verifyToken = request.getParameter("verify_token");
+        String mode = request.getParameter("mode");
+        String response=request.getParameter("challenge ");
         if(mode=="Subscribe" && verifyToken=="token")
         {
             return response;
