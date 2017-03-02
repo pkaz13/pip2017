@@ -17,8 +17,8 @@ public class WebhookMessenger
     {
         String verifyToken = request.getParameter("verify_token");
         String mode = request.getParameter("mode");
-        String response=request.getParameter("challenge ");
-        if(mode=="Subscribe" && verifyToken=="token")
+        String response=request.getParameter("challenge");
+        if(mode.equals("Subscribe") && verifyToken.equals("token"))
         {
             return response;
         }
