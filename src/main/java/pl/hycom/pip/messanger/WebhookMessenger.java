@@ -21,7 +21,7 @@ public class WebhookMessenger
         {
             return "Brak parametru !!!";
         }
-        if(mode.equals("Subscribe") && verifyToken.equals("token"))
+        if(mode.equals("subscribe") && verifyToken.equals("token"))
         {
             return response;
         }
