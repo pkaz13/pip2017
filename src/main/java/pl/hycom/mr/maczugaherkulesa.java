@@ -13,6 +13,6 @@ public class maczugaherkulesa {
     @ResponseBody
     String home() {
         return "Hello"
-    }
+    };
 
 }
