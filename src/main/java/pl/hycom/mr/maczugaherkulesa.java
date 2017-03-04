@@ -12,7 +12,7 @@ public class maczugaherkulesa {
     @RequestMapping("/")
     @ResponseBody
     String home() {
-        return "Hello"
-    };
+        return "Hello";
+    }
 
 }
