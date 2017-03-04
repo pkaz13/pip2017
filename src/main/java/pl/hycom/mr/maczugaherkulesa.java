@@ -11,6 +11,6 @@ public class maczugaherkulesa {
     @RequestMapping("/")
     @ResponseBody
     String home() {
-        return "Maczuga Herkulesa !";
+        return "maczuga herkulesa  !";
     }
 }
