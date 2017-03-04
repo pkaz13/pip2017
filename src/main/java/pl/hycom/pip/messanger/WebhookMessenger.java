@@ -1,54 +1,33 @@
 package pl.hycom.pip.messanger;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.hycom.model.MessageRequestBody;
 import pl.hycom.model.MessageResponse;
-
 import javax.ws.rs.core.MediaType;
-
 import java.io.IOException;
-
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by Rafal Lebioda on 02.03.2017.
  */
 @Controller
+@Log4j2
 public class WebhookMessenger
 {
     //Temporary for testing, acessToken must is different for each user
     private final String accessToken = "EAASEpnxfYrwBAK7MZAPvt0awlzY8Ph8yDTHVe41QnBJDflZAgBQxD5U6T2Y6AG3z8nKTswiF5qPIevrZA8ftjoHRHQZABCCzcgWxwrOUBAU5ZBoQZA4IuHo1prqzZCgGZBIF1N07gdORcU9cVbLcScLUNAYccwTl67Dk40UMZClI6QQZDZD";
 
-    //    @RequestMapping(value = "/webhook", method = GET)
-//    @ResponseBody
-//    String verify(HttpServletRequest request, HttpServletResponse response) {
-//        System.out.println("verifing");
-//        String verifyToken = request.getParameter("hub.verify_token");
-//        String mode = request.getParameter("hub.mode");
-//        String response_msg=request.getParameter("hub.challenge");
-//        if(verifyToken==null||mode==null|| response_msg==null) {
-//            response.setStatus(403);
-//            return "Brak parametru !!!";
-//        }
-//        if(mode.equals("subscribe") && verifyToken.equals("token")) {
-//            response.setStatus(200);
-//            return response_msg;
-//        }
-//        else {
-//            response.setStatus(403);
-//            return "Failed validation. Make sure the validation tokens match.";
-//        }
-//    }
-
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
     public String verify(@RequestParam("hub.verify_token") final String verifyToken,
                          @RequestParam("hub.mode") final String mode,
                          @RequestParam("hub.challenge") final String challenge) {
-        if (verifyToken.equals("token") && mode.equals("subscribe")) {
+        if (StringUtils.equals(verifyToken,"token") && StringUtils.equals(mode,"subscribe")){
             return challenge;
         } else {
             return "Failed validation. Make sure the validation tokens match.";
@@ -79,8 +58,8 @@ public class WebhookMessenger
                                 post(requestBody).build();
                         OkHttpClient client = new OkHttpClient();
                         Response response = client.newCall(request).execute();
-                        System.out.println("Sending response:");
-                        System.out.println(response.toString());
+                        log.info("Sending response:");
+                        log.info(response.toString());
                     }
                 }
             }
