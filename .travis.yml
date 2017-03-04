@@ -3,7 +3,7 @@ sudo: false
 jdk: oraclejdk8
 
 script: 
- - "mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -DskipTests=true -Dmaven.javadoc.skip=true -B -V -Dsonar.login=$SONAR_TOKEN"
+ - "mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -DskipTests=true -Dmaven.javadoc.skip=true -B -V -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=https://sonarqube.com"
 
 cache: 
  directories: 
