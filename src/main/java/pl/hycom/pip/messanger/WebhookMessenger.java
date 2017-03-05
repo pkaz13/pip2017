@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.messenger4j.MessengerPlatform;
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.exceptions.MessengerVerificationException;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 import lombok.extern.log4j.Log4j2;
@@ -46,7 +47,11 @@ public class WebhookMessenger
 
     @RequestMapping(value = "/webhook", method = POST, consumes = MediaType.APPLICATION_JSON,
             produces = MediaType.APPLICATION_JSON)
-    public void sendMessage(@RequestBody final String payload) {
+    public void sendMessage(@RequestBody final String payload,
+                            @RequestHeader final String signature) {
+
+        System.out.println("Payload: " + payload);
+        System.out.println("Signature: " + signature);
 
         MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(accessToken).build();
 
@@ -54,7 +59,11 @@ public class WebhookMessenger
                 .onTextMessageEvent(event ->  sendTextMessage(event.getSender().getId(), event.getText()))
                 .build();
 
-        receiveClient.processCallbackPayload(payload);
+        try {
+            receiveClient.processCallbackPayload(payload, signature);
+        } catch (MessengerVerificationException e) {
+            e.printStackTrace();
+        }
 
 //        if(StringUtils.equals(body.object,"page"))
 //        {
