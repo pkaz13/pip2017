@@ -1,17 +1,22 @@
 package pl.hycom.model;
 
+import lombok.Data;
+
 /**
  * Created by patry on 04/03/2017.
  */
+@Data
 public class MessageResponse {
-    public Recipient recipient;
-    public MessageData message;
+    private Recipient recipient;
+    private MessageData message;
 
+    @Data(staticConstructor="of")
     public static class Recipient {
-        public String id;
+        private String id;
     }
 
+    @Data(staticConstructor="of")
     public static class MessageData {
-        public String text;
+        private String text;
     }
 }

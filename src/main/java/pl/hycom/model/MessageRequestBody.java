@@ -1,39 +1,47 @@
 package pl.hycom.model;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * Created by patry on 04/03/2017.
  */
+@Data
 public class MessageRequestBody {
 
-    public String object;
-    public List<Entry> entry;
+    private String object;
+    private List<Entry> entry;
 
+    @Data(staticConstructor="of")
     public static class Entry {
-        public String id;
-        public String time;
-        public List<Messaging> messaging;
+        private String id;
+        private String time;
+        private List<Messaging> messaging;
     }
 
+    @Data(staticConstructor="of")
     public static class Messaging {
-        public Sender sender;
-        public Recipient recipient;
-        public String timestamp;
-        public Message message;
+        private Sender sender;
+        private Recipient recipient;
+        private String timestamp;
+        private Message message;
     }
 
+    @Data(staticConstructor="of")
     public static class Sender {
-        public String id;
+        private String id;
     }
 
+    @Data(staticConstructor="of")
     public static class Recipient {
-        public String id;
+        private String id;
     }
 
+    @Data(staticConstructor="of")
     public static class Message {
-        public String mid;
-        public String seq;
-        public String text;
+        private String mid;
+        private String seq;
+        private String text;
     }
 }
