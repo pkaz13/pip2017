@@ -46,11 +46,15 @@ public class WebhookMessenger
 
     @RequestMapping(value = "/webhook", method = POST, consumes = MediaType.APPLICATION_JSON,
             produces = MediaType.APPLICATION_JSON)
-    public void sendMessage(@RequestBody final MessageRequestBody body) {
+    public void sendMessage(@RequestBody final String payload) {
+
+        MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(accessToken).build();
 
         MessengerReceiveClient receiveClient = MessengerPlatform.newReceiveClientBuilder(appSecret, "token")
                 .onTextMessageEvent(event ->  sendTextMessage(event.getSender().getId(), event.getText()))
                 .build();
+
+        receiveClient.processCallbackPayload(payload);
 
 //        if(StringUtils.equals(body.object,"page"))
 //        {
@@ -117,7 +121,7 @@ public class WebhookMessenger
         messageResponse.recipient.id=id;
         messageResponse.message = new MessageResponse.MessageData();
         messageResponse.message.text = message;
-        callSendApi(messageResponse);
+//        callSendApi(messageResponse);
     }
 
     private void callSendApi(MessageResponse messageResponse) {
