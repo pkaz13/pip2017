@@ -106,9 +106,11 @@ public class WebhookMessenger
 
     private void sendTextMessage(String id,String message)
     {
-        MessageResponse messageResponse=new MessageResponse();
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.recipient = new MessageResponse.Recipient();
         messageResponse.recipient.id=id;
-        messageResponse.message.text=message;
+        messageResponse.message = new MessageResponse.MessageData();
+        messageResponse.message.text = message;
         callSendApi(messageResponse);
     }
 
