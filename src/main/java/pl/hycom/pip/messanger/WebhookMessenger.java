@@ -1,5 +1,5 @@
 package pl.hycom.pip.messanger;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.github.messenger4j.MessengerPlatform;
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
@@ -7,41 +7,40 @@ import com.github.messenger4j.exceptions.MessengerVerificationException;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 import lombok.extern.log4j.Log4j2;
-import okhttp3.*;
+//import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import pl.hycom.model.MessageRequestBody;
 import pl.hycom.model.MessageResponse;
 
-import javax.ws.rs.core.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by Rafal Lebioda on 02.03.2017.
  */
 @Controller
 @Log4j2
-public class WebhookMessenger
-{
-    //Temporary for testing, acessToken must is different for each user
+public class WebhookMessenger {
+    //Temporary for testing, accessToken must is different for each user
     private final String accessToken = "EAASEpnxfYrwBAK7MZAPvt0awlzY8Ph8yDTHVe41QnBJDflZAgBQxD5U6T2Y6AG3z8nKTswiF5qPIevrZA8ftjoHRHQZABCCzcgWxwrOUBAU5ZBoQZA4IuHo1prqzZCgGZBIF1N07gdORcU9cVbLcScLUNAYccwTl67Dk40UMZClI6QQZDZD";
     private final String appSecret = "bb7346ab50a47c439fc384eae66cadc0";
 
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
     @ResponseBody
-    public String verify(@RequestParam("hub.verify_token") final String verifyToken,
-                         @RequestParam("hub.mode") final String mode,
-                         @RequestParam("hub.challenge") final String challenge){
-        if (StringUtils.equals(verifyToken,"token") && StringUtils.equals(mode,"subscribe")){
-            return challenge;
+    public ResponseEntity<String> verify(@RequestParam("hub.verify_token") final String verifyToken,
+                                 @RequestParam("hub.mode") final String mode,
+                                 @RequestParam("hub.challenge") final String challenge) {
+        if (StringUtils.equals(verifyToken, "token") && StringUtils.equals(mode, "subscribe")) {
+            return ResponseEntity.ok(challenge);
         } else {
-            return "Failed validation. Make sure the validation tokens match.";
+            log.info("Failed validation. Make sure the validation tokens match.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
     }
 
@@ -56,7 +55,7 @@ public class WebhookMessenger
         MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(accessToken).build();
 
         MessengerReceiveClient receiveClient = MessengerPlatform.newReceiveClientBuilder(appSecret, "token")
-                .onTextMessageEvent(event ->  sendTextMessage(event.getSender().getId(), event.getText()))
+                .onTextMessageEvent(event -> sendTextMessage(event.getSender().getId(), event.getText()))
                 .build();
 
         try {
@@ -116,27 +115,25 @@ public class WebhookMessenger
     }
 
 
-    private void receivedMessage(MessageRequestBody.Messaging messaging )
-    {
-        if(messaging.message.text!=null) {
-            sendTextMessage(messaging.sender.id, messaging.message.text);
+    private void receivedMessage(MessageRequestBody.Messaging messaging) {
+        if (messaging.getMessage().getText() != null) {
+            sendTextMessage(messaging.getSender().getId(), messaging.getMessage().getText());
         }
     }
 
-    private void sendTextMessage(String id,String message)
-    {
+    private void sendTextMessage(String id, String message) {
         MessageResponse messageResponse = new MessageResponse();
-        messageResponse.recipient = new MessageResponse.Recipient();
-        messageResponse.recipient.id=id;
-        messageResponse.message = new MessageResponse.MessageData();
-        messageResponse.message.text = message;
+        messageResponse.setRecipient(new MessageResponse.Recipient());
+        messageResponse.getRecipient().setId(id);
+        messageResponse.setMessage(new MessageResponse.MessageData());
+        messageResponse.getMessage().setText(message);
         callSendApi(messageResponse);
     }
 
     private void callSendApi(MessageResponse messageResponse) {
         MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(accessToken).build();
         try {
-            sendClient.sendTextMessage(messageResponse.recipient.id, messageResponse.message.text);
+            sendClient.sendTextMessage(messageResponse.getRecipient().getId(), messageResponse.getMessage().getText());
         } catch (MessengerApiException | MessengerIOException e) {
             e.printStackTrace();
         }
