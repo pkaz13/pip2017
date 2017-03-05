@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class maczugaherkulesa {
+public class MaczugaHerkulesa {
 
-    @RequestMapping("/")
+    @RequestMapping("/test")
     @ResponseBody
     String home() {
         return "Hello";
