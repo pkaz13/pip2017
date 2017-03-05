@@ -10,12 +10,12 @@ public class MessageResponse {
     private Recipient recipient;
     private MessageData message;
 
-    @Data(staticConstructor="of")
+    @Data
     public static class Recipient {
         private String id;
     }
 
-    @Data(staticConstructor="of")
+    @Data
     public static class MessageData {
         private String text;
     }
