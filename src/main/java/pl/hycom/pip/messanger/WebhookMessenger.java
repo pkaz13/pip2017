@@ -130,7 +130,7 @@ public class WebhookMessenger
         messageResponse.recipient.id=id;
         messageResponse.message = new MessageResponse.MessageData();
         messageResponse.message.text = message;
-//        callSendApi(messageResponse);
+        callSendApi(messageResponse);
     }
 
     private void callSendApi(MessageResponse messageResponse) {
