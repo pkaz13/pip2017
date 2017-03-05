@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.messenger4j.MessengerPlatform;
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
@@ -29,6 +30,7 @@ public class WebhookMessenger
 {
     //Temporary for testing, acessToken must is different for each user
     private final String accessToken = "EAASEpnxfYrwBAK7MZAPvt0awlzY8Ph8yDTHVe41QnBJDflZAgBQxD5U6T2Y6AG3z8nKTswiF5qPIevrZA8ftjoHRHQZABCCzcgWxwrOUBAU5ZBoQZA4IuHo1prqzZCgGZBIF1N07gdORcU9cVbLcScLUNAYccwTl67Dk40UMZClI6QQZDZD";
+    private final String appSecret = "bb7346ab50a47c439fc384eae66cadc0";
 
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
     @ResponseBody
@@ -46,25 +48,29 @@ public class WebhookMessenger
             produces = MediaType.APPLICATION_JSON)
     public void sendMessage(@RequestBody final MessageRequestBody body) {
 
-        if(StringUtils.equals(body.object,"page"))
-        {
-            for(MessageRequestBody.Entry entry : body.entry)
-            {
-                String pageID=entry.id;
-                String time=entry.time;
-                for(MessageRequestBody.Messaging messaging : entry.messaging)
-                {
-                    if(messaging!=null)
-                    {
-                        receivedMessage(messaging);
-                    }
-                    else
-                    {
-                        log.info("Webhook received unknown event: ");
-                    }
-                }
-            }
-        }
+        MessengerReceiveClient receiveClient = MessengerPlatform.newReceiveClientBuilder(appSecret, "token")
+                .onTextMessageEvent(event ->  sendTextMessage(event.getSender().getId(), event.getText()))
+                .build();
+
+//        if(StringUtils.equals(body.object,"page"))
+//        {
+//            for(MessageRequestBody.Entry entry : body.entry)
+//            {
+//                String pageID=entry.id;
+//                String time=entry.time;
+//                for(MessageRequestBody.Messaging messaging : entry.messaging)
+//                {
+//                    if(messaging!=null)
+//                    {
+//                        receivedMessage(messaging);
+//                    }
+//                    else
+//                    {
+//                        log.info("Webhook received unknown event: ");
+//                    }
+//                }
+//            }
+//        }
 //        try {
 //            for (MessageRequestBody.Entry entry : body.entry) {
 //                for (MessageRequestBody.Messaging messaging : entry.messaging) {
