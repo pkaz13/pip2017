@@ -48,10 +48,9 @@ public class WebhookMessenger
     @RequestMapping(value = "/webhook", method = POST, consumes = MediaType.APPLICATION_JSON,
             produces = MediaType.APPLICATION_JSON)
     public void sendMessage(@RequestBody final String payload,
-                            @RequestHeader final String signature) {
+                            @RequestHeader(value = "X-Hub-Signature", defaultValue = "niewiem") String signature) {
 
         System.out.println("Payload: " + payload);
-        System.out.println("Signature: " + signature);
 
         MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(accessToken).build();
 
