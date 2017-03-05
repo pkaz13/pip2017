@@ -9,6 +9,7 @@ import okhttp3.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.hycom.model.MessageRequestBody;
 import pl.hycom.model.MessageResponse;
 
@@ -30,9 +31,10 @@ public class WebhookMessenger
     private final String accessToken = "EAASEpnxfYrwBAK7MZAPvt0awlzY8Ph8yDTHVe41QnBJDflZAgBQxD5U6T2Y6AG3z8nKTswiF5qPIevrZA8ftjoHRHQZABCCzcgWxwrOUBAU5ZBoQZA4IuHo1prqzZCgGZBIF1N07gdORcU9cVbLcScLUNAYccwTl67Dk40UMZClI6QQZDZD";
 
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
+    @ResponseBody
     public String verify(@RequestParam("hub.verify_token") final String verifyToken,
                          @RequestParam("hub.mode") final String mode,
-                         @RequestParam("hub.challenge") final String challenge) {
+                         @RequestParam("hub.challenge") final String challenge){
         if (StringUtils.equals(verifyToken,"token") && StringUtils.equals(mode,"subscribe")){
             return challenge;
         } else {
