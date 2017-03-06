@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@ConfigurationProperties(prefix = "my.config.properties")
+@ConfigurationProperties(prefix = "my.config.property")
 public class MessengerIntegrationProperties {
     private String pageAccessToken;
     private String appSecret;
