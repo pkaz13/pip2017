@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.hycom.pip.messanger.model.MessageResponse;
+
 import javax.ws.rs.core.MediaType;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -65,15 +65,10 @@ public class MessengerWebhook {
     }
 
     private void sendTextMessage(String id, String message) {
-        MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setRecipient(new MessageResponse.Recipient());
-        messageResponse.getRecipient().setId(id);
-        messageResponse.setMessage(new MessageResponse.MessageData());
-        messageResponse.getMessage().setText(message);
         MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(pageAccessToken).build();
         try {
             log.info("Sending answer");
-            sendClient.sendTextMessage(messageResponse.getRecipient().getId(), messageResponse.getMessage().getText());
+            sendClient.sendTextMessage(id, message);
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during sending answer "+ e.getMessage());
         }
