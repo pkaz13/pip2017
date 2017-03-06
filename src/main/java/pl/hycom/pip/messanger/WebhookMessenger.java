@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.hycom.pip.messanger.config.MessengerIntegrationProperties;
-import pl.hycom.pip.messanger.config.MessengerIntegrationService;
+import pl.hycom.pip.messanger.config.ConfigService;
 import pl.hycom.pip.messanger.model.MessageRequestBody;
 import pl.hycom.pip.messanger.model.MessageResponse;
 
@@ -32,14 +32,14 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class WebhookMessenger {
     //Temporary for testing, accessToken must is different for each user
     @Autowired
-    private MessengerIntegrationService messengerIntegrationService;
+    private ConfigService configService;
 
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
     @ResponseBody
     public ResponseEntity<String> verify(@RequestParam("hub.verify_token") final String verifyToken,
                                  @RequestParam("hub.mode") final String mode,
                                  @RequestParam("hub.challenge") final String challenge) {
-        MessengerIntegrationProperties properties = messengerIntegrationService.getMsgIntegrationProperties();
+        MessengerIntegrationProperties properties = configService.getMsgIntegrationProperties();
         if (StringUtils.equals(verifyToken, properties.getVerifyToken()) && StringUtils.equals(mode, "subscribe")) {
             return ResponseEntity.ok(challenge);
         } else {
@@ -53,7 +53,7 @@ public class WebhookMessenger {
     public void sendMessage(@RequestBody final String payload,
                             @RequestHeader(value = "X-Hub-Signature", defaultValue = "niewiem") String signature) {
 
-        MessengerIntegrationProperties properties = messengerIntegrationService.getMsgIntegrationProperties();
+        MessengerIntegrationProperties properties = configService.getMsgIntegrationProperties();
 
         System.out.println("Payload: " + payload);
         System.out.println("Signature: " + signature);
@@ -137,7 +137,7 @@ public class WebhookMessenger {
     }
 
     private void callSendApi(MessageResponse messageResponse) {
-        MessengerIntegrationProperties properties = messengerIntegrationService.getMsgIntegrationProperties();
+        MessengerIntegrationProperties properties = configService.getMsgIntegrationProperties();
 
         MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(properties.getPageAccessToken()).build();
         try {

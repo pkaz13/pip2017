@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Data
-public class MessengerIntegrationService {
+public class ConfigService {
     @Autowired
     private MessengerIntegrationProperties msgIntegrationProperties;
 }
