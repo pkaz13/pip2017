@@ -31,9 +31,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Log4j2
 public class WebhookMessenger {
     //Temporary for testing, accessToken must is different for each user
-    private final String pageAccessToken = "EAAImJ54xVrcBAJp5Aw1dU1zIPSw92mprMUo5QIRbux0WxrfKZCayfyEBJMmTJXoqrSfSglcUBV39YRvPZBo2jAaQu2QyiyA5vdTkCBbJE9NOAjpiM33PQ7sS0sIaMSsR6COd5IWihqYSjhTZBdQxfPqE7oliQ95lFKknSCUqQZDZD";
+    private final String pageAccessToken = "EAAFPm2dotHsBAO4KjZBZCZCeUWLsS7IXoACB9ZAZCARsRYh9PY0ogrSM39NdKAihy2jbdlypfT5a8TBjPbUwjeFaxo28ORZCXd7MIejDBv4suX0AuwVtTtlMu1zfLy3MGmQWggZBUARwzGWsg0eoYcVmqYCAhzLOJFMgUaonbe67QZDZD";
     private final String verToken = "token";
-    private final String appSecret = "d44fb500a9e69c572a8fa8d01fab8218";
+    private final String appSecret = "bf00817292428306cb0c761941ad4d14";
 //    @Autowired
 //    private ConfigService configService;
 
@@ -43,7 +43,6 @@ public class WebhookMessenger {
                                  @RequestParam("hub.mode") final String mode,
                                  @RequestParam("hub.challenge") final String challenge) {
         //MessengerIntegrationProperties properties = configService.getMsgIntegrationProperties();
-
         if (StringUtils.equals(verifyToken, verToken) && StringUtils.equals(mode, "subscribe")) {
             return ResponseEntity.ok(challenge);
         } else {
@@ -54,8 +53,8 @@ public class WebhookMessenger {
 
     @RequestMapping(value = "/webhook", method = POST, consumes = MediaType.APPLICATION_JSON,
             produces = MediaType.APPLICATION_JSON)
-    public void sendMessage(@RequestBody final String payload,
-                            @RequestHeader(value = "X-Hub-Signature", defaultValue = "niewiem") String signature) {
+    public ResponseEntity<Void> sendMessage(@RequestBody final String payload,
+                                            @RequestHeader(value = "X-Hub-Signature") String signature) {
 
         //MessengerIntegrationProperties properties = configService.getMsgIntegrationProperties();
 
@@ -70,8 +69,11 @@ public class WebhookMessenger {
 
         try {
             receiveClient.processCallbackPayload(payload, signature);
-        } catch (MessengerVerificationException e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch (MessengerVerificationException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
 //        if(StringUtils.equals(body.object,"page"))
@@ -122,6 +124,7 @@ public class WebhookMessenger {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+
     }
 
 
