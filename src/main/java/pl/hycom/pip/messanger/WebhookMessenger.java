@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 public class WebhookMessenger
 {
     //Temporary for testing, acessToken must is different for each user
-    private final String accessToken = "EAASEpnxfYrwBAK7MZAPvt0awlzY8Ph8yDTHVe41QnBJDflZAgBQxD5U6T2Y6AG3z8nKTswiF5qPIevrZA8ftjoHRHQZABCCzcgWxwrOUBAU5ZBoQZA4IuHo1prqzZCgGZBIF1N07gdORcU9cVbLcScLUNAYccwTl67Dk40UMZClI6QQZDZD";
-    private final String appSecret = "bb7346ab50a47c439fc384eae66cadc0";
+    private final String accessToken = "EAAImJ54xVrcBAJp5Aw1dU1zIPSw92mprMUo5QIRbux0WxrfKZCayfyEBJMmTJXoqrSfSglcUBV39YRvPZBo2jAaQu2QyiyA5vdTkCBbJE9NOAjpiM33PQ7sS0sIaMSsR6COd5IWihqYSjhTZBdQxfPqE7oliQ95lFKknSCUqQZDZD";
+    private final String appSecret = "d44fb500a9e69c572a8fa8d01fab8218";
 
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
     @ResponseBody
