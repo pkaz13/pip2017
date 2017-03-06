@@ -1,4 +1,4 @@
-package pl.hycom.model;
+package pl.hycom.pip.messanger.model;
 
 import lombok.Data;
 
