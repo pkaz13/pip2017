@@ -9,10 +9,13 @@ import com.github.messenger4j.send.MessengerSendClient;
 import lombok.extern.log4j.Log4j2;
 //import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import pl.hycom.pip.messanger.config.MessengerIntegrationProperties;
+import pl.hycom.pip.messanger.config.MessengerIntegrationService;
 import pl.hycom.pip.messanger.model.MessageRequestBody;
 import pl.hycom.pip.messanger.model.MessageResponse;
 
@@ -28,15 +31,16 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Log4j2
 public class WebhookMessenger {
     //Temporary for testing, accessToken must is different for each user
-    private final String accessToken = "EAAImJ54xVrcBAJp5Aw1dU1zIPSw92mprMUo5QIRbux0WxrfKZCayfyEBJMmTJXoqrSfSglcUBV39YRvPZBo2jAaQu2QyiyA5vdTkCBbJE9NOAjpiM33PQ7sS0sIaMSsR6COd5IWihqYSjhTZBdQxfPqE7oliQ95lFKknSCUqQZDZD";
-    private final String appSecret = "d44fb500a9e69c572a8fa8d01fab8218";
+    @Autowired
+    private MessengerIntegrationService messengerIntegrationService;
 
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
     @ResponseBody
     public ResponseEntity<String> verify(@RequestParam("hub.verify_token") final String verifyToken,
                                  @RequestParam("hub.mode") final String mode,
                                  @RequestParam("hub.challenge") final String challenge) {
-        if (StringUtils.equals(verifyToken, "token") && StringUtils.equals(mode, "subscribe")) {
+        MessengerIntegrationProperties properties = messengerIntegrationService.getMsgIntegrationProperties();
+        if (StringUtils.equals(verifyToken, properties.getVerifyToken()) && StringUtils.equals(mode, "subscribe")) {
             return ResponseEntity.ok(challenge);
         } else {
             log.info("Failed validation. Make sure the validation tokens match.");
@@ -49,12 +53,14 @@ public class WebhookMessenger {
     public void sendMessage(@RequestBody final String payload,
                             @RequestHeader(value = "X-Hub-Signature", defaultValue = "niewiem") String signature) {
 
+        MessengerIntegrationProperties properties = messengerIntegrationService.getMsgIntegrationProperties();
+
         System.out.println("Payload: " + payload);
         System.out.println("Signature: " + signature);
 
-        MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(accessToken).build();
+        MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(properties.getPageAccessToken()).build();
 
-        MessengerReceiveClient receiveClient = MessengerPlatform.newReceiveClientBuilder(appSecret, "token")
+        MessengerReceiveClient receiveClient = MessengerPlatform.newReceiveClientBuilder(properties.getAppSecret(), properties.getVerifyToken())
                 .onTextMessageEvent(event -> sendTextMessage(event.getSender().getId(), event.getText()))
                 .build();
 
@@ -131,7 +137,9 @@ public class WebhookMessenger {
     }
 
     private void callSendApi(MessageResponse messageResponse) {
-        MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(accessToken).build();
+        MessengerIntegrationProperties properties = messengerIntegrationService.getMsgIntegrationProperties();
+
+        MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(properties.getPageAccessToken()).build();
         try {
             sendClient.sendTextMessage(messageResponse.getRecipient().getId(), messageResponse.getMessage().getText());
         } catch (MessengerApiException | MessengerIOException e) {
