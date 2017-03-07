@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
  */
 @Data
 @Service
-//@ConfigurationProperties(prefix = "property")
+@ConfigurationProperties("my.config.property")
 public class MessengerIntegrationProperties {
 
-    @Value("${property.pageAccessToken}")
+//    @Value("${property.pageAccessToken}")
     private String pageAccessToken;
 
-    @Value("${property.appSecret}")
+//    @Value("${property.appSecret}")
     private String appSecret;
 
-    @Value("${property.verifyToken}")
+//    @Value("${property.verifyToken}")
     private String verifyToken;
 }
