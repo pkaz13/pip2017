@@ -1,7 +1,7 @@
 package pl.hycom.pip.messanger.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,11 +12,12 @@ import org.springframework.stereotype.Service;
 @Data
 public class ConfigService {
 
-    @Autowired
-    private MessengerIntegrationProperties msgIntegrationProperties;
+    @Value("${my.config.property.pageAccessToken}")
+    private String pageAccessToken;
 
-//    @Autowired
-//    public ConfigService(MessengerIntegrationProperties properties) {
-//        this.msgIntegrationProperties = properties;
-//    }
+    @Value("${my.config.property.appSecret}")
+    private String appSecret;
+
+    @Value("${my.config.property.verifyToken}")
+    private String verifyToken;
 }
