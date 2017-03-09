@@ -21,7 +21,7 @@ public class MessengerConfiguration {
     @Bean
     MessengerReceiveClient getReceiveClient() {
         return MessengerPlatform.newReceiveClientBuilder(configService.getAppSecret(), configService.getVerifyToken())
-                .onTextMessageEvent(event -> MessengerUtility.getInstance().sendTextMessage(event.getSender().getId(), "Hello World!"))
+                .onTextMessageEvent(event -> new MessengerUtility().sendTextMessage(event.getSender().getId(), "Hello World!"))
                 .build();
     }
 

@@ -16,17 +16,6 @@ public class MessengerUtility {
     @Autowired
     private MessengerSendClient sendClient;
 
-    private static MessengerUtility instance = null;
-
-    private MessengerUtility() {}
-
-    public static MessengerUtility getInstance() {
-        if (instance == null) {
-            instance = new MessengerUtility();
-        }
-        return instance;
-    }
-
     public void sendTextMessage(String id, String message) {
         try {
             log.info("Sending answer");
