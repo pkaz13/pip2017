@@ -29,6 +29,11 @@ public class MessengerWebhook {
 
     @Autowired
     private ConfigService configService;
+//
+//    @Autowired
+//    private MessengerSendClient sendClient;
+    @Autowired
+    private MessengerReceiveClient receiveClient;
 
     @RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
     @ResponseBody
@@ -51,9 +56,9 @@ public class MessengerWebhook {
         try {
             //MessengerIntegrationProperties properties = configService.getMsgIntegrationProperties();
             log.info("Received message - starting prepare answer ");
-            MessengerReceiveClient receiveClient = MessengerPlatform.newReceiveClientBuilder(configService.getAppSecret(), configService.getVerifyToken())
-                    .onTextMessageEvent(event -> sendTextMessage(event.getSender().getId(), "Hello World !!! Działa ;)"))
-                    .build();
+//                receiveClient = MessengerPlatform.newReceiveClientBuilder(configService.getAppSecret(), configService.getVerifyToken())
+//                        .onTextMessageEvent(event -> sendTextMessage(event.getSender().getId(), "Hello World !!! Działa ;)"))
+//                        .build();
             receiveClient.processCallbackPayload(payload, signature);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (MessengerVerificationException e) {
@@ -62,15 +67,15 @@ public class MessengerWebhook {
         }
     }
 
-    private void sendTextMessage(String id, String message) {
-        MessengerSendClient sendClient = MessengerPlatform.newSendClientBuilder(configService.getPageAccessToken()).build();
-        try {
-            log.info("Sending answer");
-            sendClient.sendTextMessage(id, message);
-        } catch (MessengerApiException | MessengerIOException e) {
-            log.error("Error during sending answer " + e.getMessage());
-        }
-    }
+//    private void sendTextMessage(String id, String message) {
+//        sendClient = MessengerPlatform.newSendClientBuilder(configService.getPageAccessToken()).build();
+//        try {
+//            log.info("Sending answer");
+//            sendClient.sendTextMessage(id, message);
+//        } catch (MessengerApiException | MessengerIOException e) {
+//            log.error("Error during sending answer " + e.getMessage());
+//        }
+//    }
 
 
 }
