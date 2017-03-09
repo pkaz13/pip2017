@@ -1,13 +1,14 @@
 package pl.hycom.pip.messanger.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.github.messenger4j.MessengerPlatform;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
-import org.jvnet.hk2.config.ConfigSupport;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import pl.hycom.pip.messanger.util.MessengerUtility;
+
+import pl.hycom.pip.messanger.handler.MessengerTextMessageHandler;
 
 /**
  * Created by patry on 07/03/2017.
@@ -16,19 +17,25 @@ import pl.hycom.pip.messanger.util.MessengerUtility;
 @Configuration
 public class MessengerConfiguration {
 
-    @Autowired
-    ConfigService configService;
+	@Value("${messenger.pageAccessToken}") private String pageAccessToken;
+	@Value("${messenger.appSecret}") private String appSecret;
+	@Value("${messenger.verifyToken}") private String verifyToken;
 
-    @Bean
-    MessengerReceiveClient getReceiveClient() {
-        return MessengerPlatform.newReceiveClientBuilder(configService.getAppSecret(), configService.getVerifyToken())
-                .onTextMessageEvent(event -> MessengerUtility.sendTextMessage(event.getSender().getId(), "Hello World!"))
-                .build();
-    }
+	@Bean
+	public MessengerTextMessageHandler messengerTextMessageHandler() {
+		return new MessengerTextMessageHandler(sendClient());
+	}
 
-    @Bean
-    MessengerSendClient getSendClient() {
-        return MessengerPlatform.newSendClientBuilder(configService.getPageAccessToken()).build();
-    }
+	@Bean
+	public MessengerReceiveClient receiveClient() {
+		return MessengerPlatform.newReceiveClientBuilder(appSecret, verifyToken)
+				.onTextMessageEvent(messengerTextMessageHandler())
+				.build();
+	}
+
+	@Bean
+	public MessengerSendClient sendClient() {
+		return MessengerPlatform.newSendClientBuilder(pageAccessToken).build();
+	}
 
 }
