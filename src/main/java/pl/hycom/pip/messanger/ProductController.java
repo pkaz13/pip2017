@@ -1,25 +1,25 @@
 package pl.hycom.pip.messanger;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import pl.hycom.pip.messanger.services.ProductService;
+import pl.hycom.pip.messanger.model.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pl.hycom.pip.messanger.model.Product;
-import pl.hycom.pip.messanger.repositories.ProductRepository;
-
-import java.util.Collection;
+import javax.inject.Inject;
+import java.util.List;
 
 @RestController
-@RequestMapping(value = "/products")
+@RequestMapping(value = "/admin/products")
+@RequiredArgsConstructor(onConstructor=@__(@Inject))
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductService productService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<Collection<Product>> getAllProducts() {
-        return new ResponseEntity<>((Collection<Product>) productRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<Product>> findAllProducts() {
+        return new ResponseEntity<> (productService.findAllProducts(), HttpStatus.OK);
     }
 }
