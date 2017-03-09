@@ -1,0 +1,16 @@
+messenger:
+  pageAccessToken: EAAVYyRyq4z8BAJFUHerYi7D1HGydwuUTjznS3vEecDOhMfttfSwrRhuWPBgYRs0TuGozHZAIwdN7rRKPTiHyTdZAjJ1iHIHbbqn18Nb0NKD8vXwQiaWP2EXtJZAD65YFYxfPv2AjRVZCfbngxECO4TzEvFbC4enERVfAlVWftEt3mSHhRFb0
+  appSecret: 8f44de54941a9ae9cf05608a4c6aa3bc
+  verifyToken: token
+
+management:
+  port: 8081
+  security:
+    enabled: true
+
+security:
+  basic:
+    enabled: false
+  user:
+    name: test
+    password: test

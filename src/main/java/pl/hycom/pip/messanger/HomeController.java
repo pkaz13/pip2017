@@ -1,18 +1,19 @@
-package pl.hycom.mr;
+package pl.hycom.pip.messanger;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * Created by maciek on 06.03.17.
+ */
+
 @Controller
-public class Application {
+public class HomeController {
 
 	@RequestMapping("/")
 	@ResponseBody
-	String home() {
-		return "Hello World!";
+	public String home() {
+		return "Hello World";
 	}
-
 }
