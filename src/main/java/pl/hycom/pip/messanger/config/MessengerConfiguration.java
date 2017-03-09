@@ -8,7 +8,7 @@ import com.github.messenger4j.MessengerPlatform;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 
-import pl.hycom.pip.messanger.handler.MessengerTextMessageHandler;
+import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
 
 /**
  * Created by patry on 07/03/2017.
@@ -22,14 +22,14 @@ public class MessengerConfiguration {
 	@Value("${messenger.verifyToken}") private String verifyToken;
 
 	@Bean
-	public MessengerTextMessageHandler messengerTextMessageHandler() {
-		return new MessengerTextMessageHandler(sendClient());
+	public MessengerHelloWorldHandler messengerHelloWorldHandler() {
+		return new MessengerHelloWorldHandler(sendClient());
 	}
 
 	@Bean
 	public MessengerReceiveClient receiveClient() {
 		return MessengerPlatform.newReceiveClientBuilder(appSecret, verifyToken)
-				.onTextMessageEvent(messengerTextMessageHandler())
+				.onTextMessageEvent(messengerHelloWorldHandler())
 				.build();
 	}
 
