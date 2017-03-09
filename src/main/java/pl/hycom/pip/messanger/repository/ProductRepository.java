@@ -1,4 +1,4 @@
-package pl.hycom.pip.messanger.repositories;
+package pl.hycom.pip.messanger.repository;
 
 import org.springframework.stereotype.Repository;
 import pl.hycom.pip.messanger.model.Product;
