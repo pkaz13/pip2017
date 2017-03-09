@@ -15,11 +15,11 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @Component
-public class MessengerTextMessageHandler implements TextMessageEventHandler {
+public class MessengerHelloWorldHandler implements TextMessageEventHandler {
 
 	private MessengerSendClient sendClient;
 
-	public MessengerTextMessageHandler(MessengerSendClient sendClient) {
+	public MessengerHelloWorldHandler(MessengerSendClient sendClient) {
 		this.sendClient = sendClient;
 	}
 
