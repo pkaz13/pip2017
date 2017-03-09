@@ -3,7 +3,6 @@ package pl.hycom.pip.messanger.config;
 import com.github.messenger4j.MessengerPlatform;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
-import org.jvnet.hk2.config.ConfigSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +16,12 @@ import pl.hycom.pip.messanger.util.MessengerUtility;
 public class MessengerConfiguration {
 
     @Autowired
-    ConfigService configService;
+    private ConfigService configService;
 
     @Bean
     MessengerReceiveClient getReceiveClient() {
         return MessengerPlatform.newReceiveClientBuilder(configService.getAppSecret(), configService.getVerifyToken())
-                .onTextMessageEvent(event -> MessengerUtility.sendTextMessage(event.getSender().getId(), "Hello World!"))
+                .onTextMessageEvent(event -> MessengerUtility.getInstance().sendTextMessage(event.getSender().getId(), "Hello World!"))
                 .build();
     }
 
