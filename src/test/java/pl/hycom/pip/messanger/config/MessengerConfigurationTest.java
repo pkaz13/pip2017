@@ -5,8 +5,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
@@ -20,7 +20,7 @@ import com.github.messenger4j.send.MessengerSendClient;
 import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
 
-@Configuration
+@TestConfiguration
 @Import(MessengerConfiguration.class)
 @Log4j2
 public class MessengerConfigurationTest {
