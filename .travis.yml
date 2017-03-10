@@ -2,6 +2,8 @@ language: java
 sudo: false
 jdk: oraclejdk8
 
+install: true
+
 script: 
  - "mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dmaven.javadoc.skip=true -B -V -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=$SONAR_URL"
 
