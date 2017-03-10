@@ -38,8 +38,9 @@ public class MessengerWebhook {
 
 		try {
 			return ResponseEntity.ok(receiveClient.verifyWebhook(mode, verifyToken, challenge));
+
 		} catch (MessengerVerificationException e) {
-			log.warn("Webhook verification failed: {}", e.getMessage());
+			log.error("Webhook verification failed", e);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
 		}
 	}
@@ -49,14 +50,14 @@ public class MessengerWebhook {
 			@RequestBody final String payload,
 			@RequestHeader(value = "X-Hub-Signature") String signature) {
 
-		log.info("Received message - starting prepare answer ");
+		log.info("Received message - starting prepare answer");
 
 		try {
 			receiveClient.processCallbackPayload(payload, signature);
 			return ResponseEntity.status(HttpStatus.OK).build();
 
 		} catch (MessengerVerificationException e) {
-			log.error("Error during token verification {} from msg: {}", payload, e.getMessage());
+			log.error("Error during token verification [" + payload + "]", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
