@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class HomeController {
-    @RequestMapping("/")
-    @ResponseBody
-    public String home() {
-        return "Hello World";
-    }
+
+	@RequestMapping("/")
+	@ResponseBody
+	public String home() {
+		return "Hello World";
+	}
 }

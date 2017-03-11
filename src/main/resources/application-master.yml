@@ -1,0 +1,16 @@
+messenger:
+  pageAccessToken: ${MESSENGER_PAGE_ACCESS_TOKEN}
+  appSecret: ${MESSENGER_APP_SECRET}
+  verifyToken: ${MESSENGER_VERIFY_TOKEN}
+
+management:
+  port: 8081
+  security:
+    enabled: true
+
+security:
+  basic:
+    enabled: false
+  user:
+    name: test
+    password: test

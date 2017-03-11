@@ -1,20 +1,24 @@
-my:
-  config:
-    property:
-      pageAccessToken: EAAImJ54xVrcBAJp5Aw1dU1zIPSw92mprMUo5QIRbux0WxrfKZCayfyEBJMmTJXoqrSfSglcUBV39YRvPZBo2jAaQu2QyiyA5vdTkCBbJE9NOAjpiM33PQ7sS0sIaMSsR6COd5IWihqYSjhTZBdQxfPqE7oliQ95lFKknSCUqQZDZD
-      appSecret: d44fb500a9e69c572a8fa8d01fab8218
-      verifyToken: token
+messenger:
+  pageAccessToken: EAAVYyRyq4z8BAM9YBZAP3fOuykvX5Xzd6ZASPaTZC46MapqGLyZCRJHxo4vECqvcAkoEOnYIPHibM2fxhhXDAbZBkxx5cwN0MyAHMVCMXhdYZCA4sGNeBoH7zu8H2E3TcNxc8yZCmFWHXFtVMu9IrgyZCL1Hd6FQnMmBOeY8Nb078G3jyw24cZCYa
+  appSecret: 8f44de54941a9ae9cf05608a4c6aa3bc
+  verifyToken: token
 
 management:
   port: 8081
   security:
     enabled: true
+
 security:
   basic:
     enabled: false
   user:
     name: test
     password: test
+
+logging:
+    level:
+        ROOT: WARN
+        pl.hycom.pip: DEBUG
   headers:
     frame: false
 spring:
