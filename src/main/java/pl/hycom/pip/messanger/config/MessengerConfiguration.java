@@ -42,6 +42,6 @@ public class MessengerConfiguration {
 	}
 
 	@Bean
-	public SetupResponse setupClient() throws MessengerApiException, MessengerIOException {return MessengerPlatform.newSetupClientBuilder(pageAccessToken).build().setupWelcomeMessage("witaj uzytkowniku !!!");}
+	public SetupResponse setupClient() throws MessengerApiException, MessengerIOException {return MessengerPlatform.newSetupClientBuilder(pageAccessToken).build().setupWelcomeMessage("Witaj {{user_first_name}} !!!");}
 
 }
