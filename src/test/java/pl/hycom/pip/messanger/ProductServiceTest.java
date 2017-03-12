@@ -1,9 +1,11 @@
 package pl.hycom.pip.messanger;
 
+import lombok.AllArgsConstructor;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.runners.MethodSorters;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.hycom.pip.messanger.model.Product;
@@ -13,11 +15,12 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@AllArgsConstructor
 public class ProductServiceTest {
 
-    //@Autowired do zmiany
-    @Autowired
-    private ProductService productService;
+    //@Autowired
+    private final ProductService productService;
 
     @Before
     public void setUp() {
@@ -49,6 +52,9 @@ public class ProductServiceTest {
     @Test
     public void findProductByIdTest() {
         assertNotNull(productService.findProductById(1));
+        assertEquals("name", productService.findProductById(1).getName());
+        assertEquals("desc", productService.findProductById(1).getDescription());
+        assertEquals("url", productService.findProductById(1).getImageUrl());
     }
 
     @Test
@@ -59,7 +65,7 @@ public class ProductServiceTest {
 
     @Test
     public void updateProductNameTest() {
-        productService.updateProductName(1, "newName");
-        assertEquals("newName", productService.findProductById(1).getName());
+        productService.updateProductName(1, "zażółć gęślą jaźń");
+        assertEquals("zażółć gęślą jaźń", productService.findProductById(1).getName());
     }
 }
