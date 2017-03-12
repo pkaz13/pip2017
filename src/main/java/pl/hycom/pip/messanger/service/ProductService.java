@@ -14,8 +14,21 @@ import java.util.stream.StreamSupport;
 public class ProductService {
     private final ProductRepository productRepository;
 
+    public void addProduct(Product product) {
+        productRepository.save(product);
+    }
+
+    public Product findProductById(Integer id) {
+        return productRepository.findOne(id);
+    }
+
     public List<Product> findAllProducts() {
         return StreamSupport.stream(productRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
+
+    public void deleteProduct(Integer id) {
+        productRepository.delete(id);
+    }
 }
+
