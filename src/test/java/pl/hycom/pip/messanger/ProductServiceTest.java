@@ -1,11 +1,12 @@
 package pl.hycom.pip.messanger;
 
-import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.hycom.pip.messanger.model.Product;
@@ -16,11 +17,11 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@AllArgsConstructor
+@Log4j2
 public class ProductServiceTest {
 
-    //@Autowired
-    private final ProductService productService;
+    @Autowired
+    private ProductService productService;
 
     @Before
     public void setUp() {
@@ -46,11 +47,13 @@ public class ProductServiceTest {
         product.setDescription("desc");
         product.setImageUrl("url");
         productService.addProduct(product);
+        log.info("Test of addProduct method from ProductService class");
         assertEquals(3, productService.findAllProducts().size());
     }
 
     @Test
     public void findProductByIdTest() {
+        log.info("Test of findProductById method from ProductService class");
         assertNotNull(productService.findProductById(1));
         assertEquals("name", productService.findProductById(1).getName());
         assertEquals("desc", productService.findProductById(1).getDescription());
@@ -59,12 +62,14 @@ public class ProductServiceTest {
 
     @Test
     public void deleteProductByIdTest() {
+        log.info("Test of deleteProduct method from ProductService class");
         productService.deleteProduct(2);
         assertEquals(2, productService.findAllProducts().size());
     }
 
     @Test
     public void updateProductNameTest() {
+        log.info("Test of updateProductName method from ProductService class");
         productService.updateProductName(1, "zażółć gęślą jaźń");
         assertEquals("zażółć gęślą jaźń", productService.findProductById(1).getName());
     }
