@@ -30,5 +30,11 @@ public class ProductService {
     public void deleteProduct(Integer id) {
         productRepository.delete(id);
     }
+
+    public void updateProductName(Integer id, String newName) {
+        Product product = productRepository.findOne(id);
+        product.setName(newName);
+        productRepository.save(product);
+    }
 }
 

@@ -56,4 +56,10 @@ public class ProductServiceTest {
         productService.deleteProduct(2);
         assertEquals(2, productService.findAllProducts().size());
     }
+
+    @Test
+    public void updateProductNameTest() {
+        productService.updateProductName(1, "newName");
+        assertEquals("newName", productService.findProductById(1).getName());
+    }
 }
