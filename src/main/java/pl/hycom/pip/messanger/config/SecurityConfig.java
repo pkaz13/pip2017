@@ -10,27 +10,32 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    
-    private static final String ROLE_ADMIN = "ADMIN";
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/admin/**").hasRole(ROLE_ADMIN)
-                .and().httpBasic();
-    }
+	private static final String ROLE_ADMIN = "ADMIN";
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
-        authManagerBuilder.inMemoryAuthentication()
-                .withUser("admin").password("admin").roles(ROLE_ADMIN);
-    }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+				.authorizeRequests()
+				.antMatchers("/db-admin/console/**", "/webhook/**").permitAll()
+				.antMatchers("/admin/**").hasRole("ADMIN")
+				.anyRequest().authenticated()
+				.and()
+				.formLogin()
+				.loginPage("/login")
+				.permitAll();
+	}
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/static/**");
-    }
+	@Override
+	protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
+		authManagerBuilder.inMemoryAuthentication()
+				.withUser("admin").password("admin").roles(ROLE_ADMIN);
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web
+				.ignoring()
+				.antMatchers("/static/**");
+	}
 }
