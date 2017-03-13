@@ -17,7 +17,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.authorizeRequests()
-				.antMatchers("/db-admin/console/**", "/webhook").permitAll()
+				.antMatchers("/db-admin/console/**").permitAll()
 				.antMatchers("/admin/**").hasRole(ROLE_ADMIN)
 				.anyRequest().authenticated()
 
@@ -39,6 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity webSecurity) {
-		webSecurity.ignoring().antMatchers("/css/**", "/js/**");
+		webSecurity.ignoring().antMatchers("/css/**", "/js/**", "/webhook");
 	}
 }
