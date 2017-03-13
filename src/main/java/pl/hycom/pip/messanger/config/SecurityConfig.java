@@ -24,6 +24,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.formLogin()
 				.loginPage("/login")
 				.permitAll();
+
+		http
+				.csrf()
+				.ignoringAntMatchers("/db-admin/console/**");
 	}
 
 	@Override
