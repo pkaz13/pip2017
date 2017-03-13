@@ -37,10 +37,8 @@ public class AdminController {
     public String greetingSubmit(@ModelAttribute Greeting greeting) {
         try {
             log.info(setupClient.setupWelcomeMessage(greeting.getContent()));
-        } catch (MessengerApiException e) {
-            e.printStackTrace();
-        } catch (MessengerIOException e) {
-            e.printStackTrace();
+        } catch (MessengerApiException|MessengerIOException e) {
+            log.error("Error during changing greeting message",e);
         }
         return "greeting";
     }
