@@ -12,9 +12,8 @@ public class AdminController {
 
     //returns view Home.html
     @RequestMapping(value = "/admin/home")
-    public String Home()
-    {
-        return "Home";
+    public String Home() {
+        return "home";
     }
 
 }
