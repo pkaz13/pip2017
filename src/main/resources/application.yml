@@ -18,7 +18,7 @@ security:
     frame: false
 logging:
     level:
-        ROOT: WARN
+        ROOT: INFO
         pl.hycom.pip: DEBUG
 spring:
   datasource:
@@ -30,4 +30,4 @@ spring:
   h2:
     console:
       enabled: true
-      path: /console
+      path: /db-admin/console
