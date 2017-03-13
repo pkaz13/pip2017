@@ -28,6 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 				.csrf()
 				.ignoringAntMatchers("/db-admin/console/**");
+
+		http.headers().frameOptions().disable();
 	}
 
 	@Override
