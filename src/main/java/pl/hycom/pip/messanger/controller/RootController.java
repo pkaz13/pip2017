@@ -1,4 +1,4 @@
-package pl.hycom.pip.messanger;
+package pl.hycom.pip.messanger.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,11 +9,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-public class HomeController {
+public class RootController {
 
 	@RequestMapping("/")
-	@ResponseBody
 	public String home() {
-		return "Hello World";
+		return "redirect:/admin/home";
 	}
+
+	@RequestMapping("/login")
+	public String login() {
+		return "login";
+	}
+
+	@RequestMapping("/admin/home")
+	@ResponseBody
+	public String adminHome() {
+		return "ADMIN";
+	}
+
 }
