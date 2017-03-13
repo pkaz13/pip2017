@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Greeting Text Configuration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript">
+
+        function addText(text)
+        {
+            var x = document.getElementById("messageInput");
+            var temp = x.value;
+            x.value=temp+text;
+        }
+
+    </script>
+</head>
+<body>
+<h1>Wiadomość powitalna na mesengerze :</h1>
+<form action="#" th:action="@{/admin/greeting}" th:object="${greeting}" method="post">
+    Wpisz wiadomość: <input id="messageInput" type="text" name="message" size="100" th:field="*{content}"/>
+    <input type="submit" value="Zatwierdź"/>
+</form>
+<br/>
+<h3>Istnieje możliwość wpisanai specjalnych znaczników dotyczących użytkownika który otwiera okno rozmowy</h3>
+<p>Możesz umieśćic następujące znaczniki:</p>
+<ul>
+    <li>{{user_first_name}} - w to miejsce zostanie umieszczone imie użytkownika który otwiera okno rozmowy <button onclick="addText('{{user_first_name}}')">Dodaj znacznik</button></li>
+    <li>{{user_last_name}}  -  jak wyżej tylko, że nazwisko <button onclick="addText('{{{{user_last_name}}}}')">Dodaj znacznik</button></li>
+    <li>{{user_full_name}}  - oraz jedno i drugie <button onclick="addText('{{user_full_name}}')">Dodaj znacznik</button></li>
+</ul>
+</body>
+</html>

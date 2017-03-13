@@ -2,6 +2,7 @@ package pl.hycom.pip.messanger.config;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.setup.MessengerSetupClient;
 import com.github.messenger4j.setup.SetupResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,6 @@ public class MessengerConfiguration {
 	}
 
 	@Bean
-	public SetupResponse setupClient() throws MessengerApiException, MessengerIOException {return MessengerPlatform.newSetupClientBuilder(pageAccessToken).build().setupWelcomeMessage("Witaj {{user_first_name}} !!!");}
+	public MessengerSetupClient setupClient() {return MessengerPlatform.newSetupClientBuilder(pageAccessToken).build();}
 
 }

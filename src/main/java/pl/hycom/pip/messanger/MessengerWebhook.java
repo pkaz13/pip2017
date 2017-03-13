@@ -31,8 +31,6 @@ public class MessengerWebhook {
 
 	@Autowired private MessengerReceiveClient receiveClient;
 
-	@Autowired private SetupResponse setupClient;
-
 	@RequestMapping(value = "/webhook", method = GET, produces = MediaType.TEXT_PLAIN)
 	@ResponseBody
 	public ResponseEntity<String> verify(
@@ -41,7 +39,6 @@ public class MessengerWebhook {
 			@RequestParam("hub.challenge") final String challenge) {
 
 		try {
-			log.info(setupClient.getResult());
 			return ResponseEntity.ok(receiveClient.verifyWebhook(mode, verifyToken, challenge));
 
 		} catch (MessengerVerificationException e) {
