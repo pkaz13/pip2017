@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Greeting Text Configuration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript">
+
+        function addText(text)
+        {
+            var x = document.getElementById("messageInput");
+            var temp = x.value;
+            x.value=temp+text;
+        }
+
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"/>
+    <style>
+        #content {
+            width:1000px;
+            margin: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="content">
+        <h1>Wiadomość powitalna na mesengerze :</h1>
+        <br/>
+        <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}" method="post">
+            <div class="form-group">
+                <label for="messageInput">Wpisz wiadomość: </label>
+                <input id="messageInput" class="form-control" type="text" name="message" th:field="*{content}"/>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Zatwierdź"/>
+        </form>
+        <br/>
+        <h3>Istnieje możliwość wpisanai specjalnych znaczników dotyczących użytkownika który otwiera okno rozmowy</h3>
+        <p>Możesz umieśćic następujące znaczniki:</p>
+        <ul>
+            <li>{{user_first_name}} - w to miejsce zostanie umieszczone imie użytkownika który otwiera okno rozmowy <button class="btn btn-info" onclick="addText('{{user_first_name}}')">Dodaj znacznik</button></li>
+            <li>{{user_last_name}}  -  jak wyżej tylko, że nazwisko <button class="btn btn-info" onclick="addText('{{{{user_last_name}}}}')">Dodaj znacznik</button></li>
+            <li>{{user_full_name}}  - oraz jedno i drugie <button class="btn btn-info" onclick="addText('{{user_full_name}}')">Dodaj znacznik</button></li>
+        </ul>
+    </div>
+</body>
+</html>
