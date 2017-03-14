@@ -1,4 +1,4 @@
-package pl.hycom.pip.messanger.controllers;
+package pl.hycom.pip.messanger.controller;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
@@ -36,7 +36,8 @@ public class AdminController {
     @PostMapping("/admin/greeting")
     public String greetingSubmit(@ModelAttribute Greeting greeting) {
         try {
-            log.info(setupClient.setupWelcomeMessage(greeting.getContent()));
+            setupClient.setupWelcomeMessage(greeting.getContent());
+            log.info("Greeting text correctly updated");
         } catch (MessengerApiException|MessengerIOException e) {
             log.error("Error during changing greeting message",e);
         }

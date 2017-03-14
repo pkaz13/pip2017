@@ -1,4 +1,4 @@
-package pl.hycom.pip.messanger;
+package pl.hycom.pip.messanger.controller;
 
 import pl.hycom.pip.messanger.service.ProductService;
 import pl.hycom.pip.messanger.model.Product;
