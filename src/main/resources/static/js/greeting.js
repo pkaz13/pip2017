@@ -3,7 +3,8 @@
     */
 
 function addText(text) {
-    var x = document.getElementById("messageInput");
-    var temp = x.value;
-    x.value=temp+text;
+    if(document.getElementById("messageInput")!=null)
+    {
+        document.getElementById("messageInput").value = document.getElementById("messageInput").value + text;
+    }
 }
