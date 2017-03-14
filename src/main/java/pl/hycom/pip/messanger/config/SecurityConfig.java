@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_ADMIN = "ADMIN";
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -38,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("admin").password("admin").roles(ROLE_ADMIN);
     }
 
-	@Override
-	public void configure(WebSecurity webSecurity) {
-		webSecurity.ignoring().antMatchers("/css/**", "/js/**", "/webhook");
-	}
+    @Override
+    public void configure(WebSecurity webSecurity) {
+        webSecurity.ignoring().antMatchers("/css/**", "/js/**", "/webhook");
+    }
 }
