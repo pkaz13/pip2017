@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 
     //returns view Home.html
-    @RequestMapping(value = "/admin/home")
+    @RequestMapping(value = "/admin/hello")
     public String Home() {
         return "home";
     }
