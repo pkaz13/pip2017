@@ -1,17 +1,12 @@
 package pl.hycom.pip.messanger.config;
 
-import com.github.messenger4j.exceptions.MessengerApiException;
-import com.github.messenger4j.exceptions.MessengerIOException;
-import com.github.messenger4j.setup.MessengerSetupClient;
-import com.github.messenger4j.setup.SetupResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.github.messenger4j.MessengerPlatform;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
-
+import com.github.messenger4j.setup.MessengerSetupClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
 
 /**
