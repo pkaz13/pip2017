@@ -21,10 +21,5 @@ public class RootController {
 		return "login";
 	}
 
-	@RequestMapping("/admin/home")
-	@ResponseBody
-	public String adminHome() {
-		return "ADMIN";
-	}
 
 }

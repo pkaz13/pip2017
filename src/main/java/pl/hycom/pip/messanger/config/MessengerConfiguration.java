@@ -1,5 +1,9 @@
 package pl.hycom.pip.messanger.config;
 
+import com.github.messenger4j.exceptions.MessengerApiException;
+import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.setup.MessengerSetupClient;
+import com.github.messenger4j.setup.SetupResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,5 +41,8 @@ public class MessengerConfiguration {
 	public MessengerSendClient sendClient() {
 		return MessengerPlatform.newSendClientBuilder(pageAccessToken).build();
 	}
+
+	@Bean
+	public MessengerSetupClient setupClient() {return MessengerPlatform.newSetupClientBuilder(pageAccessToken).build();}
 
 }

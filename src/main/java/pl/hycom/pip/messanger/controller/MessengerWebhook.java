@@ -1,10 +1,12 @@
-package pl.hycom.pip.messanger;
+package pl.hycom.pip.messanger.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import javax.ws.rs.core.MediaType;
 
+import com.github.messenger4j.setup.MessengerSetupClient;
+import com.github.messenger4j.setup.SetupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
