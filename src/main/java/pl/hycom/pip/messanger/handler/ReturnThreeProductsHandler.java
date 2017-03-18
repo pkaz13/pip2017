@@ -25,7 +25,7 @@ public class ReturnThreeProductsHandler implements TextMessageEventHandler {
 
 	@Override
 	public void handle(TextMessageEvent msg) {
-		sendTextMessage(msg.getSender().getId(), "test handlera ");
+		sendTextMessage(msg.getSender().getId(), productService.findProductById(1).toString());
 	}
 
 	private void sendTextMessage(String id, String message) {
