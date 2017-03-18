@@ -23,8 +23,4 @@ public class Keyword implements Serializable{
 
     @NotNull
     private String word;
-
-    @ManyToOne
-    @JoinColumn(name = "PRODUCT_ID")
-    private Product product;
 }

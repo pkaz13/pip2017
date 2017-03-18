@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 @Data
 @Entity
 @Table(name = "PRODUCTS")
@@ -25,6 +24,7 @@ public class Product implements Serializable{
     @NotNull
     private String imageUrl;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "PRODUCT_ID")
     private Set<Keyword> keywords;
 }
