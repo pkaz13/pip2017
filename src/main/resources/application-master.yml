@@ -8,14 +8,6 @@ management:
   security:
     enabled: true
 
-security:
-  basic:
-    enabled: false
-  user:
-    name: test
-    password: test
-  headers:
-    frame: false
 logging:
     level:
         ROOT: INFO
