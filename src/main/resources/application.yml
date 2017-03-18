@@ -9,7 +9,7 @@ logging:
         pl.hycom.pip: DEBUG
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:file:~/db/h2test;
     username: test
     password: test
     driver-class-name: org.h2.Driver
