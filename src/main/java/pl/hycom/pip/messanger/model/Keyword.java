@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by patry on 18/03/2017.
@@ -21,4 +23,7 @@ public class Keyword implements Serializable{
 
     @NotNull
     private String word;
+
+    @ManyToMany(targetEntity = Product.class, mappedBy = "keywords")
+    private Set<Product> products;
 }

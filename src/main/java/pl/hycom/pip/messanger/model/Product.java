@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -22,4 +24,18 @@ public class Product implements Serializable{
 
     @NotNull
     private String imageUrl;
+
+    @ManyToMany
+    @JoinTable(
+            name = "PRODUCTS_KEYWORDS",
+            joinColumns = @JoinColumn(
+                    name = "PRODUCT_ID",
+                    referencedColumnName = "ID"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "KEYWORD_ID",
+                    referencedColumnName = "ID"
+            )
+    )
+    private Set<Keyword> keywords;
 }
