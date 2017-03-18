@@ -3,19 +3,6 @@ messenger:
   appSecret: 8f44de54941a9ae9cf05608a4c6aa3bc
   verifyToken: token
 
-management:
-  port: 8081
-  security:
-    enabled: true
-
-security:
-  basic:
-    enabled: false
-  user:
-    name: test
-    password: test
-  headers:
-    frame: false
 logging:
     level:
         ROOT: INFO
