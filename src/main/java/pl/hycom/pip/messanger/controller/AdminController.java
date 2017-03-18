@@ -2,6 +2,7 @@ package pl.hycom.pip.messanger.controller;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.profile.MessengerProfileClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
@@ -34,6 +35,9 @@ public class AdminController {
     @Autowired
     private MessengerSetupClient setupClient;
 
+    @Autowired
+    private MessengerProfileClient profileClient;
+
     @Value("${messenger.pageAccessToken}") private String pageAccessToken;
     //returns view Home.html
     @RequestMapping(value = "/admin/hello")
@@ -45,20 +49,9 @@ public class AdminController {
     public String adminGreeting(Model model) {
         Greeting greeting=new Greeting();
         try {
-            String url = "https://graph.facebook.com/v2.6/me/messenger_profile?fields=greeting&access_token="+pageAccessToken;
-            HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            String json = EntityUtils.toString(response.getEntity());
-            JSONObject object = new JSONObject(json);
-            JSONArray dataArray=object.getJSONArray("data");
-            object=dataArray.getJSONObject(0);
-            dataArray=object.getJSONArray("greeting");
-            object=dataArray.getJSONObject(0);
-            String greetingText= (String)object.get("text");
-            greeting.setContent(greetingText);
+            log.info(profileClient.getWelcomeMessage().getResult());
         }
-        catch (IOException |JSONException  e) {
+        catch (MessengerApiException |MessengerIOException  e) {
             log.error("Error during getting greeting text from facebook"+e);
         }
         model.addAttribute("greeting", greeting);
@@ -68,7 +61,7 @@ public class AdminController {
     @PostMapping("/admin/greeting")
     public String greetingSubmit(@ModelAttribute Greeting greeting) {
         try {
-            setupClient.setupWelcomeMessage(greeting.getContent());
+            profileClient.setupWelcomeMessage(greeting.getContent());
             log.info("Greeting text correctly updated");
         } catch (MessengerApiException|MessengerIOException e) {
             log.error("Error during changing greeting message",e);
