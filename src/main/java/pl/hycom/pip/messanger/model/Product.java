@@ -25,17 +25,6 @@ public class Product implements Serializable{
     @NotNull
     private String imageUrl;
 
-    @ManyToMany
-    @JoinTable(
-            name = "PRODUCTS_KEYWORDS",
-            joinColumns = @JoinColumn(
-                    name = "PRODUCT_ID",
-                    referencedColumnName = "ID"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "KEYWORD_ID",
-                    referencedColumnName = "ID"
-            )
-    )
+    @OneToMany(mappedBy = "product")
     private Set<Keyword> keywords;
 }

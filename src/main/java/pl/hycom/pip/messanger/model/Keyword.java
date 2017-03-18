@@ -24,6 +24,7 @@ public class Keyword implements Serializable{
     @NotNull
     private String word;
 
-    @ManyToMany(targetEntity = Product.class, mappedBy = "keywords")
-    private Set<Product> products;
+    @ManyToOne
+    @JoinColumn(name = "PRODUCT_ID")
+    private Product product;
 }
