@@ -6,15 +6,15 @@ import lombok.Data;
  * Created by Rafal Lebioda on 18.03.2017.
  */
 @Data
-final class SetupPayload {
+final class ProfilePayload {
 
     private  Greeting [] greeting;
 
-    static SetupPayload.Builder newBuilder() {
-        return new SetupPayload.Builder();
+    static ProfilePayload.Builder newBuilder() {
+        return new ProfilePayload.Builder();
     }
 
-    private SetupPayload(SetupPayload.Builder builder) {
+    private ProfilePayload(ProfilePayload.Builder builder) {
         greeting=new Greeting[1];
         greeting[0] = builder.greeting;
     }
@@ -22,13 +22,13 @@ final class SetupPayload {
     static final class Builder {
         private Greeting greeting ;
 
-        public SetupPayload.Builder greeting(String greeting) {
+        public ProfilePayload.Builder greeting(String greeting) {
             this.greeting = new Greeting(greeting);
             return this;
         }
 
-            public SetupPayload build() {
-                return new SetupPayload(this);
+            public ProfilePayload build() {
+                return new ProfilePayload(this);
             }
 
 

@@ -49,7 +49,7 @@ public class AdminController {
     public String adminGreeting(Model model) {
         Greeting greeting=new Greeting();
         try {
-            log.info(profileClient.getWelcomeMessage().getResult());
+            greeting.setContent(profileClient.getWelcomeMessage().getResult());
         }
         catch (MessengerApiException |MessengerIOException  e) {
             log.error("Error during getting greeting text from facebook"+e);

@@ -8,9 +8,9 @@ import com.github.messenger4j.exceptions.MessengerIOException;
  */
 public interface MessengerProfileClient {
 
-    SetupResponse setupWelcomeMessage(String greeting) throws MessengerApiException, MessengerIOException;
+    ProfileResponse setupWelcomeMessage(String greeting) throws MessengerApiException, MessengerIOException;
 
-    SetupResponse removeWelcomeMessage() throws MessengerApiException, MessengerIOException;
+    ProfileResponse removeWelcomeMessage() throws MessengerApiException, MessengerIOException;
 
-    SetupResponse getWelcomeMessage() throws MessengerApiException, MessengerIOException;
+    ProfileResponse getWelcomeMessage() throws MessengerApiException, MessengerIOException;
 }

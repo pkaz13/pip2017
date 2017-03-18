@@ -7,12 +7,17 @@ import lombok.Data;
  */
 @Data
 final class Greeting {
-    private final String text;
-    private final String locale;
+    private  String text;
+    private  String locale;
 
     Greeting(String greeting) {
         this.locale="default";
         text = greeting;
+    }
+
+    public Greeting()
+    {
+
     }
 
 }
