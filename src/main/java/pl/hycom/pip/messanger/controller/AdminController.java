@@ -1,5 +1,7 @@
 package pl.hycom.pip.messanger.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +39,10 @@ public class AdminController {
         Greeting greeting = new Greeting();
 
         try {
-            greeting.setContent(profileClient.getWelcomeMessage().getGreetings().get(0).getText());
+            List<com.github.messenger4j.profile.Greeting> greetings = profileClient.getWelcomeMessage().getGreetings();
+            if (!greetings.isEmpty()) {
+                greeting.setContent(greetings.get(0).getText());
+            }
 
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during getting greeting text from facebook", e);
