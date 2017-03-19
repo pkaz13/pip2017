@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_ACTUATOR = "ACTUATOR";
@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().loginPage("/login").permitAll()
 
-                //TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
+                // TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
                 .and()
                 .csrf().ignoringAntMatchers("/db-admin/console/**")
 
