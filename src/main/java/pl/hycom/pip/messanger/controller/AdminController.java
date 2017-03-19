@@ -22,7 +22,7 @@ public class AdminController {
     private MessengerSetupClient setupClient;
 
     //returns view Home.html
-    @RequestMapping(value = "/admin/hello")
+    @RequestMapping(value = "/admin/home")
     public String Home() {
         return "home";
     }
