@@ -12,5 +12,5 @@ public interface MessengerProfileClient {
 
     ProfileResponse removeWelcomeMessage() throws MessengerApiException, MessengerIOException;
 
-    ProfileResponse getWelcomeMessage() throws MessengerApiException, MessengerIOException;
+    GreetingsProfileResponse getWelcomeMessage() throws MessengerApiException, MessengerIOException;
 }

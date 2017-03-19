@@ -1,23 +1,23 @@
 package com.github.messenger4j.profile;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Created by Rafal Lebioda on 18.03.2017.
  */
 @Data
-final class Greeting {
-    private  String text;
-    private  String locale;
+@NoArgsConstructor
+@ToString
+public class Greeting {
 
-    Greeting(String greeting) {
-        this.locale="default";
+    private String text;
+    private String locale;
+
+    public Greeting(String greeting) {
+        locale = "default";
         text = greeting;
-    }
-
-    public Greeting()
-    {
-
     }
 
 }
