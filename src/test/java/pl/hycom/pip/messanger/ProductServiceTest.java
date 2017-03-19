@@ -58,6 +58,7 @@ public class ProductServiceTest {
         product.setDescription("desc");
         product.setImageUrl("url");
         productService.addProduct(product);
+
     }
 
     @Test
@@ -100,5 +101,10 @@ public class ProductServiceTest {
         log.info("Test of updateProductName method from ProductService class");
         productService.updateProductName(1, "zażółć gęślą jaźń");
         assertEquals("zażółć gęślą jaźń", productService.findProductById(1).getName());
+    }
+
+    @Test
+    public void getFewProductsTest() {
+    assertEquals(2,productService.getFewProducts(2).size());
     }
 }
