@@ -47,32 +47,40 @@ public class ProductService {
     }
 
     public List<Product> getFewProducts(int howManyProducts) {
-
         ArrayList<Product> products = new ArrayList<Product>();
-        if (howManyProducts <= findAllProducts().size()) {
-            Product temp = new Product();
-            for (int i = 0; i < howManyProducts; i++) {
-                if ((temp = findAllProducts().get(new Random().nextInt(findAllProducts().size()))) != null) {
-                    if (!products.isEmpty()) {
-                        if ( !products.get(products.size()-1).equals(temp)) {
-                            products.add(temp);
+        if (!findAllProducts().isEmpty()) {
+            if (howManyProducts <= findAllProducts().size()) {   //jeśli baza ma mniej produktów niż klient chce to zwraca całą listę produktów
+                Product temp = new Product();
+                for (int i = 0; i < howManyProducts; i++) {
+                    if ((temp = findAllProducts().get(new Random().nextInt(findAllProducts().size()))) != null) { 
+                        if (!products.isEmpty()) {
+                            boolean flag = false;
+                            for (i = 0; i< products.size() ; i++) {
+                                if (products.get(i).equals(temp)) {
+                                    flag=true;
+                                }
+                            }
+                            if ( flag==false) {
+                                products.add(temp);
+                            }
+                            else {
+                                i--;
+                            }
                         }
                         else {
-                            i--;
+                            products.add(temp);
                         }
                     }
                     else {
-                        products.add(temp);
+                        i--;
                     }
                 }
-                else {
-                    i--;
-                }
+            }
+            else {
+                products = (ArrayList<Product>) findAllProducts();
             }
         }
-        else {
-        products = (ArrayList<Product>) findAllProducts();
-        }
+
         return products;
         }
 
