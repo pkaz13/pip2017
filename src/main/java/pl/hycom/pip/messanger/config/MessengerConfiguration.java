@@ -11,6 +11,7 @@ import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
 
 import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
+import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
 
 /**
  * Created by patry on 07/03/2017.
@@ -34,9 +35,14 @@ public class MessengerConfiguration {
     }
 
     @Bean
+    public MessengerProductsRecommendationHandler messengerProductsRecommendationHandler() {
+        return new MessengerProductsRecommendationHandler(sendClient());
+    }
+
+    @Bean
     public MessengerReceiveClient receiveClient() {
         return MessengerPlatformWrapper.newReceiveClientBuilder(appSecret, verifyToken)
-                .onTextMessageEvent(messengerHelloWorldHandler())
+                .onTextMessageEvent(messengerProductsRecommendationHandler())
                 .build();
     }
 
