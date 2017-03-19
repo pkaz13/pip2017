@@ -2,6 +2,7 @@ package pl.hycom.pip.messanger.handler;
 
 import com.github.messenger4j.send.templates.GenericTemplate;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
@@ -11,6 +12,7 @@ import com.github.messenger4j.receive.handlers.TextMessageEventHandler;
 import com.github.messenger4j.send.MessengerSendClient;
 
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.service.ProductService;
 
 /**
  * Created by patry on 09/03/2017.
@@ -18,6 +20,9 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Component
 public class MessengerHelloWorldHandler implements TextMessageEventHandler {
+
+    @Autowired
+    private ProductService productService;
 
     private MessengerSendClient sendClient;
 
