@@ -75,6 +75,8 @@ public class ProductServiceTest {
         Product checkedProduct = productService.findProductById(1);
         assertEquals(2, checkedProduct.getKeywords().size());
         assertEquals(2, keywordService.findAllKeywords().size());
+        productService.deleteProduct(1);
+        assertEquals(2, keywordService.findAllKeywords().size());
     }
 
     @Test

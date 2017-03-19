@@ -23,7 +23,7 @@ public class Product implements Serializable{
     @NotNull
     private String imageUrl;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @OrderColumn
     private Set<Keyword> keywords;
 }

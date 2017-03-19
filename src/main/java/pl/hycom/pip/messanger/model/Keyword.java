@@ -22,5 +22,6 @@ public class Keyword implements Serializable{
     private Integer id;
 
     @NotNull
+    @Column(unique = true)
     private String word;
 }

@@ -2,7 +2,7 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.jvnet.hk2.annotations.Service;
+import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
 
