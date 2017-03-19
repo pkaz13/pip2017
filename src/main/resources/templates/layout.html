@@ -9,6 +9,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     
+    <title layout:title-pattern="$CONTENT_TITLE | $DECORATOR_TITLE">Messenger Recomendations</title>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
+    
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -17,13 +24,15 @@
     <![endif]-->
   </head>
 
-  <body>    
+  <body th:inline="text">    
     
-    <div class="container" layout:fragment="content">A placeholder for real content.</div>
+    <div id="wrapper">
+    	<div id="page-wrapper" class="container" layout:fragment="content">A placeholder for real content.</div>
     
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+	    <footer>
+	    	<p class="text-muted pull-right">©[[${#dates.year(#dates.createNow())}]] Hycom | Politechnika Łódzka</p>
+	    </footer>
+	</div>
     
   </body>
 </html>
