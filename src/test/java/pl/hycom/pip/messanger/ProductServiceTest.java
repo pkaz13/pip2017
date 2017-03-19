@@ -9,8 +9,12 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import java.util.LinkedHashSet;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -30,6 +34,19 @@ public class ProductServiceTest {
         product1.setName("name");
         product1.setDescription("desc");
         product1.setImageUrl("url");
+
+        //Checking if keywords are being added correctly. To be removed or fixed
+        Keyword keyword1 = new Keyword();
+        Keyword keyword2 = new Keyword();
+        keyword1.setWord("test1");
+        keyword2.setWord("test2");
+
+        LinkedHashSet<Keyword> keywords1 = new LinkedHashSet<>();
+        keywords1.add(keyword1);
+        keywords1.add(keyword2);
+        product1.setKeywords(keywords1);
+        //End of keyword checking
+
         productService.addProduct(product1);
         Product product = new Product();
         product.setId(2);
@@ -49,6 +66,10 @@ public class ProductServiceTest {
         productService.addProduct(product);
         log.info("Test of addProduct method from ProductService class");
         assertEquals(3, productService.findAllProducts().size());
+
+        //Checking if keywords are being added correctly. To be removed or fixed
+        Product checkedProduct = productService.findProductById(1);
+        assertEquals(2, checkedProduct.getKeywords().size());
     }
 
     @Test

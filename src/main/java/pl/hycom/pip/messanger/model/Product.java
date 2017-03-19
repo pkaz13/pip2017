@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.LinkedHashSet;
 import java.util.Set;
 @Data
 @Entity
@@ -24,7 +23,7 @@ public class Product implements Serializable{
     @NotNull
     private String imageUrl;
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "PRODUCT_ID")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OrderColumn
     private Set<Keyword> keywords;
 }
