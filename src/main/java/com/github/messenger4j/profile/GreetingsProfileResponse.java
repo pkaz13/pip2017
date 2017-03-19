@@ -7,7 +7,6 @@ import java.util.List;
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import lombok.EqualsAndHashCode;
@@ -36,13 +35,13 @@ public class GreetingsProfileResponse extends ProfileResponse {
 
     public static GreetingsProfileResponse fromJson(JsonObject jsonObject) throws MessengerIOException {
 
-        JsonElement data = jsonObject.getAsJsonArray("data").get(0);
-        if (data == null) {
+        JsonArray dataArray = jsonObject.getAsJsonArray("data");
+        if (dataArray != null || dataArray.size() == 0) {
             return new GreetingsProfileResponse(jsonObject.toString());
         }
 
-        JsonArray greetingsJsonArray = data.getAsJsonObject().getAsJsonArray("greeting");
-        if (greetingsJsonArray == null) {
+        JsonArray greetingsJsonArray = dataArray.get(0).getAsJsonObject().getAsJsonArray("greeting");
+        if (greetingsJsonArray == null || greetingsJsonArray.size() == 0) {
             return new GreetingsProfileResponse(jsonObject.toString());
         }
 
