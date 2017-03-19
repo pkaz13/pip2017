@@ -2,11 +2,7 @@ package pl.hycom.pip.messanger.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
@@ -23,9 +19,11 @@ public class Product implements Serializable {
     private Integer id;
 
     @NotNull
+    @Column(length = 80)
     private String name;
 
     @NotNull
+    @Column(length = 80)
     private String description;
 
     @NotNull
