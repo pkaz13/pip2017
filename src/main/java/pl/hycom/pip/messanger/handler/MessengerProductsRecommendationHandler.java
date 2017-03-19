@@ -6,13 +6,15 @@ import com.github.messenger4j.receive.events.TextMessageEvent;
 import com.github.messenger4j.receive.handlers.TextMessageEventHandler;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.send.templates.GenericTemplate;
+import com.github.messenger4j.send.templates.Template;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.ProductService;
-
 import java.util.List;
+
 
 /**
  * Created by maciek on 19.03.17.
@@ -32,19 +34,35 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
 
     @Override
     public void handle(TextMessageEvent msg) {
-        sendGenericMessage(msg.getSender().getId());
+        sendAnswer(msg.getSender().getId());
     }
 
-    private void sendGenericMessage(String id) {
+    private void sendAnswer(String id) {
+
+        log.info("Sending answer message to[" + id + "]");
 
         //TODO: zmienić hardkodowana wartosc produktow
         final List<Product> products = productService.getFewProducts(3);
-        final GenericTemplate genericTemplate = getStructuredMessage(products);
 
-        log.info("Sending structured message to[" + id + "]");
+        if (CollectionUtils.isEmpty(products)) {
+            sendTextMessage(id, "No products found.");
+        } else {
+            final GenericTemplate genericTemplate = getStructuredMessage(products);
+            sendStructuredMessage(id, genericTemplate);
+        }
+    }
 
+    private void sendStructuredMessage(String id, Template template) {
         try {
-            sendClient.sendTemplate(id, genericTemplate);
+            sendClient.sendTemplate(id, template);
+        } catch (MessengerApiException | MessengerIOException e) {
+            log.error("Error during sending structured answer", e);
+        }
+    }
+
+    private void sendTextMessage(String id, String message) {
+        try {
+            sendClient.sendTextMessage(id, message);
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during sending answer", e);
         }
