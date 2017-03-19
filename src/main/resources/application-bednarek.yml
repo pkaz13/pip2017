@@ -1,0 +1,27 @@
+messenger:
+  pageAccessToken: EAAIPc0QioXsBABvHZCMH1vFuXx3EK4UUAxusMgZAVZBsuHs6R71Y6uLnft7gVthRoV0l4WrD0hhz04gzs7BfekbkdG992Hzufq8K1EjgbSrg0596VqwJEdVH1S9WfbKT26NKIj4NKv1COWKC2vRRWgVftjZBhzo5X7UnnuDCdwZDZD
+  appSecret: c356d7e9b8a82868425906fc1b4affee
+  verifyToken: token
+
+management:
+  port: 8081
+  security:
+    enabled: true
+
+security:
+  basic:
+    enabled: false
+  user:
+    name: test
+    password: test
+
+  datasource:
+    url: jdbc:h2:mem:productiondb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: test
+    password: test
+    driver-class-name: org.h2.Driver
+    platform: h2
+  h2:
+    console:
+      enabled: false
+      path: /db-admin/console

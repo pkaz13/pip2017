@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-    <link rel="stylesheet" th:href="@{/css/sb-admin-2.min.css}"/>
-    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/sb-admin-2.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
 
 	<meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+    <title layout:title-pattern="$CONTENT_TITLE | $DECORATOR_TITLE">Messenger Recomendations</title>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
     
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -17,13 +25,18 @@
     <![endif]-->
   </head>
 
-  <body>    
+  <body th:inline="text">    
     
-    <div class="container" layout:fragment="content">A placeholder for real content.</div>
+    <div id="wrapper">
+    	
+    	<div th:replace="navigation :: nav">...</div>
     
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script th:src="@{/js/sb-admin-2.min.js}"></script>
+    	<div id="page-wrapper" class="container" layout:fragment="content">A placeholder for real content.</div>
+    
+	    <footer>
+	    	<p class="text-muted pull-right">©[[${#dates.year(#dates.createNow())}]] Hycom | Politechnika Łódzka</p>
+	    </footer>
+	</div>
     
   </body>
 </html>

@@ -8,9 +8,19 @@ management:
   security:
     enabled: true
 
-security:
-  basic:
-    enabled: false
-  user:
-    name: test
+logging:
+    level:
+        ROOT: INFO
+        pl.hycom.pip: DEBUG
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:production;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: test
     password: test
+    driver-class-name: org.h2.Driver
+    platform: h2
+  h2:
+    console:
+      enabled: false
+      path: /admin/console
