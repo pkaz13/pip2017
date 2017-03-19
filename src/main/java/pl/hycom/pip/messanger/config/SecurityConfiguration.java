@@ -24,7 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().loginPage("/login").permitAll()
 
-                //TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
+                // TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
                 .and()
                 .csrf().ignoringAntMatchers("/db-admin/console/**")
 

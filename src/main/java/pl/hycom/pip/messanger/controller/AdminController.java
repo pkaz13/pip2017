@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
@@ -26,14 +27,9 @@ public class AdminController {
     @Autowired
     private MessengerProfileClient profileClient;
 
-    @RequestMapping("/admin")
-    public String admin() {
-        return "redirect:/admin/home";
-    }
-
-    @RequestMapping(value = "/admin/home")
-    public String home() {
-        return "home";
+    @RequestMapping(value = "/admin")
+    public ModelAndView admin() {
+        return new ModelAndView("admin", "showBackLink", false);
     }
 
     @GetMapping("/admin/greeting")

@@ -19,4 +19,5 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
             return new LayoutDialect(new GroupingStrategy());
         }
     }
+
 }
