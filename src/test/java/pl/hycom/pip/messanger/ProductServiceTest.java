@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
+import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import java.util.LinkedHashSet;
@@ -26,6 +27,9 @@ public class ProductServiceTest {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private KeywordService keywordService;
 
     @Before
     public void setUp() {
@@ -70,6 +74,7 @@ public class ProductServiceTest {
         //Checking if keywords are being added correctly. To be removed or fixed
         Product checkedProduct = productService.findProductById(1);
         assertEquals(2, checkedProduct.getKeywords().size());
+        assertEquals(2, keywordService.findAllKeywords().size());
     }
 
     @Test
