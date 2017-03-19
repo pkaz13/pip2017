@@ -6,7 +6,14 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import javax.persistence.criteria.CriteriaBuilder;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+>>>>>>> 9f87c8da8120b66ddc6e37e49ba391e541aa9b9d
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -46,6 +53,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
+<<<<<<< HEAD
     public List<Product> getFewProducts(int howManyProducts) {
         ArrayList<Product> products = new ArrayList<Product>();
         if (!findAllProducts().isEmpty()) {
@@ -86,4 +94,15 @@ public class ProductService {
 
     }
 
+=======
+    public ArrayList<Product> getFewProducts(int quantity) {
+        ArrayList<Product> products = new ArrayList<>();
+
+            for (int i = 0; i < quantity ; i++) {
+                products.add(findProductById(new Random().nextInt(findAllProducts().size())));
+            }
+        return products ;
+    }
+}
+>>>>>>> 9f87c8da8120b66ddc6e37e49ba391e541aa9b9d
 
