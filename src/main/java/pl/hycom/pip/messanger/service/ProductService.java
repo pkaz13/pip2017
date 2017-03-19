@@ -6,7 +6,9 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -43,5 +45,45 @@ public class ProductService {
         product.setName(newName);
         productRepository.save(product);
     }
-}
+
+    public List<Product> getFewProducts(int howManyProducts) {
+        ArrayList<Product> products = new ArrayList<Product>();
+        if (!findAllProducts().isEmpty()) {
+            if (howManyProducts <= findAllProducts().size()) {   //jeśli baza ma mniej produktów niż klient chce to zwraca całą listę produktów
+                Product temp = new Product();
+                for (int i = 0; i < howManyProducts; i++) {
+                    if ((temp = findAllProducts().get(new Random().nextInt(findAllProducts().size()))) != null) { 
+                        if (!products.isEmpty()) {
+                            boolean flag = false;
+                            for (i = 0; i< products.size() ; i++) {
+                                if (products.get(i).equals(temp)) {
+                                    flag=true;
+                                }
+                            }
+                            if ( flag==false) {
+                                products.add(temp);
+                            }
+                            else {
+                                i--;
+                            }
+                        }
+                        else {
+                            products.add(temp);
+                        }
+                    }
+                    else {
+                        i--;
+                    }
+                }
+            }
+            else {
+                products = (ArrayList<Product>) findAllProducts();
+            }
+        }
+
+        return products;
+        }
+
+    }
+
 
