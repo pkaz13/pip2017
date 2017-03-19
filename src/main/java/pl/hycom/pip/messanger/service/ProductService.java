@@ -6,7 +6,12 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -42,6 +47,15 @@ public class ProductService {
         Product product = productRepository.findOne(id);
         product.setName(newName);
         productRepository.save(product);
+    }
+
+    public ArrayList<Product> getFewProducts(int quantity) {
+        ArrayList<Product> products = new ArrayList<>();
+
+            for (int i = 0; i < quantity ; i++) {
+                products.add(findProductById(new Random().nextInt(findAllProducts().size())));
+            }
+        return products ;
     }
 }
 
