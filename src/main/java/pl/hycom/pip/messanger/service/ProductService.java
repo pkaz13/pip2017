@@ -1,25 +1,30 @@
 package pl.hycom.pip.messanger.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.lang.reflect.Array;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 
 @Service
 @RequiredArgsConstructor(onConstructor=@__(@Inject))
 @Log4j2
 public class ProductService {
     private final ProductRepository productRepository;
+    @PersistenceContext
+    private EntityManager em;
 
     public void addProduct(Product product) {
         log.info("Invoking of addProduct(product) method from ProductService class");
@@ -49,13 +54,24 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public ArrayList<Product> getFewProducts(int quantity) {
-        ArrayList<Product> products = new ArrayList<>();
+    public List<Product> getFewProducts(int howManyProducts) {
+        List<Product> products = new ArrayList<>(howManyProducts);
+        int quantity = (int) productRepository.count();
+        if (quantity == 0 || howManyProducts > quantity) {
+            products.addAll(findAllProducts());
+            return products;
+        }
+            for (int i = 0; i < howManyProducts; i++) {
 
-            for (int i = 0; i < quantity ; i++) {
-                products.add(findProductById(new Random().nextInt(findAllProducts().size())));
+                products.addAll(em.createQuery("Select p from Product p where p not in (:productsForCustomer)").setParameter("productsForCustomer", products).setFirstResult(new Random().nextInt(quantity-products.size())).setMaxResults(1).getResultList());
             }
-        return products ;
+
+            return products;
+        }
+
+
+
     }
-}
+
+
 
