@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.ProductService;
+
 import java.util.List;
 
 
@@ -25,12 +26,8 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
 
     @Autowired
     private ProductService productService;
-
+    @Autowired
     private MessengerSendClient sendClient;
-
-    public MessengerProductsRecommendationHandler(MessengerSendClient sendClient) {
-        this.sendClient = sendClient;
-    }
 
     @Override
     public void handle(TextMessageEvent msg) {

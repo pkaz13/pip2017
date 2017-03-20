@@ -1,15 +1,13 @@
 package pl.hycom.pip.messanger.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.github.messenger4j.MessengerPlatformWrapper;
 import com.github.messenger4j.profile.MessengerProfileClient;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
-
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
 import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
 
@@ -36,7 +34,7 @@ public class MessengerConfiguration {
 
     @Bean
     public MessengerProductsRecommendationHandler messengerProductsRecommendationHandler() {
-        return new MessengerProductsRecommendationHandler(sendClient());
+        return new MessengerProductsRecommendationHandler();
     }
 
     @Bean
