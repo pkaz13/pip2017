@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.ProductService;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
@@ -29,6 +30,15 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
     @Autowired
     private MessengerSendClient sendClient;
 
+    private Integer productsAmount;
+
+    public MessengerProductsRecommendationHandler(@NotNull Integer productsAmount) {
+        if (productsAmount > 10 || productsAmount < 0) {
+            throw new IllegalArgumentException("productsAmount cannot be negative or bigger than 10");
+        }
+        this.productsAmount = productsAmount;
+    }
+
     @Override
     public void handle(TextMessageEvent msg) {
         sendAnswer(msg.getSender().getId());
@@ -38,8 +48,7 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
 
         log.info("Sending answer message to[" + id + "]");
 
-        //TODO: zmienić hardkodowana wartosc produktow
-        final List<Product> products = productService.getFewProducts(3);
+        final List<Product> products = productService.getFewProducts(productsAmount);
 
         if (CollectionUtils.isEmpty(products)) {
             sendTextMessage(id, "No products found.");
@@ -65,7 +74,7 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
         }
     }
 
-    //TODO: przeniesc metode do innej klasy, uwazac na null
+    //TODO: przeniesc metode do innej klasy
     private GenericTemplate getStructuredMessage(List<Product> products) {
         GenericTemplate.Element.ListBuilder listBuilder = GenericTemplate.newBuilder().addElements();
         for (Product product : products) {

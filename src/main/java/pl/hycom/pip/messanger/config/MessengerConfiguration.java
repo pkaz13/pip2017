@@ -27,6 +27,9 @@ public class MessengerConfiguration {
     @Value("${messenger.verifyToken}")
     private String verifyToken;
 
+    @Value("${messenger.recommendation.products-amount}")
+    private Integer productsAmount;
+
     @Bean
     public MessengerHelloWorldHandler messengerHelloWorldHandler() {
         return new MessengerHelloWorldHandler(sendClient());
@@ -34,7 +37,7 @@ public class MessengerConfiguration {
 
     @Bean
     public MessengerProductsRecommendationHandler messengerProductsRecommendationHandler() {
-        return new MessengerProductsRecommendationHandler();
+        return new MessengerProductsRecommendationHandler(productsAmount);
     }
 
     @Bean
