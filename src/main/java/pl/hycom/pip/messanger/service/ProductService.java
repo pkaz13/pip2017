@@ -59,14 +59,16 @@ public class ProductService {
         int quantity = (int) productRepository.count();
         if (quantity == 0 || howManyProducts > quantity) {
             products.addAll(findAllProducts());
-            return products;}
+            return products;
+        }
             for (int i = 0; i < howManyProducts; i++) {
 
-                products.addAll(em.createQuery("Select p from Product p where p not in (:productsForCustomer)").setParameter("productsForCustomer", products).setFirstResult(quantity - i).setMaxResults(1).getResultList());
+                products.addAll(em.createQuery("Select p from Product p where p not in (:productsForCustomer)").setParameter("productsForCustomer", products).setFirstResult(new Random().nextInt(quantity-products.size())).setMaxResults(1).getResultList());
             }
 
             return products;
         }
+
 
 
     }
