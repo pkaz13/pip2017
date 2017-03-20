@@ -60,6 +60,31 @@ html, body {
     color: #5bc0de;
 }
 
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.row-eq-height > div[class*='col-'] {
+  display: flex;
+}
+
+.row-eq-height > div[class*='col-'] > .panel {
+  flex:1 0 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.row-eq-height > div[class*='col-'] > .panel > .panel-heading {
+    flex-grow: 1;
+}
+
+
 #wrapper {
 	width: 90%;
     margin: 0 auto;

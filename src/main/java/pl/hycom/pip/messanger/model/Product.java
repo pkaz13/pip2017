@@ -2,12 +2,9 @@ package pl.hycom.pip.messanger.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -30,4 +27,15 @@ public class Product implements Serializable {
 
     @NotNull
     private String imageUrl;
+
+    @OneToMany(
+            cascade = {
+                CascadeType.PERSIST,
+                CascadeType.MERGE,
+                CascadeType.REFRESH
+            },
+            fetch = FetchType.EAGER
+    )
+    @OrderColumn
+    private Set<Keyword> keywords;
 }
