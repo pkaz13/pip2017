@@ -1,22 +1,30 @@
 package pl.hycom.pip.messanger.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+
 @Service
 @RequiredArgsConstructor(onConstructor=@__(@Inject))
 @Log4j2
 public class ProductService {
     private final ProductRepository productRepository;
+    @PersistenceContext
+    private EntityManager em;
 
     public void addProduct(Product product) {
         log.info("Invoking of addProduct(product) method from ProductService class");
@@ -47,42 +55,21 @@ public class ProductService {
     }
 
     public List<Product> getFewProducts(int howManyProducts) {
-        ArrayList<Product> products = new ArrayList<Product>();
-        if (!findAllProducts().isEmpty()) {
-            if (howManyProducts <= findAllProducts().size()) {   //jeśli baza ma mniej produktów niż klient chce to zwraca całą listę produktów
-                Product temp = new Product();
-                for (int i = 0; i < howManyProducts; i++) {
-                    if ((temp = findAllProducts().get(new Random().nextInt(findAllProducts().size()))) != null) { 
-                        if (!products.isEmpty()) {
-                            boolean flag = false;
-                            for (i = 0; i< products.size() ; i++) {
-                                if (products.get(i).equals(temp)) {
-                                    flag=true;
-                                }
-                            }
-                            if ( flag==false) {
-                                products.add(temp);
-                            }
-                            else {
-                                i--;
-                            }
-                        }
-                        else {
-                            products.add(temp);
-                        }
-                    }
-                    else {
-                        i--;
-                    }
-                }
-            }
-            else {
-                products = (ArrayList<Product>) findAllProducts();
-            }
-        }
+        List<Product> products = new ArrayList<>(howManyProducts);
+        int quantity = (int) productRepository.count();
+        if (quantity == 0 || howManyProducts > quantity) {
+            products.addAll(findAllProducts());
+            return products;
+        } else {
+            for (int i = 0; i < howManyProducts; i++) {
 
-        return products;
+                products.addAll(em.createQuery("Select p from Product p where p not in (:productsForCustomer)").setParameter("productsForCustomer", products).setFirstResult(em.createQuery("SELECT count(p) from Product p where p not in (:ps)").setParameter("ps", products).getFirstResult()).setMaxResults(1).getResultList());
+            }
         }
+        return products;
+    }
+
+
 
     }
 
