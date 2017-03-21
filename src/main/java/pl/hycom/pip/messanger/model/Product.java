@@ -20,9 +20,11 @@ public class Product implements Serializable {
     private Integer id;
 
     @NotNull
+    @Column(length = 80)
     private String name;
 
     @NotNull
+    @Column(length = 80)
     private String description;
 
     @NotNull
