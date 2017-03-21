@@ -5,13 +5,6 @@ messenger:
 
 management:
   port: 8081
-  security:
-    enabled: true
-
-logging:
-    level:
-        ROOT: INFO
-        pl.hycom.pip: DEBUG
 
 spring:
   datasource:
@@ -23,4 +16,4 @@ spring:
   h2:
     console:
       enabled: false
-      path: /admin/console
+      path: /db-admin/console
