@@ -18,6 +18,6 @@ public class ProductController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Product> findAllProducts() {
-        return productService.findAllProducts();
+        return productService.getFewProducts(9);
     }
 }

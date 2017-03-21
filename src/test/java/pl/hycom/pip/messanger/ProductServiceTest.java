@@ -58,7 +58,11 @@ public class ProductServiceTest {
         product.setDescription("desc");
         product.setImageUrl("url");
         productService.addProduct(product);
-
+        product.setId(3);
+        product.setName("name");
+        product.setDescription("desc");
+        product.setImageUrl("url");
+        productService.addProduct(product);
     }
 
     @Test
@@ -103,8 +107,11 @@ public class ProductServiceTest {
         assertEquals("zażółć gęślą jaźń", productService.findProductById(1).getName());
     }
 
+
     @Test
-    public void getFewProductsTest() {
-    assertEquals(2,productService.getFewProducts(2).size());
+    public void getFewElements() {
+        assertEquals(3,productService.getFewProducts(3).size());
+        productService.deleteProduct(4);
+        assertEquals(2,productService.getFewProducts(2).size());
     }
 }

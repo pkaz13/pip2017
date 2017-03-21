@@ -1,7 +1,7 @@
 messenger:
-  pageAccessToken: ${MESSENGER_PAGE_ACCESS_TOKEN}
-  appSecret: ${MESSENGER_APP_SECRET}
-  verifyToken: ${MESSENGER_VERIFY_TOKEN}
+  pageAccessToken: EAAImJ54xVrcBAJp5Aw1dU1zIPSw92mprMUo5QIRbux0WxrfKZCayfyEBJMmTJXoqrSfSglcUBV39YRvPZBo2jAaQu2QyiyA5vdTkCBbJE9NOAjpiM33PQ7sS0sIaMSsR6COd5IWihqYSjhTZBdQxfPqE7oliQ95lFKknSCUqQZDZD
+  appSecret: d44fb500a9e69c572a8fa8d01fab8218
+  verifyToken: token
   recommendation:
     products-amount: 3
 
@@ -10,12 +10,13 @@ management:
   security:
     enabled: true
 
-logging:
-    level:
-        ROOT: INFO
-        pl.hycom.pip: DEBUG
+security:
+  basic:
+    enabled: false
+  user:
+    name: test
+    password: test
 
-spring:
   datasource:
     url: jdbc:h2:mem:production;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: test
