@@ -1,34 +1,37 @@
 package pl.hycom.pip.messanger.service;
 
-import lombok.extern.log4j.Log4j2;
-import org.aspectj.weaver.ast.Var;
-import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.model.Product;
-import pl.hycom.pip.messanger.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
-import javax.inject.Inject;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Product;
+import pl.hycom.pip.messanger.repository.ProductRepository;
 
 @Service
-@RequiredArgsConstructor(onConstructor=@__(@Inject))
+@RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
 public class ProductService {
     private final ProductRepository productRepository;
     @PersistenceContext
     private EntityManager em;
 
-    public void addProduct(Product product) {
+    public long count() {
+        return productRepository.count();
+    }
+
+    public Product addProduct(Product product) {
         log.info("Invoking of addProduct(product) method from ProductService class");
-        productRepository.save(product);
+        return productRepository.save(product);
     }
 
     public Product findProductById(Integer id) {
@@ -61,17 +64,12 @@ public class ProductService {
             products.addAll(findAllProducts());
             return products;
         }
-            for (int i = 0; i < howManyProducts; i++) {
+        for (int i = 0; i < howManyProducts; i++) {
 
-                products.addAll(em.createQuery("Select p from Product p where p not in (:productsForCustomer)").setParameter("productsForCustomer", products).setFirstResult(new Random().nextInt(quantity-products.size())).setMaxResults(1).getResultList());
-            }
-
-            return products;
+            products.addAll(em.createQuery("Select p from Product p where p not in (:productsForCustomer)").setParameter("productsForCustomer", products).setFirstResult(new Random().nextInt(quantity - products.size())).setMaxResults(1).getResultList());
         }
 
-
-
+        return products;
     }
 
-
-
+}

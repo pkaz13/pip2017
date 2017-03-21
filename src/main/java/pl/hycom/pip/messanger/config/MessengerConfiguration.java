@@ -1,15 +1,18 @@
 package pl.hycom.pip.messanger.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.github.messenger4j.MessengerPlatformWrapper;
 import com.github.messenger4j.profile.MessengerProfileClient;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+
 import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
 import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
+import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 
 /**
  * Created by patry on 07/03/2017.
@@ -18,11 +21,27 @@ import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
 @Configuration
 public class MessengerConfiguration {
 
-    @Autowired
-    private ConfigService configService;
+    @Value("${messenger.pageAccessToken}")
+    private String pageAccessToken;
 
-    @Autowired
-    private MessengerProductsRecommendationHandler messengerProductsRecommendationHandler;
+    @Value("${messenger.appSecret}")
+    private String appSecret;
+
+    @Value("${messenger.verifyToken}")
+    private String verifyToken;
+
+    @Value("${messenger.recommendation.products-amount:3}")
+    private Integer productsAmount;
+
+    @Bean
+    public PipelineMessageHandler pipelineMessageHandler() {
+        return new PipelineMessageHandler();
+    }
+
+    @Bean
+    public MessengerProductsRecommendationHandler messengerProductsRecommendationHandler() {
+        return new MessengerProductsRecommendationHandler().setProductsAmount(productsAmount);
+    }
 
     @Bean
     public MessengerHelloWorldHandler messengerHelloWorldHandler() {
@@ -31,24 +50,25 @@ public class MessengerConfiguration {
 
     @Bean
     public MessengerReceiveClient receiveClient() {
-        return MessengerPlatformWrapper.newReceiveClientBuilder(configService.getAppSecret(), configService.getVerifyToken())
-                .onTextMessageEvent(messengerProductsRecommendationHandler)
+        return MessengerPlatformWrapper.newReceiveClientBuilder(appSecret, verifyToken)
+                .onTextMessageEvent(messengerProductsRecommendationHandler())
+                // .onTextMessageEvent(pipelineMessageHandler())
                 .build();
     }
 
     @Bean
     public MessengerSendClient sendClient() {
-        return MessengerPlatformWrapper.newSendClientBuilder(configService.getPageAccessToken()).build();
+        return MessengerPlatformWrapper.newSendClientBuilder(pageAccessToken).build();
     }
 
     @Bean
     public MessengerSetupClient setupClient() {
-        return MessengerPlatformWrapper.newSetupClientBuilder(configService.getPageAccessToken()).build();
+        return MessengerPlatformWrapper.newSetupClientBuilder(pageAccessToken).build();
     }
 
     @Bean
     public MessengerProfileClient profileClient() {
-        return MessengerPlatformWrapper.newProfileClientBuilder(configService.getPageAccessToken()).build();
+        return MessengerPlatformWrapper.newProfileClientBuilder(pageAccessToken).build();
     }
 
 }

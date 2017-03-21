@@ -1,5 +1,11 @@
 package pl.hycom.pip.messanger.handler;
 
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.github.messenger4j.receive.events.TextMessageEvent;
@@ -7,30 +13,23 @@ import com.github.messenger4j.receive.handlers.TextMessageEventHandler;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.send.templates.GenericTemplate;
 import com.github.messenger4j.send.templates.Template;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Component;
-import pl.hycom.pip.messanger.config.ConfigService;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.ProductService;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import java.util.List;
-
 
 /**
  * Created by maciek on 19.03.17.
  */
 @Component
-@RequiredArgsConstructor(onConstructor=@__(@Inject))
 @Log4j2
 public class MessengerProductsRecommendationHandler implements TextMessageEventHandler {
 
-    private final ConfigService messengerConfig;
-    private final ProductService productService;
-    private final MessengerSendClient sendClient;
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private MessengerSendClient sendClient;
 
     private int productsAmount;
 
@@ -69,7 +68,7 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
         }
     }
 
-    //TODO: przeniesc metode do innej klasy
+    // TODO: przeniesc metode do innej klasy
     private GenericTemplate getStructuredMessage(List<Product> products) {
         GenericTemplate.Element.ListBuilder listBuilder = GenericTemplate.newBuilder().addElements();
         for (Product product : products) {
@@ -82,12 +81,11 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
         return listBuilder.done().build();
     }
 
-    @PostConstruct
-    public void initHandler() {
-        int productsAmount = messengerConfig.getProductsAmount();
+    public MessengerProductsRecommendationHandler setProductsAmount(int productsAmount) {
         if (productsAmount < 0 || productsAmount > 10) {
             throw new IllegalArgumentException("Products amount cannot be negative or bigger than 10");
         }
         this.productsAmount = productsAmount;
+        return this;
     }
 }

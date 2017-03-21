@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pipeline SYSTEM "pipeline.dtd">
+
+<pipeline>
+
+	<pipelinechain name="processMessage" headlink="executeValidateForCheckoutChain">
+		<pipelinelink name="executeValidateForCheckoutChain">
+			<processor bean="/atg/commerce/order/processor/ExecuteValidateForCheckoutChain" />
+			<transition returnvalue="1" link="purgeExcessOrderData" />
+			<transition returnvalue="0" />
+		</pipelinelink>
+		<pipelinelink name="purgeExcessOrderData">
+			<processor bean="/atg/commerce/order/processor/PurgeExcessOrderData" />
+		</pipelinelink>
+	</pipelinechain>
+
+</pipeline>
