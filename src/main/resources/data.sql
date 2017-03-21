@@ -1,4 +1,4 @@
-insert into PRODUCTS (name ,description,IMAGE_URL )
+insert into PRODUCTS (id, name ,description,IMAGE_URL )
 values
 (1, 'pralka','Indesit IWSD51051CECOPL to wolnostojąca pralka','https://8.allegroimg.com/s1024/056bae/281901a64b50bc69ba57e208ffd8/Pralka-Indesit-IWSD51051CECOPL-281901a64b50bc69ba57e208ffd8'),
 (2, 'pralka','Cechy wolnostojącej pralki ładowanej od góry Whirlpool: kolor biały.  ','http://www.whirlpool.pl/digitalassets/Picture/web1000x1000/859334649050_1000x1000_perspective.jpg' ),
