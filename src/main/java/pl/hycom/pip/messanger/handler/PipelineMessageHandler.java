@@ -15,8 +15,8 @@ import pl.hycom.pip.messanger.pipeline.PipelineManager;
 @Log4j2
 public class PipelineMessageHandler implements TextMessageEventHandler {
 
-    private static final String SENDER_ID = "senderId";
-    private static final String MESSAGE = "message";
+    public static final String SENDER_ID = "senderId";
+    public static final String MESSAGE = "message";
 
     @Autowired
     private PipelineManager pipelineManager;

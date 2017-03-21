@@ -1,5 +1,6 @@
 package pl.hycom.pip.messanger.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import com.github.messenger4j.profile.MessengerProfileClient;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
+import com.github.messenger4j.user.UserProfileClient;
 
 import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
 import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
@@ -30,17 +32,12 @@ public class MessengerConfiguration {
     @Value("${messenger.verifyToken}")
     private String verifyToken;
 
-    @Value("${messenger.recommendation.products-amount:3}")
-    private Integer productsAmount;
+    @Autowired
+    private MessengerProductsRecommendationHandler messengerProductsRecommendationHandler;
 
     @Bean
     public PipelineMessageHandler pipelineMessageHandler() {
         return new PipelineMessageHandler();
-    }
-
-    @Bean
-    public MessengerProductsRecommendationHandler messengerProductsRecommendationHandler() {
-        return new MessengerProductsRecommendationHandler().setProductsAmount(productsAmount);
     }
 
     @Bean
@@ -51,7 +48,7 @@ public class MessengerConfiguration {
     @Bean
     public MessengerReceiveClient receiveClient() {
         return MessengerPlatformWrapper.newReceiveClientBuilder(appSecret, verifyToken)
-                .onTextMessageEvent(messengerProductsRecommendationHandler())
+                .onTextMessageEvent(messengerProductsRecommendationHandler)
                 // .onTextMessageEvent(pipelineMessageHandler())
                 .build();
     }
@@ -69,6 +66,11 @@ public class MessengerConfiguration {
     @Bean
     public MessengerProfileClient profileClient() {
         return MessengerPlatformWrapper.newProfileClientBuilder(pageAccessToken).build();
+    }
+
+    @Bean
+    public UserProfileClient userProfileClient() {
+        return MessengerPlatformWrapper.newUserProfileClientBuilder(pageAccessToken).build();
     }
 
 }

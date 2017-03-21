@@ -2,8 +2,11 @@ package pl.hycom.pip.messanger.handler;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
@@ -31,7 +34,8 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
     @Autowired
     private MessengerSendClient sendClient;
 
-    private int productsAmount;
+    @Value("${messenger.recommendation.products-amount:3}")
+    private Integer productsAmount;
 
     @Override
     public void handle(TextMessageEvent msg) {
@@ -81,11 +85,10 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
         return listBuilder.done().build();
     }
 
-    public MessengerProductsRecommendationHandler setProductsAmount(int productsAmount) {
+    @PostConstruct
+    public void validate() {
         if (productsAmount < 0 || productsAmount > 10) {
             throw new IllegalArgumentException("Products amount cannot be negative or bigger than 10");
         }
-        this.productsAmount = productsAmount;
-        return this;
     }
 }
