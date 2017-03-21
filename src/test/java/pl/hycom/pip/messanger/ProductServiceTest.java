@@ -107,8 +107,8 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void getFewElements() {
-        assertEquals(3, productService.getFewProducts(3).size());
-        assertEquals(2, productService.getFewProducts(2).size());
+    public void getRandomElements() {
+        assertEquals(3, productService.getRandomProducts(3).size());
+        assertEquals(2, productService.getRandomProducts(2).size());
     }
 }

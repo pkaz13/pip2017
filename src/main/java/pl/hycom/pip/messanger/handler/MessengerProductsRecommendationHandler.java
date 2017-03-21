@@ -46,7 +46,7 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
 
         log.info("Sending answer message to[" + id + "]");
 
-        final List<Product> products = productService.getFewProducts(productsAmount);
+        final List<Product> products = productService.getRandomProducts(productsAmount);
 
         if (CollectionUtils.isEmpty(products)) {
             sendTextMessage(id, "No products found.");
