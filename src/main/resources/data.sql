@@ -11,23 +11,23 @@ values
 (9, 'lodówka','Chłodziarka Amica FM1044 to wolnostojące urządzenie z komorą niskich temperatur','https://8.allegroimg.com/s1024/0042ac/757a038e43adae2a24108ecedd98/Chlodziarka-Amica-FM104.4-Chlodziarka'),
 (10, 'lodówka','Manta CLF050 to podblatowa chłodziarko-zamrażarka wolnostojąca o wysokości 49cm','https://3.allegroimg.com/s1024/00d44a/09ecb53b43f3a5f823df04cac473/Chlodziarko-zamrazarka-Manta-CLF050-CLF050');
 
-insert into KEYWORDS (word)
+insert into KEYWORDS (id, word)
 values
-('TOP3'),
-('TOP2'),
-('TOP1'),
-('Najtańszy'),
-('Najdroższy'),
-('Najwydajniejszy'),
-('Innowacyjy'),
-('Funkcjonalny'),
-('Wielozadaniowy'),
-('Edycja limitowana'),
-('Hit sezonu'),
-('Rabat 10%'),
-('Wyprzedaż'),
-('Gwarancja 5 lat'),
-('Cicha praca');
+(1, 'TOP3'),
+(2, 'TOP2'),
+(3, 'TOP1'),
+(4, 'Najtańszy'),
+(5, 'Najdroższy'),
+(6, 'Najwydajniejszy'),
+(7, 'Innowacyjy'),
+(8, 'Funkcjonalny'),
+(9, 'Wielozadaniowy'),
+(10, 'Edycja limitowana'),
+(11, 'Hit sezonu'),
+(12, 'Rabat 10%'),
+(13, 'Wyprzedaż'),
+(14, 'Gwarancja 5 lat'),
+(15, 'Cicha praca');
 
 insert into PRODUCTS_KEYWORDS (PRODUCT_ID,KEYWORDS_ID)
 values
