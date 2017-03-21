@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pipeline SYSTEM "pipeline.dtd">
+
+<pipeline>
+
+	<pipelinechain name="processMessage" headlink="loadUserProfile">
+		<pipelinelink name="loadUserProfile">
+			<processor bean="userProfileProcessor" />
+			<transition returnvalue="1" link="loadProducts" />
+		</pipelinelink>
+		<pipelinelink name="loadProducts">
+			<processor bean="loadProductsProcessor" />
+			<transition returnvalue="1" link="sendProductsResponse" />
+		</pipelinelink>
+		<pipelinelink name="sendProductsResponse">
+			<processor bean="generateMessageProcessor" />
+			<transition returnvalue="1" link="logContext" />
+		</pipelinelink>		
+		<pipelinelink name="logContext">
+			<processor bean="logContextProcessor" />
+		</pipelinelink>		
+	</pipelinechain>
+
+</pipeline>
