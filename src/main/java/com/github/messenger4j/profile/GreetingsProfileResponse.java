@@ -36,7 +36,7 @@ public class GreetingsProfileResponse extends ProfileResponse {
     public static GreetingsProfileResponse fromJson(JsonObject jsonObject) throws MessengerIOException {
 
         JsonArray dataArray = jsonObject.getAsJsonArray("data");
-        if (dataArray != null || dataArray.size() == 0) {
+        if (dataArray == null || dataArray.size() == 0) {
             return new GreetingsProfileResponse(jsonObject.toString());
         }
 
