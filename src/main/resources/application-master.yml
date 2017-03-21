@@ -2,6 +2,8 @@ messenger:
   pageAccessToken: ${MESSENGER_PAGE_ACCESS_TOKEN}
   appSecret: ${MESSENGER_APP_SECRET}
   verifyToken: ${MESSENGER_VERIFY_TOKEN}
+  recommendation:
+    products-amount: 3
 
 management:
   port: 8081
