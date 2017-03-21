@@ -1,8 +1,3 @@
 messenger:
   pageAccessToken: EAADTQbwB5kABALMAUt22CaVst1PQLXVRaKZADIJFrVC8ZCD3Lr2dgHC4LVTAcH64G2xu5tkKjY0ZBGg9OlHypsGidA2DPUEytgvmDQgBg8fv5duFZA0m56Q5fVQPE676sngpsWaZBdzACZCTV5hrayRCOPTWqQqxOy1vC37KOfOgZDZD
   appSecret: 04fe12b768a138b651ab4f871d237fc9
-  verifyToken: token
-
-management:
-  security:
-    enabled: true
