@@ -2,6 +2,10 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.weaver.ast.Var;
+import org.h2.mvstore.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
@@ -12,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -54,6 +59,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
+
     public List<Product> getFewProducts(int howManyProducts) {
         List<Product> products = new ArrayList<>(howManyProducts);
         int quantity = (int) productRepository.count();
@@ -61,17 +67,15 @@ public class ProductService {
             products.addAll(findAllProducts());
             return products;
         }
-            for (int i = 0; i < howManyProducts; i++) {
-
-                products.addAll(em.createQuery("Select p from Product p where p not in (:productsForCustomer)").setParameter("productsForCustomer", products).setFirstResult(new Random().nextInt(quantity-products.size())).setMaxResults(1).getResultList());
-            }
-
-            return products;
+        for (int i = 0; i < howManyProducts; i++) {
+            products.add(productRepository.findSomeProducts(products).get(new Random().nextInt(quantity - (products.size() + 1))));
         }
 
-
-
+        return products;
     }
+
+
+}
 
 
 
