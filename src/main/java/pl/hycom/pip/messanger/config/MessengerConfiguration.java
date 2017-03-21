@@ -27,7 +27,7 @@ public class MessengerConfiguration {
     @Value("${messenger.verifyToken}")
     private String verifyToken;
 
-    @Value("${messenger.recommendation.products-amount}")
+    @Value("${messenger.recommendation.products-amount:3}")
     private Integer productsAmount;
 
     @Bean
