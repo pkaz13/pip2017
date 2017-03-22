@@ -1,5 +1,14 @@
 package pl.hycom.pip.messanger.handler;
 
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.github.messenger4j.receive.events.TextMessageEvent;
@@ -7,16 +16,10 @@ import com.github.messenger4j.receive.handlers.TextMessageEventHandler;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.send.templates.GenericTemplate;
 import com.github.messenger4j.send.templates.Template;
+
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.ProductService;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
-
 
 /**
  * Created by maciek on 19.03.17.
@@ -27,17 +30,12 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
 
     @Autowired
     private ProductService productService;
+
     @Autowired
     private MessengerSendClient sendClient;
 
+    @Value("${messenger.recommendation.products-amount:3}")
     private Integer productsAmount;
-
-    public MessengerProductsRecommendationHandler(@NotNull Integer productsAmount) {
-        if (productsAmount > 10 || productsAmount < 0) {
-            throw new IllegalArgumentException("productsAmount cannot be negative or bigger than 10");
-        }
-        this.productsAmount = productsAmount;
-    }
 
     @Override
     public void handle(TextMessageEvent msg) {
@@ -48,7 +46,7 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
 
         log.info("Sending answer message to[" + id + "]");
 
-        final List<Product> products = productService.getFewProducts(productsAmount);
+        final List<Product> products = productService.getRandomProducts(productsAmount);
 
         if (CollectionUtils.isEmpty(products)) {
             sendTextMessage(id, "No products found.");
@@ -74,7 +72,7 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
         }
     }
 
-    //TODO: przeniesc metode do innej klasy
+    // TODO: przeniesc metode do innej klasy
     private GenericTemplate getStructuredMessage(List<Product> products) {
         GenericTemplate.Element.ListBuilder listBuilder = GenericTemplate.newBuilder().addElements();
         for (Product product : products) {
@@ -85,5 +83,12 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
                     .toList();
         }
         return listBuilder.done().build();
+    }
+
+    @PostConstruct
+    public void validate() {
+        if (productsAmount < 0 || productsAmount > 10) {
+            throw new IllegalArgumentException("Products amount cannot be negative or bigger than 10");
+        }
     }
 }

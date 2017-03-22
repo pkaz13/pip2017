@@ -1,12 +1,7 @@
 messenger:
-  pageAccessToken: ${MESSENGER_PAGE_ACCESS_TOKEN}
-  appSecret: ${MESSENGER_APP_SECRET}
-  verifyToken: ${MESSENGER_VERIFY_TOKEN}
-  recommendation:
-    products-amount: 3
-
-management:
-  port: 8081
+  pageAccessToken: XXX
+  appSecret: XXX
+  verifyToken: XXX
 
 spring:
   datasource:
@@ -17,5 +12,5 @@ spring:
     platform: h2
   h2:
     console:
-      enabled: false
+      enabled: true
       path: /db-admin/console
