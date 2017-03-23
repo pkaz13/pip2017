@@ -1,7 +1,6 @@
 package pl.hycom.pip.messanger;
 
 import lombok.extern.log4j.Log4j2;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,15 +30,16 @@ public class ProductServiceTest {
     @Autowired
     private KeywordService keywordService;
 
-    @Before
-    public void setUp() {
+    @Test
+    public void createProductTest() {
+        long count = productService.count();
+
         Product product1 = new Product();
-        product1.setId(1);
         product1.setName("name");
         product1.setDescription("desc");
         product1.setImageUrl("url");
 
-        //Checking if keywords are being added correctly. To be removed or fixed
+        // Checking if keywords are being added correctly. To be removed or fixed
         Keyword keyword1 = new Keyword();
         Keyword keyword2 = new Keyword();
         keyword1.setWord("test1");
@@ -49,55 +49,53 @@ public class ProductServiceTest {
         keywords1.add(keyword1);
         keywords1.add(keyword2);
         product1.setKeywords(keywords1);
-        //End of keyword checking
-
+        // End of keyword checking
         productService.addProduct(product1);
-        Product product = new Product();
-        product.setId(2);
-        product.setName("name");
-        product.setDescription("desc");
-        product.setImageUrl("url");
-        productService.addProduct(product);
-        product.setId(3);
-        product.setName("name");
-        product.setDescription("desc");
-        product.setImageUrl("url");
-        productService.addProduct(product);
-    }
-
-    @Test
-    public void createProductTest() {
-        Product product = new Product();
-        product.setId(3);
-        product.setName("name");
-        product.setDescription("desc");
-        product.setImageUrl("url");
-        productService.addProduct(product);
         log.info("Test of addProduct method from ProductService class");
-        assertEquals(3, productService.findAllProducts().size());
+        assertEquals(count + 1, productService.findAllProducts().size());
 
-        //Checking if keywords are being added correctly. To be removed or fixed
-        Product checkedProduct = productService.findProductById(1);
+        // Checking if keywords are being added correctly. To be removed or fixed
+        Product checkedProduct = productService.findProductById(product1.getId());
         assertEquals(2, checkedProduct.getKeywords().size());
-        assertEquals(2, keywordService.findAllKeywords().size());
-        productService.deleteProduct(1);
-        assertEquals(2, keywordService.findAllKeywords().size());
+
+        // assertEquals(2, keywordService.findAllKeywords().size());
+        productService.deleteProduct(product1.getId());
+        // assertEquals(2, keywordService.findAllKeywords().size());
     }
 
     @Test
     public void findProductByIdTest() {
+        Product product1 = new Product();
+        product1.setName("name");
+        product1.setDescription("desc");
+        product1.setImageUrl("url");
+        productService.addProduct(product1);
+
         log.info("Test of findProductById method from ProductService class");
-        assertNotNull(productService.findProductById(1));
-        assertEquals("name", productService.findProductById(1).getName());
-        assertEquals("desc", productService.findProductById(1).getDescription());
-        assertEquals("url", productService.findProductById(1).getImageUrl());
+        assertNotNull(productService.findProductById(product1.getId()));
+        assertEquals("name", productService.findProductById(product1.getId()).getName());
+        assertEquals("desc", productService.findProductById(product1.getId()).getDescription());
+        assertEquals("url", productService.findProductById(product1.getId()).getImageUrl());
+
+        productService.deleteProduct(product1.getId());
     }
 
     @Test
     public void deleteProductByIdTest() {
+        long count = productService.count();
+
+        Product product1 = new Product();
+        product1.setName("name");
+        product1.setDescription("desc");
+        product1.setImageUrl("url");
+
         log.info("Test of deleteProduct method from ProductService class");
-        productService.deleteProduct(2);
-        assertEquals(2, productService.findAllProducts().size());
+        productService.addProduct(product1);
+
+        assertEquals(count + 1, productService.count());
+
+        productService.deleteProduct(product1.getId());
+        assertEquals(count, productService.count());
     }
 
     @Test
@@ -107,11 +105,9 @@ public class ProductServiceTest {
         assertEquals("zażółć gęślą jaźń", productService.findProductById(1).getName());
     }
 
-
     @Test
-    public void getFewElements() {
-        assertEquals(3,productService.getFewProducts(3).size());
-        productService.deleteProduct(4);
-        assertEquals(2,productService.getFewProducts(2).size());
+    public void getRandomElements() {
+        assertEquals(3, productService.getRandomProducts(3).size());
+        assertEquals(2, productService.getRandomProducts(2).size());
     }
 }
