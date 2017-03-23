@@ -1,10 +1,6 @@
 package pl.hycom.pip.messanger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.LinkedHashSet;
-
+import lombok.extern.log4j.Log4j2;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,12 +8,15 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import java.util.LinkedHashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -51,7 +50,7 @@ public class ProductServiceTest {
         keywords1.add(keyword2);
         product1.setKeywords(keywords1);
         // End of keyword checking
-        product1 = productService.addProduct(product1);
+        productService.addProduct(product1);
         log.info("Test of addProduct method from ProductService class");
         assertEquals(count + 1, productService.findAllProducts().size());
 
@@ -70,7 +69,7 @@ public class ProductServiceTest {
         product1.setName("name");
         product1.setDescription("desc");
         product1.setImageUrl("url");
-        product1 = productService.addProduct(product1);
+        productService.addProduct(product1);
 
         log.info("Test of findProductById method from ProductService class");
         assertNotNull(productService.findProductById(product1.getId()));
@@ -91,7 +90,7 @@ public class ProductServiceTest {
         product1.setImageUrl("url");
 
         log.info("Test of deleteProduct method from ProductService class");
-        product1 = productService.addProduct(product1);
+        productService.addProduct(product1);
 
         assertEquals(count + 1, productService.count());
 

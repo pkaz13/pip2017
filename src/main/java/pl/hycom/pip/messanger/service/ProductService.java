@@ -53,7 +53,7 @@ public class ProductService {
     }
 
 
-    public List<Product> getFewProducts(int howManyProducts) {
+    public List<Product> getRandomProducts(int howManyProducts) {
         List<Product> products = new ArrayList<>(howManyProducts);
         int quantity = (int) productRepository.count();
         if (quantity == 0 || howManyProducts > quantity) {
@@ -68,7 +68,9 @@ public class ProductService {
         return products;
     }
 
-
+    public int count() {
+        return findAllProducts().size();
+    }
 }
 
 
