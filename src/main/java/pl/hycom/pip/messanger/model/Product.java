@@ -30,7 +30,7 @@ public class Product implements Serializable {
     @NotNull
     private String imageUrl;
 
-    @OneToMany(
+    @ManyToMany(
             cascade = {
                 CascadeType.PERSIST,
                 CascadeType.MERGE,
