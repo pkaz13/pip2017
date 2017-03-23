@@ -1,0 +1,19 @@
+<!ELEMENT pipeline (pipelinechain*)>
+
+<!ELEMENT pipelinechain (pipelinelink*)>
+<!ATTLIST pipelinechain
+          name ID #REQUIRED
+          headlink IDREF #REQUIRED>
+
+<!ELEMENT pipelinelink (processor,transition*)>
+<!ATTLIST pipelinelink
+          name ID #REQUIRED>
+
+<!ELEMENT processor EMPTY>
+<!ATTLIST processor
+          bean CDATA #IMPLIED>
+
+<!ELEMENT transition EMPTY
+<!ATTLIST transition
+          returnvalue CDATA #REQUIRED
+          link IDREF #REQUIRED>
