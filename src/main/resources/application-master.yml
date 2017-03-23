@@ -15,6 +15,7 @@ spring:
     password: ${JDBC_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
     platform: postgres
+    initialize: false
   jpa:
     hibernate:
       ddl-auto: update
