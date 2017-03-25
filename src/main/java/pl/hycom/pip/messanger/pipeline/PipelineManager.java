@@ -14,9 +14,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.pipeline.model.Pipeline;
-import pl.hycom.pip.messanger.pipeline.model.PipelineChain;
-import pl.hycom.pip.messanger.pipeline.model.PipelineLink;
+import pl.hycom.pip.messanger.pipeline.model.*;
 
 @Log4j2
 @Service
@@ -40,17 +38,36 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
         pipeline = (Pipeline) JAXBContext.newInstance(Pipeline.class).createUnmarshaller().unmarshal(xsr);
     }
 
+    private void runProcessForChain(PipelineContext context, PipelineChain pipelineChain) throws PipelineException {
+        runProcessForLink(context, pipelineChain, pipelineChain.getHeadLink());
+    }
+
+    private void runProcessForLink(PipelineContext context, PipelineChain pipelineChain, String name) throws PipelineException {
+        //find link
+        PipelineLink link = findPipelineLink(name, pipelineChain);
+
+        //run process
+        Processor processor = link.getProcessor();
+        PipelineProcessor pipelineProcessor = applicationContext.getBean(processor.getBean(), PipelineProcessor.class);
+
+        //TODO check the process result
+        int processResult = pipelineProcessor.runProcess(context);
+
+        //start for transitions
+        for (Transition transition : link.getTransitions()) {
+            runProcessForLink(context, pipelineChain, transition.getLink());
+        }
+    }
+
     public void runProcess(String pipelineChainName, Map<String, Object> params) throws PipelineException {
 
         log.info("Starting pipeline[" + pipelineChainName + "] with params[" + params + "]");
 
         PipelineContext ctx = new PipelineContext(params);
-
         PipelineChain pipelineChain = findPipelineChain(pipelineChainName);
+        runProcessForChain(ctx, pipelineChain);
 
-        PipelineLink pipelineLink = findPipelineLink(pipelineChain.getHeadLink(), pipelineChain);
-
-        // TDOD: pobrac procesor,
+        // TODO: pobrac procesor,
         // pobrac beana z kontekstu,
         // uruchomic procesor z ctx,
         // sprawdzic wynik i poszukac nastepnego pipelineLinka w transition,
