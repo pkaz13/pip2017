@@ -20,12 +20,13 @@
         		<div class="panel panel-default">
 	        		<div class="panel-heading">Ustaw wiadomość</div>
 			        <div class="panel-body">
-			            <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}" method="post">
-			                <div class="form-group">
-			                    <label for="message">Wpisz wiadomość</label>
-			                    <textarea id="message" class="form-control autofocus" type="text" name="message" th:field="*{content}"/>
-			                </div>
-			                
+                        <form action="#" th:action="@{/admin/greeting}" th:object="${greetings}" method="post">
+                            <div th:each="greeting:${greetings.greetings}" class="form-group">
+                                <label for="message">Wiadomość domyślna</label>
+                                <textarea id="message" class="form-control autofocus" type="text" name="message"
+                                          th:field="${greeting.content}"/>
+
+                            </div>
 			                <div class="pull-right">
 			                	<a th:href="@{/admin/greeting}" class="btn btn-default">Przeładuj</a>
 				                <button type="reset" class="btn btn-default">Resetuj</button>
