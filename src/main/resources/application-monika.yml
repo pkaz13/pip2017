@@ -2,11 +2,16 @@ messenger:
   pageAccessToken: ${MESSENGER_PAGE_ACCESS_TOKEN}
   appSecret: ${MESSENGER_APP_SECRET}
   verifyToken: ${MESSENGER_VERIFY_TOKEN}
-  recommendation:
-    products-amount: 3
 
 management:
   port: 8081
+  security:
+    enabled: true
+
+logging:
+    level:
+        ROOT: INFO
+        pl.hycom.pip: DEBUG
 
 spring:
   datasource:
@@ -19,3 +24,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  h2:
+    console:
+      enabled: true
+      path: /db-admin/console
