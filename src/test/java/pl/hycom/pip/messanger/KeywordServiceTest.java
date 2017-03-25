@@ -80,7 +80,7 @@ public class KeywordServiceTest {
         keywordService.addKeyword(keyword);
 
         //assert
-        assertEquals(3, keywordService.findAllKeywords().size());
+        assertEquals("number of keywords in repository is expected to be 3" ,3, keywordService.findAllKeywords().size());
     }
 
     /**
@@ -108,8 +108,8 @@ public class KeywordServiceTest {
         repository.save(keyword);
 
         //assert
-        assertNotNull(keywordService.findKeywordById(keyword.getId()));
-        assertEquals("test", keywordService.findKeywordById(keyword.getId()).getWord());
+        assertNotNull("Null will not be returned" ,keywordService.findKeywordById(keyword.getId()));
+        assertEquals( "Returned keyword will be 'test'", "test", keywordService.findKeywordById(keyword.getId()).getWord());
     }
 
     /**
@@ -130,7 +130,8 @@ public class KeywordServiceTest {
         keywordsFromRepository = keywordService.findAllKeywords();
 
         //assert
-        assertEquals(keywords.size(), keywordsFromRepository.size());
+        assertEquals("Size of returend list will be the same as the size of prepared list of keywords", keywords.size(), keywordsFromRepository.size());
+
     }
 
     /**
@@ -147,7 +148,7 @@ public class KeywordServiceTest {
         keywordService.updateKeyword(keyword1.getId(),newWord);
 
         //assert
-        assertEquals(newWord, repository.findOne(keyword1.getId()).getWord());
+        assertEquals("Keyword specified by id will be updated by \"newWord\"", newWord, repository.findOne(keyword1.getId()).getWord());
     }
 
     /**
@@ -171,9 +172,10 @@ public class KeywordServiceTest {
         long numberOfKeywordsAfterDeletingKeyword = repository.count();
 
         //assert
-        assertEquals(2,numberOfKeywordsBeforeAddingKeyword);
-        assertEquals(3,numberOfKeywordsAfterAddingKeyword);
-        assertEquals(numberOfKeywordsBeforeAddingKeyword,numberOfKeywordsAfterDeletingKeyword);
+        assertEquals("size of repository keywords before adding keyword will be equal to 2",2,numberOfKeywordsBeforeAddingKeyword);
+        assertEquals("size of repository keywords after adding keyword will be equal to 3",3,numberOfKeywordsAfterAddingKeyword);
+        assertEquals("size of repository keywords after deleting will be equal to\n" +
+                " to the size of repository keywords before adding keyword",numberOfKeywordsBeforeAddingKeyword,numberOfKeywordsAfterDeletingKeyword);
     }
 
     /**
@@ -192,7 +194,7 @@ public class KeywordServiceTest {
         repository.save(keyword);
 
         //assert
-        assertThat(repository.findOne(keyword.getId()).getWord(), is("zażółć gęślą jaźń"));
+        assertThat("Added keyword will keep Polish diacritic characters in repository",repository.findOne(keyword.getId()).getWord(), is("zażółć gęślą jaźń"));
     }
 
     /**
