@@ -4,6 +4,7 @@ import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.github.messenger4j.profile.MessengerProfileClient;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,8 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import pl.hycom.pip.messanger.model.Greeting;
-import pl.hycom.pip.messanger.model.GreetingList;
+import pl.hycom.pip.messanger.model.GreetingListWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,41 +36,53 @@ public class AdminController {
 
     @GetMapping("/admin/greeting")
     public String adminGreeting(Model model) {
-        /*Greeting greeting = new Greeting();
+        List<com.github.messenger4j.profile.Greeting> greetings = getGreetings(profileClient);
+        injectMissingGreetings(greetings);
+        sortByLocale(greetings);
 
-        try {
-            List<com.github.messenger4j.profile.Greeting> greetings = profileClient.getWelcomeMessage().getGreetings();
-            if (!greetings.isEmpty()) {
-                greeting.setContent(greetings.get(0).getText());
-            }
-
-        } catch (MessengerApiException | MessengerIOException e) {
-            log.error("Error during getting greeting text from facebook", e);
-        }*/
-        //model.addAttribute("greeting", new Greeting());
-
-        List<Greeting> greetings = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            greetings.add(new Greeting());
-            greetings.get(i).setContent("ajfnkssa");
-        }
-        GreetingList greetingList = new GreetingList();
-        greetingList.setGreetings(greetings);
-        model.addAttribute("greetings", greetingList);
+        GreetingListWrapper greetingListWrapper = new GreetingListWrapper(greetings);
+        model.addAttribute("greetingListWrapper", greetingListWrapper);
         return "greeting";
     }
 
     @PostMapping("/admin/greeting")
-    public String greetingSubmit(@ModelAttribute Greeting[] greeting) {
+    public String greetingSubmit(@ModelAttribute GreetingListWrapper greetingListWrapper) {
         try {
-            profileClient.setupWelcomeMessage(greeting[0].getContent());
+            profileClient.setupWelcomeMessages(greetingListWrapper.extractGreetings());
             log.info("Greeting text correctly updated");
-
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during changing greeting message", e);
         }
-
         return "greeting";
     }
 
+    private List<com.github.messenger4j.profile.Greeting> getGreetings(MessengerProfileClient profileClient) {
+        List<com.github.messenger4j.profile.Greeting> greetings = null;
+        try {
+            greetings = new ArrayList<>(profileClient.getWelcomeMessage().getGreetings());
+        } catch (MessengerApiException | MessengerIOException e) {
+            log.error("Error during getting greeting text from facebook", e);
+        }
+        return greetings == null ? new ArrayList<>() : greetings;
+    }
+
+    private void injectMissingGreetings(List<com.github.messenger4j.profile.Greeting> greetings) {
+        if (!containsLocale(greetings, "default")) {
+            greetings.add(new com.github.messenger4j.profile.Greeting("Hello", "default"));
+        }
+        if (!containsLocale(greetings, "en_GB")) {
+            greetings.add(new com.github.messenger4j.profile.Greeting("Hi", "en_GB"));
+        }
+        if (!containsLocale(greetings, "pl_PL")) {
+            greetings.add(new com.github.messenger4j.profile.Greeting("Witaj", "pl_PL"));
+        }
+    }
+
+    private void sortByLocale(List<com.github.messenger4j.profile.Greeting> greetings) {
+        greetings.sort((g1, g2) -> StringUtils.compare(g1.getLocale(), g2.getLocale()));
+    }
+
+    private boolean containsLocale(List<com.github.messenger4j.profile.Greeting> greetings, String locale) {
+        return greetings.stream().anyMatch(g -> StringUtils.equals(g.getLocale(), locale));
+    }
 }

@@ -7,6 +7,8 @@ import com.github.messenger4j.exceptions.MessengerIOException;
 import com.google.gson.JsonObject;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
+
 import static com.github.messenger4j.common.MessengerHttpClient.HttpMethod.*;
 
 /**
@@ -31,12 +33,19 @@ final class MessengerProfileClientImpl extends MessengerRestClientAbstract<Profi
     }
 
     @Override
-    public ProfileResponse setupWelcomeMessage(String greeting) throws MessengerApiException, MessengerIOException {
+    public ProfileResponse setupWelcomeMessage(Greeting greeting) throws MessengerApiException, MessengerIOException {
         final ProfilePayload payload = ProfilePayload.newBuilder()
                 .greeting(greeting)
                 .build();
         String url = requestUrl + String.format(POST_AND_DELETE_URL_PARAMETERS, pageAccessToken);
 
+        return sendPayload(POST, payload, url);
+    }
+
+    @Override
+    public ProfileResponse setupWelcomeMessages(List<Greeting> greetingList) throws MessengerApiException, MessengerIOException {
+        final ProfilePayload payload = new ProfilePayload(greetingList);
+        String url = requestUrl + String.format(POST_AND_DELETE_URL_PARAMETERS, pageAccessToken);
         return sendPayload(POST, payload, url);
     }
 

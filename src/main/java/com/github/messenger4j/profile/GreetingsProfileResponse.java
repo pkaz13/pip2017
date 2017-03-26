@@ -48,7 +48,7 @@ public class GreetingsProfileResponse extends ProfileResponse {
     }
 
     private static JsonArray getGreetingsJsonArray(JsonArray dataArray) {
-        return getArray(dataArray.get(0).getAsJsonObject(), "greetings");
+        return getArray(dataArray.get(0).getAsJsonObject(), "greeting");
     }
 
     private static boolean isJsonArrayEmpty(JsonArray jsonArray) {
