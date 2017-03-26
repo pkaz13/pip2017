@@ -20,7 +20,15 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/admin/products")
-    public String findAllProducts(Model model) {
+    public String findAllProducts(
+            Model model,
+            @RequestParam(value = "productId", defaultValue = "0") final int id) {
+        if(id!=0)
+        {
+            productService.deleteProduct(id);
+            log.info("Product deleted !!!");
+
+        }
         List<Product> allProducts = productService.findAllProducts();
         model.addAttribute("products", allProducts);
         return "products";
