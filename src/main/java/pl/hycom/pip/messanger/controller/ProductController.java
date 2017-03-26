@@ -36,15 +36,13 @@ public class ProductController {
 
     @PostMapping("/admin/products")
     public ModelAndView productsSubmit(
-
+            @RequestParam("id") final int id,
             @RequestParam("name") final String name,
             @RequestParam("description") final String description,
-            @RequestParam("imageUrl") final String url,
-            @RequestParam("id") final String id) {
+            @RequestParam("imageUrl") final String url ) {
         try {
-            int temp=Integer.parseInt(id);
-            if (temp != 0) {
-                productService.updateProduct(temp,name,description,url);
+            if (id != 0) {
+                productService.updateProduct(id,name,description,url);
                 log.info("Product updated !!!");
             }
             else
