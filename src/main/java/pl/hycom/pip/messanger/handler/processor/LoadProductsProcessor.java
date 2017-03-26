@@ -26,6 +26,8 @@ public class LoadProductsProcessor implements PipelineProcessor {
     @Override
     public int runProcess(PipelineContext ctx) throws PipelineException {
 
+        log.info("Started process of LoadProductsProcessor");
+
         List<Product> products = productService.getRandomProducts(productsAmount);
         ctx.put(PRODUCTS, products);
 
