@@ -3,7 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout">
 <head>
-    <title>Login</title>
+    <title>Products</title>
+    <script th:src="@{/js/products.js}"></script>
 </head>
 <body>
     <div layout:fragment="content">
@@ -11,9 +12,10 @@
             <div class="row">
 
                 <div class="col-md-12">
-                    <h4>Produkty:</h4>
+                    <br/>
+                    <button class="btn btn-primary" onclick="openModalWindow('product_0')">New Product</button>
+                    <br/>
                     <div class="table-responsive">
-
                         <table id="mytable" class="table table-bordred table-striped">
                             <thead>
                                 <th>#</th>
@@ -24,12 +26,12 @@
                                 <th>Delete</th>
                             </thead>
                             <tbody>
-                            <tr th:each="products : ${products}">
+                            <tr th:id="'product_' + ${products.id}" th:each="products : ${products}">
                                 <td th:text="${products.id}"></td>
                                 <td th:text="${products.name}"></td>
                                 <td th:text="${products.description}"></td>
-                                <td><image th:src="${products.imageUrl}" width="50" height="60"></image></td>
-                                <td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
+                                <td><img th:src="${products.imageUrl}" width="50" height="60"></img></td>
+                                <td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" th:onclick="'openModalWindow(\'product_' + ${products.id} + '\');'"><span class="glyphicon glyphicon-pencil"></span></button></p></td>
                                 <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
                             </tr>
                             </tbody>
@@ -45,9 +47,6 @@
                             <li><a href="#">5</a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
                         </ul>
-                        <div class="btn-toolbar">
-                            <button class="btn btn-primary">New Product</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -59,22 +58,46 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-                        <h4 class="modal-title custom_align" id="Heading">Edit Your Detail</h4>
+                        <h4 class="modal-title custom_align" id="modal_headear">Edit Product</h4>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <input class="form-control " type="text"/>
-                        </div>
-                        <div class="form-group">
 
-                            <input class="form-control " type="text"/>
-                        </div>
-                        <div class="form-group">
-                            <textarea rows="2" class="form-control"></textarea>
-                        </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="form" th:action="@{/admin/products}" modelAttribute="product" method="post">
+                            <fieldset>
+                                <!-- Text input-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="id_form">ID:</label>
+                                    <div class="col-md-2">
+                                        <input id="id_form" name="id" type="text" placeholder="" class="form-control input-md" readonly="true"/>
+                                    </div>
+                                </div>
+                                <!-- Text input-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="name_form">Name</label>
+                                    <div class="col-md-4">
+                                        <input id="name_form" name="name" type="text" placeholder="" class="form-control input-md"/>
+                                    </div>
+                                </div>
+                                <!-- Text input-->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="imageUrl_form">Image URL</label>
+                                    <div class="col-md-6">
+                                        <input id="imageUrl_form" name="imageUrl" type="text" placeholder="" class="form-control input-md"/>
+
+                                    </div>
+                                </div>
+                                <!-- Textarea -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="description_form">Description</label>
+                                    <div class="col-md-6">
+                                        <textarea class="form-control" id="description_form" name="description"></textarea>
+                                    </div>
+                                </div>
+                            </fieldset>
+                    </form>
                     </div>
                     <div class="modal-footer ">
-                        <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Update</button>
+                        <button id="button_submit" form="form" type="submit" class="btn btn-warning btn-lg" style="width: 100%;"></button>
                     </div>
                 </div>
             </div>

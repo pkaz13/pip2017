@@ -52,6 +52,16 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public void updateProduct(Integer id, String newName,String newDescription,String newUrl)
+    {
+        log.info("Invoking of updateProductName(id, newName) method from ProductService class");
+        Product product = productRepository.findOne(id);
+        product.setName(newName);
+        product.setDescription(newDescription);
+        product.setImageUrl(newUrl);
+        productRepository.save(product);
+    }
+
 
     public List<Product> getRandomProducts(int howManyProducts) {
         List<Product> products = new ArrayList<>(howManyProducts);
