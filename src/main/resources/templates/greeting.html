@@ -28,7 +28,7 @@
                                 <label for="message"
                                        th:text="'Wiadomość dla: ' + *{greetings[__${stat.index}__].locale}"></label>
                                 <textarea id="message" class="form-control autofocus message-item" name="message"
-                                          th:field="*{greetings[__${stat.index}__].text}"></textarea>
+                                          th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
                             </div>
 			                <div class="pull-right">
 			                	<a th:href="@{/admin/greeting}" class="btn btn-default">Przeładuj</a>

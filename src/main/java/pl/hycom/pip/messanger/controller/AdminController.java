@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import pl.hycom.pip.messanger.model.GreetingListWrapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,13 +58,12 @@ public class AdminController {
     }
 
     private List<com.github.messenger4j.profile.Greeting> getGreetings(MessengerProfileClient profileClient) {
-        List<com.github.messenger4j.profile.Greeting> greetings = null;
         try {
-            greetings = new ArrayList<>(profileClient.getWelcomeMessage().getGreetings());
+            return new ArrayList<>(profileClient.getWelcomeMessage().getGreetings());
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during getting greeting text from facebook", e);
+            return Collections.emptyList();
         }
-        return greetings == null ? new ArrayList<>() : greetings;
     }
 
     private void injectMissingGreetings(List<com.github.messenger4j.profile.Greeting> greetings) {
