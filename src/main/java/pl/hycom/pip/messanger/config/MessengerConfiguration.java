@@ -48,8 +48,8 @@ public class MessengerConfiguration {
     @Bean
     public MessengerReceiveClient receiveClient() {
         return MessengerPlatformWrapper.newReceiveClientBuilder(appSecret, verifyToken)
-                .onTextMessageEvent(messengerProductsRecommendationHandler)
-                // .onTextMessageEvent(pipelineMessageHandler())
+//                .onTextMessageEvent(messengerProductsRecommendationHandler)
+                .onTextMessageEvent(pipelineMessageHandler())
                 .build();
     }
 
