@@ -114,7 +114,7 @@ public class KeywordServiceTest {
 
     /**
      * Returns all keywords from repository
-     * @result Size of returend list will be the same as
+     * @result Size of returned list will be the same as
      *          the size of prepared list of keywords
      */
     @Test
@@ -130,7 +130,7 @@ public class KeywordServiceTest {
         keywordsFromRepository = keywordService.findAllKeywords();
 
         //assert
-        assertEquals("Size of returend list will be the same as the size of prepared list of keywords", keywords.size(), keywordsFromRepository.size());
+        assertEquals("Size of returned list will be the same as the size of prepared list of keywords", keywords.size(), keywordsFromRepository.size());
 
     }
 
