@@ -27,7 +27,25 @@ function openModalWindow(rowId) {
 }
 
 function openDeleteModalWindow(productId){
-    var url='location.href="/admin/products?productId='+productId+'"';
+    var url='location.href="/admin/products/delete?productId='+productId+'"';
     $('#button_delete_product').attr('onclick', url);
     $('#delete').modal('show');
 }
+
+$(document).ready(function() {
+    $("#newProductButton").click(function(){
+        openModalWindow("product_0");
+    });
+
+    $(".button_edit").click(function(){
+        var buttonId=this.id;
+        var id = buttonId.split("_")[1];
+        openModalWindow("product_"+id);
+    });
+
+    $(".button_delete").click(function(){
+        var buttonId=this.id;
+        var id = buttonId.split("_")[1];
+        openDeleteModalWindow(id);
+    });
+});

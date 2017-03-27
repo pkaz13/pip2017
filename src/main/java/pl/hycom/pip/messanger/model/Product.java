@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 import lombok.Data;
@@ -21,10 +22,12 @@ public class Product implements Serializable {
 
     @NotNull
     @Column(length = 80)
+    @Size(min=1)
     private String name;
 
     @NotNull
     @Column(length = 80)
+    @Size(min=1)
     private String description;
 
     @NotNull
