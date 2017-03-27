@@ -1,16 +1,15 @@
 package pl.hycom.pip.messanger.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
+import java.security.Key;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -66,6 +65,28 @@ public class ProductService {
         }
 
         return products;
+    }
+
+    public List<Product> findAllProductWithKeywords(String... keywords) {
+        return findAllProducts().stream()
+                .filter(product -> product.containsKeywords(keywords))
+                .collect(Collectors.toList());
+    }
+
+    public void addKeywordsToProduct(Integer id, Keyword... keywords) {
+        Product product = findProductById(id);
+        for (Keyword keyword : keywords) {
+            product.getKeywords().add(keyword);
+        }
+        productRepository.save(product);
+    }
+
+    public void removeKeywordsFromProduct(Integer id, Keyword... keywords) {
+        Product product = findProductById(id);
+        for (Keyword keyword : keywords) {
+            product.getKeywords().remove(keyword);
+        }
+        productRepository.save(product);
     }
 
     public int count() {
