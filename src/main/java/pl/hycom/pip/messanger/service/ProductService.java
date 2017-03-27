@@ -8,8 +8,10 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
+import java.lang.reflect.Array;
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -60,8 +62,8 @@ public class ProductService {
             return products;
         }
         for (int i = 0; i < howManyProducts; i++) {
-        PageRequest pr = new PageRequest(new Random().nextInt(quantity-products.size()),1);
-        products.addAll( productRepository.findSomeProducts(products,pr));
+            PageRequest pr = new PageRequest(new Random().nextInt(quantity-products.size()),1);
+            products.addAll( productRepository.findSomeProducts(products,pr));
         }
 
         return products;
@@ -73,20 +75,16 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public void addKeywordsToProduct(Integer id, Keyword... keywords) {
+    public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
         Product product = findProductById(id);
-        for (Keyword keyword : keywords) {
-            product.getKeywords().add(keyword);
-        }
-        productRepository.save(product);
+        product.getKeywords().addAll(Arrays.asList(keywords));
+        return productRepository.save(product);
     }
 
-    public void removeKeywordsFromProduct(Integer id, Keyword... keywords) {
+    public Product removeKeywordsFromProduct(Integer id, Keyword... keywords) {
         Product product = findProductById(id);
-        for (Keyword keyword : keywords) {
-            product.getKeywords().remove(keyword);
-        }
-        productRepository.save(product);
+        product.getKeywords().removeAll(Arrays.asList(keywords));
+        return productRepository.save(product);
     }
 
     public int count() {
