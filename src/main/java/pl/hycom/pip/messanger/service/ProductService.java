@@ -68,6 +68,10 @@ public class ProductService {
         return products;
     }
 
+    public void deleteAllProducts() {
+        productRepository.deleteAll();
+    }
+
     public int count() {
         return findAllProducts().size();
     }
