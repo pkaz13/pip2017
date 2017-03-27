@@ -1,5 +1,6 @@
 package pl.hycom.pip.messanger.pipeline;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -43,18 +44,23 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
     }
 
     private void runProcessForLink(PipelineContext context, PipelineChain pipelineChain, String name) throws PipelineException {
+       if (StringUtils.isEmpty(name)) {
+           return;
+       }
+
         //find link
         PipelineLink link = findPipelineLink(name, pipelineChain);
 
         //run process
         Processor processor = link.getProcessor();
         PipelineProcessor pipelineProcessor = applicationContext.getBean(processor.getBean(), PipelineProcessor.class);
+        log.debug("Started process of pipelineLink with name[" + link.getName() + "]");
+        Integer processResult = pipelineProcessor.runProcess(context);
 
-        //TODO check the process result
-        int processResult = pipelineProcessor.runProcess(context);
-
+        List<Transition> transitions = link.getTransitions().stream()
+                                            .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString());
         //start for transitions
-        for (Transition transition : link.getTransitions()) {
+        for (Transition transition : transitions) {
             runProcessForLink(context, pipelineChain, transition.getLink());
         }
     }
@@ -79,8 +85,10 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
     }
 
     private PipelineChain findPipelineChain(String pipelineChainName) throws PipelineException {
+        log.debug("Started finding pipelineChain with name[" + pipelineChainName + "]");
         for (PipelineChain pc : pipeline.getPipelineChains()) {
             if (StringUtils.equals(pc.getName(), pipelineChainName)) {
+                log.debug("Found pipelineLink with name[" + pipelineChainName + "]");
                 return pc;
             }
         }
@@ -89,8 +97,11 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
     }
 
     private PipelineLink findPipelineLink(String pipelineLinkName, PipelineChain pipelineChain) throws PipelineException {
+        log.debug("Started finding pipelineLink with name[" + pipelineLinkName + "] in pipelineChain with name[" + pipelineChain.getName() + "]");
+
         for (PipelineLink pl : pipelineChain.getPipelineLinks()) {
             if (StringUtils.equals(pl.getName(), pipelineLinkName)) {
+                log.debug("Found pipelineLink with name[" + pipelineLinkName + "] in pipelineChain with name[" + pipelineChain.getName() + "]");
                 return pl;
             }
         }
