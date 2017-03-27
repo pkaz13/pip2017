@@ -11,6 +11,7 @@ import java.util.List;
 final class ProfilePayload {
 
     private Greeting[] greeting;
+    private final String[] fields = new String[]{"greeting"}; //This is needed for deleting greetings. Do not remove unless u handle greetings
 
     private ProfilePayload(ProfilePayload.Builder builder) {
         greeting = new Greeting[]{builder.greeting};
