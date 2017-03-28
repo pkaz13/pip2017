@@ -69,10 +69,17 @@ public class ProductService {
         return products;
     }
 
-    public List<Product> findAllProductWithKeywords(String... keywords) {
-        return findAllProducts().stream()
-                .filter(product -> product.containsKeywords(keywords))
-                .collect(Collectors.toList());
+    public List<Product> findAllProductWithKeywords(Keyword... keywords) {
+        List<Product> productsWithKeywords = new ArrayList<>();
+        for (Keyword keyword : keywords) {
+            List<Product> productsWithKeyword = productRepository.findProductsWithKeyword(keyword);
+            for (Product product : productsWithKeyword) {
+                if (!productsWithKeywords.contains(product)) {
+                    productsWithKeywords.add(product);
+                }
+            }
+        }
+        return productsWithKeywords;
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
