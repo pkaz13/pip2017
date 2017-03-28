@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by marcinus on 25.03.17.
  * This wrapper is needed for ThymeLeaf's foreach
- * see greeting.html file
+ * see greetings.html file
  */
 @Data
 @NoArgsConstructor

@@ -34,7 +34,7 @@ public class AdminController {
         return new ModelAndView("admin", "showBackLink", false);
     }
 
-    @GetMapping("/admin/greeting")
+    @GetMapping("/admin/greetings")
     public String getGreetings(Model model) {
         List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
         sortByLocale(greetings);
@@ -42,10 +42,10 @@ public class AdminController {
         GreetingListWrapper greetingListWrapper = new GreetingListWrapper(greetings);
         model.addAttribute("greetingListWrapper", greetingListWrapper);
         model.addAttribute("greeting", new Greeting());
-        return "greeting";
+        return "greetings";
     }
 
-    @PostMapping("/admin/greeting")
+    @PostMapping("/admin/greetings")
     public String addGreetings(@ModelAttribute GreetingListWrapper greetingListWrapper) {
         try {
             profileClient.setupWelcomeMessages(greetingListWrapper.extractGreetings());
@@ -53,10 +53,10 @@ public class AdminController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during changing greeting message", e);
         }
-        return "redirect:/admin/greeting";
+        return "redirect:/admin/greetings";
     }
 
-    @PostMapping("/admin/addGreeting")
+    @PostMapping("/admin/greeting")
     public String addGreeting(@ModelAttribute Greeting greeting) {
         try {
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
@@ -68,7 +68,7 @@ public class AdminController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during changing greeting message", e);
         }
-        return "redirect:/admin/greeting";
+        return "redirect:/admin/greetings";
     }
 
     //Jest get, bo nie wiedziałem jak odwołać sie do posta/deleta z linka z front-endu
@@ -76,7 +76,7 @@ public class AdminController {
     public String removeGreeting(@PathVariable String locale) {
         if (StringUtils.equals(locale, "default")) {
             //TODO: pokazac komunikat ze nie wolno usuwac default lub zablokować taką opcję
-            return "redirect:/admin/greeting";
+            return "redirect:/admin/greetings";
         }
         try {
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
@@ -87,7 +87,7 @@ public class AdminController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.info("Deleting greeting failed", e);
         }
-        return "redirect:/admin/greeting";
+        return "redirect:/admin/greetings";
     }
 
     private List<com.github.messenger4j.profile.Greeting> getGreetingsWithDefaultLocale(MessengerProfileClient profileClient) {

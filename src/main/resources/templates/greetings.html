@@ -21,7 +21,7 @@
                 <div class="panel-heading">Ustaw wiadomość</div>
                 <div class="panel-body">
                     <!--/*@thymesVar id="greetingListWrapper" type="pl.hycom.pip.messanger.model.GreetingListWrapper"*/-->
-                    <form action="#" th:action="@{/admin/greeting}" th:object="${greetingListWrapper}"
+                    <form action="#" th:action="@{/admin/greetings}" th:object="${greetingListWrapper}"
                           method="post">
                         <div th:each="greeting, stat: *{greetings}" class="form-group" id="container">
                             <div class="greetingEntry">
@@ -34,21 +34,25 @@
                             </div>
                         </div>
                         <div class="pull-right">
-                            <a th:href="@{/admin/greeting}" class="btn btn-default">Przeładuj</a>
+                            <a th:href="@{/admin/greetings}" class="btn btn-default">Przeładuj</a>
                             <button type="reset" class="btn btn-default">Resetuj</button>
                             <button type="submit" class="btn btn-primary">Zatwierdź</button>
                         </div>
                     </form>
                     <!--/*@thymesVar id="greeting" type="pl.hycom.pip.messanger.model.Greeting"*/-->
-                    <form action="#" th:action="@{/admin/addGreeting}" th:object="${greeting}"
+                    <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}"
                           method="post">
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <textarea placeholder="Locale" class="form-control" th:field="*{locale}"/>
-                            </div>
-                            <div class="col-lg-10">
-                                <textarea placeholder="Wiadomość powitalna" th:field="*{text}"
+                        <div class="control-row">
+                            <div class="control-group">
+                                <div class="input-group">
+                                    <div class="col-lg-2">
+                                        <textarea placeholder="Locale" class="form-control" th:field="*{locale}"/>
+                                    </div>
+                                    <div class="col-lg-10">
+                                        <textarea placeholder="Wiadomość powitalna" th:field="*{text}"
                                           class="form-control message-item"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
