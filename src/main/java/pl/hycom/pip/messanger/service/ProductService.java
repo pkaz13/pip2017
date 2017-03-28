@@ -94,6 +94,10 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public void deleteAllProducts() {
+        productRepository.deleteAll();
+    }
+
     public int count() {
         return findAllProducts().size();
     }
