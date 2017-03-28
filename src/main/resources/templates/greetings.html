@@ -5,6 +5,7 @@
 <head>
     <title>Konfiguracja tekstu powitalnego</title>
     <script th:src="@{/js/greeting.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/greeting-style.css}" type="text/css"/>
 </head>
 <body>
 <div layout:fragment="content">
@@ -24,13 +25,21 @@
                     <form action="#" th:action="@{/admin/greetings}" th:object="${greetingListWrapper}"
                           method="post">
                         <div th:each="greeting, stat: *{greetings}" class="form-group" id="container">
-                            <div class="greetingEntry">
+                            <div class="greetingEntry row">
                                 <input type="hidden" th:field="*{greetings[__${stat.index}__].locale}"/>
-                                <label for="message"
-                                       th:text="'Wiadomość dla: ' + *{greetings[__${stat.index}__].locale}"></label>
-                                <textarea id="message" class="form-control autofocus message-item" name="message"
-                                          th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
-                                <a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}"><span>Delete</span></a>
+                                <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <label class="locale-label"
+                                                   th:text="*{greetings[__${stat.index}__].locale}"></label>
+                                        </span>
+                                    <input id="message" class="form-control autofocus message-item" name="message"
+                                           th:field="*{greetings[__${stat.index}__].text}"
+                                           th:maxlength="160"/>
+                                    <span class="input-group-btn">
+                                            <button class="btn btn-secondary btn-danger" type="button">
+                                                <span class="glyphicon glyphicon-trash"></span> Usuń</button>
+                                        </span>
+                                </div>
                             </div>
                         </div>
                         <div class="pull-right">
@@ -42,21 +51,37 @@
                     <!--/*@thymesVar id="greeting" type="pl.hycom.pip.messanger.model.Greeting"*/-->
                     <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}"
                           method="post">
-                        <div class="control-row">
-                            <div class="control-group">
-                                <div class="input-group">
-                                    <div class="col-lg-2">
-                                        <textarea placeholder="Locale" class="form-control" th:field="*{locale}"/>
-                                    </div>
-                                    <div class="col-lg-10">
-                                        <textarea placeholder="Wiadomość powitalna" th:field="*{text}"
-                                          class="form-control message-item"/>
-                                    </div>
+                        <div class="form-group row">
+                            <div class="input-group">
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" placeholder="Search for..."
+                                           th:field="*{locale}"/>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" placeholder="Search for..."
+                                           th:field="*{text}"/>
+                                </div>
+                                <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!--form action="#" th:action="@{/admin/greeting}" th:object="${greeting}"
+                          method="post">
+                        <div class="form-group row">
+                            <div class="input-group">
+                                <div class="col-lg-2">
+                                    <textarea placeholder="Locale" class="form-control" th:field="*{locale}"/>
+                                </div>
+                                <div class="col-lg-10">
+                                            <textarea placeholder="Wiadomość powitalna" th:field="*{text}"
+                                                      class="form-control message-item"/>
                                 </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
-                    </form>
+                    </form-->
+
                 </div>
             </div>
         </div>
