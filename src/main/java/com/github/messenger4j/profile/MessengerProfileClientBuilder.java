@@ -21,7 +21,7 @@ public final class MessengerProfileClientBuilder {
         return this;
     }
 
-    public  MessengerProfileClient build() {
-        return new  MessengerProfileClientImpl(this);
+    public MessengerProfileClient build() {
+        return new MessengerProfileClientImpl(this);
     }
 }
