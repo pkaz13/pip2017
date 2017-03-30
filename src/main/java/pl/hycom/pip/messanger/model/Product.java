@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import lombok.Data;
@@ -39,7 +40,7 @@ public class Product implements Serializable {
             fetch = FetchType.EAGER
     )
     @OrderColumn
-    private Set<Keyword> keywords;
+    private Set<Keyword> keywords = new LinkedHashSet<>();
 
     public boolean containsKeywords(String[] keywordValues) {
         for (String keywordValue : keywordValues) {

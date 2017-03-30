@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import javax.inject.Inject;
 import java.lang.reflect.Array;
 import java.security.Key;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -69,7 +66,7 @@ public class ProductService {
         return products;
     }
 
-    public List<Product> findAllProductWithKeywords(Keyword... keywords) {
+    public List<Product> findAllProductsContainingAtLeastOneKeyword(Keyword... keywords) {
         List<Product> productsWithKeywords = new ArrayList<>();
         for (Keyword keyword : keywords) {
             List<Product> productsWithKeyword = productRepository.findProductsWithKeyword(keyword);
@@ -80,6 +77,11 @@ public class ProductService {
             }
         }
         return productsWithKeywords;
+    }
+
+    public List<Product> findAllProductsContainingAllKeywords(Keyword... keywords) {
+        Set<Keyword> keywordSet = Arrays.stream(keywords).collect(Collectors.toSet());
+        return productRepository.findProductByKeywords(keywordSet);
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
