@@ -49,6 +49,8 @@ $(document).ready(function() {
         openDeleteModalWindow(id);
     });
 
-    $('.keywords-input').tokenfield();
-    $('.keywords-input').tokenfield('disable');
+    $('.keyword-label').css({"margin":"0.3em", "display":"inline-block"});
+
+    // $('.keywords-input').tokenfield();
+    // $('.keywords-input').tokenfield('disable');
 });
