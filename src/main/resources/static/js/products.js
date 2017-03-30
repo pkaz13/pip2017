@@ -48,4 +48,7 @@ $(document).ready(function() {
         var id = buttonId.split("_")[1];
         openDeleteModalWindow(id);
     });
+
+    $('.keywords-input').tokenfield();
+    $('.keywords-input').tokenfield('disable');
 });
