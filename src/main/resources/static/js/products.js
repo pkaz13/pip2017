@@ -32,6 +32,8 @@ function openDeleteModalWindow(productId){
     $('#delete').modal('show');
 }
 
+
+
 $(document).ready(function() {
     $("#newProductButton").click(function(){
         openModalWindow("product_0");
@@ -50,7 +52,8 @@ $(document).ready(function() {
     });
 
     $('.keyword-label').css({"margin":"0.3em", "display":"inline-block"});
+    
 
-    // $('.keywords-input').tokenfield();
+    $('#keywords_form').tokenfield();
     // $('.keywords-input').tokenfield('disable');
 });
