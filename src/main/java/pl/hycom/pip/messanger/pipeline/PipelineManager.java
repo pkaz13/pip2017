@@ -2,6 +2,7 @@ package pl.hycom.pip.messanger.pipeline;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.stream.XMLInputFactory;
@@ -58,7 +59,7 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
         Integer processResult = pipelineProcessor.runProcess(context);
 
         List<Transition> transitions = link.getTransitions().stream()
-                                            .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString());
+                                            .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
         //start for transitions
         for (Transition transition : transitions) {
             runProcessForLink(context, pipelineChain, transition.getLink());
