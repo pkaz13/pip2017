@@ -26,8 +26,7 @@ public class ProductService {
 
     public Product addProduct(Product product) {
         log.info("Invoking of addProduct(product) method from ProductService class");
-        productRepository.save(product);
-        return product;
+        return productRepository.save(product);
     }
 
     public Product findProductById(Integer id) {
@@ -46,11 +45,11 @@ public class ProductService {
         productRepository.delete(id);
     }
 
-    public void updateProductName(Integer id, String newName) {
+    public Product updateProductName(Integer id, String newName) {
         log.info("Invoking of updateProductName(id, newName) method from ProductService class");
         Product product = productRepository.findOne(id);
         product.setName(newName);
-        productRepository.save(product);
+        return productRepository.save(product);
     }
 
     public Product updateProduct(Product product)
@@ -60,8 +59,7 @@ public class ProductService {
         updatedProduct.setName(product.getName());
         updatedProduct.setDescription(product.getDescription());
         updatedProduct.setImageUrl(product.getImageUrl());
-        productRepository.save(updatedProduct);
-        return updatedProduct;
+        return productRepository.save(updatedProduct);
     }
 
     public Product addOrUpdateProduct(Product product)
