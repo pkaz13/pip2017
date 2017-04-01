@@ -77,9 +77,9 @@ public class ProductServiceTest {
         productService.addProduct(product1);
 
         //assertion
-        assertEquals(productsCount + 1, productService.findAllProducts().size());
+        assertEquals("size of returned productsList should be greater by one than productsCount", productsCount + 1, productService.findAllProducts().size());
         Product checkedProduct = productService.findProductById(product1.getId());
-        assertEquals(2, checkedProduct.getKeywords().size());
+        assertEquals("size of returned keywordsList should be equal to 2", 2, checkedProduct.getKeywords().size());
     }
 
     @Test
@@ -88,12 +88,13 @@ public class ProductServiceTest {
 
         //preparation
         productService.addProduct(product1);
+        Product product = productService.findProductById(product1.getId());
 
         //assertion
-        assertNotNull(productService.findProductById(product1.getId()));
-        assertEquals("name1", productService.findProductById(product1.getId()).getName());
-        assertEquals("desc1", productService.findProductById(product1.getId()).getDescription());
-        assertEquals("url1", productService.findProductById(product1.getId()).getImageUrl());
+        assertNotNull("added product shouldn't be null", product);
+        assertEquals("name of product1 should be equal to 'name1'","name1", product.getName());
+        assertEquals("description of product1 should be equal to 'desc1'", "desc1", product.getDescription());
+        assertEquals("url of product1 should be equal to 'url1'", "url1", product.getImageUrl());
     }
 
     @Test
@@ -105,9 +106,9 @@ public class ProductServiceTest {
         productService.addProduct(product1);
 
         //assertion
-        assertEquals(count + 1, productService.count());
+        assertEquals("after adding product: size of returned productList should be greater by one than count", count + 1, productService.count());
         productService.deleteProduct(product1.getId());
-        assertEquals(count, productService.count());
+        assertEquals("after deleting product: size of returned productList should be equal to count", count, productService.count());
     }
 
     @Test
@@ -116,12 +117,13 @@ public class ProductServiceTest {
 
         //preparation
         productService.addProduct(product1);
+        String newName = "zażółć gęślą jaźń";
 
         //action
-        productService.updateProductName(product1.getId(), "zażółć gęślą jaźń");
+        productService.updateProductName(product1.getId(), newName);
 
         //assertion
-        assertEquals("zażółć gęślą jaźń", productService.findProductById(product1.getId()).getName());
+        assertEquals("name of product1 should be updated and equal to " + newName, newName, productService.findProductById(product1.getId()).getName());
     }
 
     @Test
@@ -134,8 +136,8 @@ public class ProductServiceTest {
         productService.addProduct(product3);
 
         //assertion
-        assertEquals(3, productService.getRandomProducts(3).size());
-        assertEquals(2, productService.getRandomProducts(2).size());
+        assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 3", 3, productService.getRandomProducts(3).size());
+        assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 2", 2, productService.getRandomProducts(2).size());
     }
 
     @After
