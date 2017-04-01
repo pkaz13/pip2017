@@ -1,15 +1,15 @@
 package pl.hycom.pip.messanger.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.hycom.pip.messanger.metamodel.Product_;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
+
 import javax.inject.Inject;
-import java.lang.reflect.Array;
-import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -81,7 +81,8 @@ public class ProductService {
 
     public List<Product> findAllProductsContainingAllKeywords(Keyword... keywords) {
         Set<Keyword> keywordSet = Arrays.stream(keywords).collect(Collectors.toSet());
-        return productRepository.findProductByKeywords(keywordSet);
+        return productRepository.findAll((root, criteriaQuery, criteriaBuilder)
+                -> criteriaBuilder.equal(root.get(Product_.keywords), keywordSet));
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {

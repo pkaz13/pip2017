@@ -3,6 +3,8 @@ package pl.hycom.pip.messanger.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface ProductRepository extends CrudRepository<Product, Integer> {
+public interface ProductRepository extends CrudRepository<Product, Integer>, JpaSpecificationExecutor {
 
 
     @Query("Select p from Product p where p not in (:productsForCustomer)")
@@ -23,5 +25,5 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
     @Query("select p from Product p where (:requiredKeyword) member of p.keywords")
     public List<Product> findProductsWithKeyword(@Param("requiredKeyword") Keyword keyword);
 
-    public List<Product> findProductByKeywords(Set<Keyword> keywords);
+//    public List<Product> findProductByKeywords(Specification<Product> specification);
 }

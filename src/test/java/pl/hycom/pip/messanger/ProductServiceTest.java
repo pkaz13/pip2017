@@ -228,7 +228,7 @@ public class ProductServiceTest {
         productService.addProduct(product1);
         productService.addProduct(product2);
         productService.addProduct(product3);
-        List<Product> productsWithKeywords = productService.findAllProductsContainingAllKeywords(keyword1, keyword2);
+        List<Product> productsWithKeywords = productService.findAllProductsContainingAllKeywords(keyword1);
 
         //assertion
         assertEquals("list should contain only 1 product", 1, productsWithKeywords.size());
