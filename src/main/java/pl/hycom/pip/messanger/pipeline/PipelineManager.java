@@ -29,8 +29,11 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
 
     private Pipeline pipeline;
 
-    @Value("${messenger.pipelineFileURL:/pipeline.xml}")
     private String pipelineFileURL;
+
+    public PipelineManager(String pipelineFileURL) {
+        this.pipelineFileURL = pipelineFileURL;
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -68,7 +71,7 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
 
         log.debug("Started process of pipelineLink with name[" + link.getName() + "]");
         Integer processResult = pipelineProcessor.runProcess(context);
-        List<Transition> transitions = Optional.ofNullable(link.getTransitions()).orElse(Collections.emptyList()).stream()
+        List<Transition> transitions = Optional.ofNullable(link.getTransitions()).orElse(Collections.emptyList()).parallelStream()
                                             .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
 
         //start for transitions
