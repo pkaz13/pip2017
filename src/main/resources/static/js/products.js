@@ -19,7 +19,7 @@ function openModalWindow(rowId) {
         $("#id_form").val(columns.eq(0).text());
         $("#name_form").val(columns.eq(1).text());
         $("#description_form").val(columns.eq(2).text());
-        $("#imageUrl_form").val(columns.eq(3).find("img").attr('src'));
+        $("#imageUrl_form").val(columns.eq(4).find("img").attr('src'));
         $("#modal_headear").text("Editing product");
         $("#button_submit").text("Update");
     }
