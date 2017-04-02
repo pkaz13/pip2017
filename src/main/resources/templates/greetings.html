@@ -48,39 +48,30 @@
                             <button type="submit" class="btn btn-primary">Zatwierdź</button>
                         </div>
                     </form>
+                </div>
                     <!--/*@thymesVar id="greeting" type="pl.hycom.pip.messanger.model.Greeting"*/-->
+                <div class="panel-body">
+
                     <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}"
                           method="post">
-                        <div class="form-group row">
-                            <div class="input-group">
-                                <div class="col-lg-6">
-                                    <input type="text" class="form-control" placeholder="Search for..."
-                                           th:field="*{locale}"/>
+                        <div class="form-group">
+                            <div class="input-group col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <input type="text" class="form-control" placeholder="Locale"
+                                               th:field="*{locale}"/>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" placeholder="Wpisz wiadomość..."
+                                               th:field="*{text}"/>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="submit" class="btn btn-primary">Dodaj</button>
+                                    </div>
                                 </div>
-                                <div class="col-lg-6">
-                                    <input type="text" class="form-control" placeholder="Search for..."
-                                           th:field="*{text}"/>
-                                </div>
-                                <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
                             </div>
                         </div>
                     </form>
-
-                    <!--form action="#" th:action="@{/admin/greeting}" th:object="${greeting}"
-                          method="post">
-                        <div class="form-group row">
-                            <div class="input-group">
-                                <div class="col-lg-2">
-                                    <textarea placeholder="Locale" class="form-control" th:field="*{locale}"/>
-                                </div>
-                                <div class="col-lg-10">
-                                            <textarea placeholder="Wiadomość powitalna" th:field="*{text}"
-                                                      class="form-control message-item"/>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
-                    </form-->
 
                 </div>
             </div>
