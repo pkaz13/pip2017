@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,33 +25,26 @@ public class ProductController {
 
     @GetMapping("/admin/products")
     public String findAllProducts(Model model) {
-        List<Product> allProducts = productService.findAllProducts();
-        model.addAttribute("products", allProducts);
-        model.addAttribute("productForm",new Product());
+        addProductsToModel(model,new Product());
         return "products";
     }
 
     @PostMapping("/admin/products")
-    public ModelAndView productsSubmit(@Valid Product product, BindingResult bindingResult ) {
+    public String productsSubmit(@Valid Product product, BindingResult bindingResult,Model model ) {
         try {
             if (bindingResult.hasErrors()) {
+                addProductsToModel(model,product);
+                List<FieldError> errors=bindingResult.getFieldErrors();
+                model.addAttribute("errors",errors);
                 log.info("Validation product error !!!");
-                return new ModelAndView("redirect:/admin/products");
+                return "products";
             }
-            if (product.getId() != 0) {
-                productService.updateProduct(product.getId(),product.getName(),product.getDescription(),product.getImageUrl());
-                log.info("Product updated !!!");
-            }
-            else
-            {
-                productService.addProduct(product);
-                log.info("Product added !!!");
-            }
+            productService.addOrUpdateProduct(product);
         }
         catch (Exception ex){
             log.error("Error during post request from admin/products"+ex);
         }
-        return new ModelAndView("redirect:/admin/products");
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/admin/products/delete")
@@ -59,4 +53,12 @@ public class ProductController {
         log.info("Product deleted !!!");
         return new ModelAndView("redirect:/admin/products");
     }
+
+    private void addProductsToModel(Model model,Product product)
+    {
+        List<Product> allProducts = productService.findAllProducts();
+        model.addAttribute("products", allProducts);
+        model.addAttribute("productForm",product);
+    }
+
 }
