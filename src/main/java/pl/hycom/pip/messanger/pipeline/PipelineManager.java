@@ -47,9 +47,9 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
     }
 
     private void runProcessForLink(PipelineContext context, PipelineChain pipelineChain, String name) throws PipelineException {
-       if (StringUtils.isEmpty(name)) {
+        if (StringUtils.isEmpty(name)) {
            return;
-       }
+        }
 
         //find link
         PipelineLink link = findPipelineLink(name, pipelineChain);
@@ -57,15 +57,15 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
         //run process
         Processor processor = link.getProcessor();
         PipelineProcessor pipelineProcessor = applicationContext.getBean(processor.getBean(), PipelineProcessor.class);
+
+        if (pipelineProcessor == null) {
+            throw new PipelineException("Bean [" + processor.getBean() + "] is null");
+        }
+
         log.debug("Started process of pipelineLink with name[" + link.getName() + "]");
         Integer processResult = pipelineProcessor.runProcess(context);
         List<Transition> transitions = Optional.ofNullable(link.getTransitions()).orElse(Collections.emptyList()).stream()
                                             .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
-
-        log.debug("size of transision links" + transitions.size());
-        if(transitions.isEmpty()) {
-            return;
-        }
 
         //start for transitions
         for (Transition transition : transitions) {
@@ -74,22 +74,10 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
     }
 
     public void runProcess(String pipelineChainName, Map<String, Object> params) throws PipelineException {
-
-        log.info("Starting pipeline[" + pipelineChainName + "] with params[" + params + "]");
-
+        log.debug("Starting pipeline[" + pipelineChainName + "] with params[" + params + "]");
         PipelineContext ctx = new PipelineContext(params);
         PipelineChain pipelineChain = findPipelineChain(pipelineChainName);
         runProcessForChain(ctx, pipelineChain);
-
-        // TODO: pobrac procesor,
-        // pobrac beana z kontekstu,
-        // uruchomic procesor z ctx,
-        // sprawdzic wynik i poszukac nastepnego pipelineLinka w transition,
-        // jak transition nie ma albo nie ma linka to koniec
-
-        // TODO: bazujac na MessengerProductsRecommendationHandler trzeba stworzyc 2 procesory i wpiac w pipeline
-        // pierwszy ma pobrac produkty i zapisac w ctx
-        // drugi ma wyslac produkty w ramach odpowiedzi
     }
 
     private PipelineChain findPipelineChain(String pipelineChainName) throws PipelineException {
