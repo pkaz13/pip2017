@@ -36,7 +36,8 @@
                                            th:field="*{greetings[__${stat.index}__].text}"
                                            th:maxlength="160"/>
                                     <span class="input-group-btn">
-                                            <button class="btn btn-secondary btn-danger" type="button">
+                                            <button class="btn btn-secondary btn-danger delete-btn"
+                                                    th:href="@{'./deleteGreeting/' + ${greeting.locale}}" type="button">
                                                 <span class="glyphicon glyphicon-trash"></span> Usuń</button>
                                         </span>
                                 </div>

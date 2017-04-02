@@ -78,9 +78,8 @@ public class AdminController {
         return "redirect:" + ADMIN_MAPPING + GREETINGS_MAPPING;
     }
 
-    //Jest get, bo nie wiedziałem jak odwołać sie do deleta z linka z front-endu
-    @GetMapping("/deleteGreeting/{locale}")
-    public String removeGreeting(@PathVariable String locale) {
+    @RequestMapping(value = "/deleteGreeting/{locale}", method = {RequestMethod.DELETE})
+    public String removeGreeting(@PathVariable("locale") String locale) {
         if (StringUtils.equals(locale, "default")) {
             //TODO: pokazac komunikat ze nie wolno usuwac default lub zablokować taką opcję
             return "redirect:" + ADMIN_MAPPING + GREETINGS_MAPPING;
