@@ -1,7 +1,9 @@
 package pl.hycom.pip.messanger.pipeline;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
@@ -57,9 +59,8 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
         PipelineProcessor pipelineProcessor = applicationContext.getBean(processor.getBean(), PipelineProcessor.class);
         log.debug("Started process of pipelineLink with name[" + link.getName() + "]");
         Integer processResult = pipelineProcessor.runProcess(context);
-
-        List<Transition> transitions = link.getTransitions().stream()
-                                            .filter(t -> t != null && StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
+        List<Transition> transitions = Optional.ofNullable(link.getTransitions()).orElse(Collections.emptyList()).stream()
+                                            .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
 
         log.debug("size of transision links" + transitions.size());
         if(transitions.isEmpty()) {
