@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
 
     private Pipeline pipeline;
 
+    @Value("${messenger.pipelineFileURL:/pipeline.xml}")
+    private String pipelineFileURL;
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -37,7 +41,7 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
     public void afterPropertiesSet() throws Exception {
         XMLInputFactory xif = XMLInputFactory.newFactory();
         xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-        XMLStreamReader xsr = xif.createXMLStreamReader(new StreamSource(getClass().getResourceAsStream("/pipeline.xml")));
+        XMLStreamReader xsr = xif.createXMLStreamReader(new StreamSource(getClass().getResourceAsStream(pipelineFileURL)));
 
         pipeline = (Pipeline) JAXBContext.newInstance(Pipeline.class).createUnmarshaller().unmarshal(xsr);
     }
