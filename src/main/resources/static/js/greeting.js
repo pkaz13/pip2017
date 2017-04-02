@@ -10,7 +10,7 @@ jQuery(function ($) {
 
     $(".delete-btn").on("click", function () {
         var url = $(event.target).attr("href");
-        console.log(url)
+        console.log(url);
         var token = $("input[name='_csrf']").val();
         var header = "X-CSRF-TOKEN";
         $(document).ajaxSend(function (e, xhr, options) {
@@ -20,7 +20,7 @@ jQuery(function ($) {
             type: "DELETE",
             url: url,
             success: function (response) {
-                alert("Suceeded!");
+                window.location.href = response;
             },
             error: function (e) {
                 alert('Failed!');

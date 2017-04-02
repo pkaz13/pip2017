@@ -79,7 +79,9 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/deleteGreeting/{locale}", method = {RequestMethod.DELETE})
-    public String removeGreeting(@PathVariable("locale") String locale) {
+    public
+    @ResponseBody
+    String removeGreeting(@PathVariable("locale") String locale) {
         if (StringUtils.equals(locale, "default")) {
             //TODO: pokazac komunikat ze nie wolno usuwac default lub zablokować taką opcję
             return "redirect:" + ADMIN_MAPPING + GREETINGS_MAPPING;
@@ -93,7 +95,7 @@ public class AdminController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.info("Deleting greeting failed", e);
         }
-        return "redirect:" + ADMIN_MAPPING + GREETINGS_MAPPING;
+        return ADMIN_MAPPING + GREETINGS_MAPPING;
     }
 
     private List<com.github.messenger4j.profile.Greeting> getGreetingsWithDefaultLocale(MessengerProfileClient profileClient) {
