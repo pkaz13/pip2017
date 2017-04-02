@@ -59,7 +59,7 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
         Integer processResult = pipelineProcessor.runProcess(context);
 
         List<Transition> transitions = link.getTransitions().stream()
-                                            .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
+                                            .filter(t -> t != null && StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
 
         log.debug("size of transision links" + transitions.size());
         if(transitions.isEmpty()) {
