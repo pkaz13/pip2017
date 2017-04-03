@@ -33,20 +33,20 @@ public class MessengerConfiguration {
     @Value("${messenger.verifyToken}")
     private String verifyToken;
 
-    @Value("${messenger.pipelineFileURL}")
-    private String pipelineUrl;
+    @Value("${messenger.pipeline.filepath}")
+    private String pipelineFilepath;
 
     @Autowired
     private MessengerProductsRecommendationHandler messengerProductsRecommendationHandler;
 
     @Bean
     public PipelineManager pipelineManager() {
-        return new PipelineManager(pipelineUrl);
+        return new PipelineManager(pipelineFilepath);
     }
 
     @Bean
     public PipelineMessageHandler pipelineMessageHandler() {
-        return new PipelineMessageHandler();
+        return new PipelineMessageHandler(pipelineManager());
     }
 
     @Bean

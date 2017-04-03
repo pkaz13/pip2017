@@ -71,11 +71,13 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
 
         log.debug("Started process of pipelineLink with name[" + link.getName() + "]");
         Integer processResult = pipelineProcessor.runProcess(context);
+        log.debug("Actual result of pipelineLink[" + link.getName() + "] is: " + processResult);
         List<Transition> transitions = Optional.ofNullable(link.getTransitions()).orElse(Collections.emptyList()).parallelStream()
                                             .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
 
         //start for transitions
         for (Transition transition : transitions) {
+            log.debug("Started transition with link[" + transition.getLink() + "] and expected result: " + transition.getReturnValue() );
             runProcessForLink(context, pipelineChain, transition.getLink());
         }
     }

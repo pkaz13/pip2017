@@ -2,7 +2,8 @@ messenger:
   verifyToken: token
   recommendation:
     products-amount: 3
-  pipelineFileURL: /pipeline.xml
+  pipeline:
+    filepath: /pipeline.xml
 
 management:
   security:
