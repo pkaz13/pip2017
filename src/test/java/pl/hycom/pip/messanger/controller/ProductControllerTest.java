@@ -182,6 +182,20 @@ public class ProductControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void getAllProducts() throws Exception {
+        mockMvc.perform(get("/admin/products"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(this.products.get(0).getId().intValue())))
+                .andExpect(jsonPath("$[0].name", is(this.products.get(0).getName())))
+                .andExpect(jsonPath("$[1].id", is(this.products.get(1).getId().intValue())))
+                .andExpect(jsonPath("$[1].name", is(this.products.get(1).getName())));
+    }
+
+
+
 
 
 
