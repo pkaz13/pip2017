@@ -19,10 +19,8 @@ public class PipelineMessageHandler implements TextMessageEventHandler {
     public static final String SENDER_ID = "senderId";
     public static final String MESSAGE = "message";
 
+    @Autowired
     private PipelineManager pipelineManager;
-
-    @Value("${messenger.pipelineFileURL}")
-    private String pipelineUrl;
 
     @Override
     public void handle(TextMessageEvent msg) {
@@ -33,7 +31,6 @@ public class PipelineMessageHandler implements TextMessageEventHandler {
         params.put(MESSAGE, msg.getText());
 
         try {
-            PipelineManager pipelineManager = new PipelineManager(pipelineUrl);
             pipelineManager.runProcess("processMessage", params);
         } catch (PipelineException e) {
             log.error(e);
