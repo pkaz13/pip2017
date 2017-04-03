@@ -77,7 +77,7 @@ $(document).ready(function () {
     citynames.initialize();
 
     $('#keywords_form').tagsinput({
-        allowDuplicates: true,
+        allowDuplicates: false,
         typeaheadjs: {
             name: "citynames",
             source: citynames.ttAdapter()
