@@ -50,22 +50,56 @@ $(document).ready(function () {
         openDeleteModalWindow(id);
     });
 
-    $('.keyword-label').css({"margin": "0.3em", "display": "inline-block"});
+    $('.keyword-label').css({"margin": "0.1em", "display": "inline-block"});
 
-    $('#keywords_form').tokenfield({
-        autocomplete: {
-            source: ['red', 'blue', 'green', 'yellow', 'violet', 'brown', 'purple', 'black', 'white'],
-            delay: 100
+    var data = ["Amsterdam",
+        "London",
+        "Paris",
+        "Washington",
+        "New York",
+        "New Jersey",
+        "New Orleans",
+        "Los Angeles",
+        "Sydney",
+        "Melbourne",
+        "Canberra",
+        "Beijing",
+        "New Delhi",
+        "Kathmandu",
+        "Cairo",
+        "Cape Town",
+        "Kinshasa"];
+    var citynames = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        local: data
+    });
+    citynames.initialize();
+
+    $('#keywords_form').tagsinput({
+        allowDuplicates: true,
+        typeaheadjs: {
+            name: "citynames",
+            source: citynames.ttAdapter()
         },
-        showAutocompleteOnFocus: true
+        freeInput: true
     });
 
-    // zapobieganie duplikacji
-    $('#keywords_form').on('tokenfield:createtoken', function (event) {
-        var existingTokens = $(this).tokenfield('getTokens');
-        $.each(existingTokens, function(index, token) {
-            if (token.value === event.attrs.value)
-                event.preventDefault();
-        });
-    });
+
+    // $('#keywords_form').tokenfield({
+    //     autocomplete: {
+    //         source: ['red', 'blue', 'green', 'yellow', 'violet', 'brown', 'purple', 'black', 'white'],
+    //         delay: 100
+    //     },
+    //     showAutocompleteOnFocus: true
+    // });
+
+    // zapobieganie duplikacji - tokenfield
+    // $('#keywords_form').on('tokenfield:createtoken', function (event) {
+    //     var existingTokens = $(this).tokenfield('getTokens');
+    //     $.each(existingTokens, function(index, token) {
+    //         if (token.value === event.attrs.value)
+    //             event.preventDefault();
+    //     });
+    // });
 });
