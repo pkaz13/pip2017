@@ -50,8 +50,6 @@ $(document).ready(function () {
         openDeleteModalWindow(id);
     });
 
-    $('.keyword-label').css({"margin": "0.1em", "display": "inline-block"});
-
     var data = ["Amsterdam",
         "London",
         "Paris",
