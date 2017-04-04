@@ -13,13 +13,16 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.pipeline.model.*;
+import pl.hycom.pip.messanger.pipeline.model.Pipeline;
+import pl.hycom.pip.messanger.pipeline.model.PipelineChain;
+import pl.hycom.pip.messanger.pipeline.model.PipelineLink;
+import pl.hycom.pip.messanger.pipeline.model.Processor;
+import pl.hycom.pip.messanger.pipeline.model.Transition;
 
 @Log4j2
 @Service
@@ -55,13 +58,13 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
 
     private void runProcessForLink(PipelineContext context, PipelineChain pipelineChain, String name) throws PipelineException {
         if (StringUtils.isEmpty(name)) {
-           return;
+            return;
         }
 
-        //find link
+        // find link
         PipelineLink link = findPipelineLink(name, pipelineChain);
 
-        //run process
+        // run process
         Processor processor = link.getProcessor();
         PipelineProcessor pipelineProcessor = applicationContext.getBean(processor.getBean(), PipelineProcessor.class);
 
@@ -73,11 +76,11 @@ public class PipelineManager implements ApplicationContextAware, InitializingBea
         Integer processResult = pipelineProcessor.runProcess(context);
         log.debug("Actual result of pipelineLink[" + link.getName() + "] is: " + processResult);
         List<Transition> transitions = Optional.ofNullable(link.getTransitions()).orElse(Collections.emptyList()).parallelStream()
-                                            .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
+                .filter(t -> StringUtils.equals(t.getReturnValue(), processResult.toString())).collect(Collectors.toList());
 
-        //start for transitions
+        // start for transitions
         for (Transition transition : transitions) {
-            log.debug("Started transition with link[" + transition.getLink() + "] and expected result: " + transition.getReturnValue() );
+            log.debug("Started transition with link[" + transition.getLink() + "] and expected result: " + transition.getReturnValue());
             runProcessForLink(context, pipelineChain, transition.getLink());
         }
     }
