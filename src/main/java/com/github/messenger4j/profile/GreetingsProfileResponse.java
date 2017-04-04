@@ -34,24 +34,25 @@ public class GreetingsProfileResponse extends ProfileResponse {
     }
 
     public static GreetingsProfileResponse fromJson(JsonObject jsonObject) throws MessengerIOException {
-
-        JsonArray dataArray = jsonObject.getAsJsonArray("data");
-        if (dataArray == null || dataArray.size() == 0) {
+        JsonArray dataArray = getArray(jsonObject, "data");
+        if (isJsonArrayEmpty(dataArray)) {
             return new GreetingsProfileResponse(jsonObject.toString());
         }
 
-        JsonArray greetingsJsonArray = dataArray.get(0).getAsJsonObject().getAsJsonArray("greeting");
-        if (greetingsJsonArray == null || greetingsJsonArray.size() == 0) {
+        JsonArray greetingsJsonArray = getArray(dataArray.get(0).getAsJsonObject(), "greeting");
+        if (isJsonArrayEmpty(greetingsJsonArray)) {
             return new GreetingsProfileResponse(jsonObject.toString());
         }
 
-        try {
-            Greeting[] greetingsArray = new Gson().fromJson(greetingsJsonArray, Greeting[].class);
-            return new GreetingsProfileResponse(jsonObject.toString(), greetingsArray);
+        return new GreetingsProfileResponse(jsonObject.toString(), new Gson().fromJson(greetingsJsonArray, Greeting[].class));
+    }
 
-        } catch (Exception e) {
-            throw new MessengerIOException(e);
-        }
+    private static JsonArray getArray(JsonObject jsonObject, String label) {
+        return jsonObject.getAsJsonArray(label);
+    }
+
+    private static boolean isJsonArrayEmpty(JsonArray jsonArray) {
+        return jsonArray == null || jsonArray.size() == 0;
     }
 
 }

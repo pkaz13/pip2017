@@ -15,6 +15,7 @@ import com.github.messenger4j.user.UserProfileClient;
 import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
 import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
 import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
+import pl.hycom.pip.messanger.pipeline.PipelineManager;
 
 /**
  * Created by patry on 07/03/2017.
@@ -32,12 +33,20 @@ public class MessengerConfiguration {
     @Value("${messenger.verifyToken}")
     private String verifyToken;
 
+    @Value("${messenger.pipeline.filepath}")
+    private String pipelineFilepath;
+
     @Autowired
     private MessengerProductsRecommendationHandler messengerProductsRecommendationHandler;
 
     @Bean
+    public PipelineManager pipelineManager() {
+        return new PipelineManager(pipelineFilepath);
+    }
+
+    @Bean
     public PipelineMessageHandler pipelineMessageHandler() {
-        return new PipelineMessageHandler();
+        return new PipelineMessageHandler(pipelineManager());
     }
 
     @Bean
@@ -48,8 +57,8 @@ public class MessengerConfiguration {
     @Bean
     public MessengerReceiveClient receiveClient() {
         return MessengerPlatformWrapper.newReceiveClientBuilder(appSecret, verifyToken)
-                .onTextMessageEvent(messengerProductsRecommendationHandler)
-                // .onTextMessageEvent(pipelineMessageHandler())
+//                .onTextMessageEvent(messengerProductsRecommendationHandler)
+                .onTextMessageEvent(pipelineMessageHandler())
                 .build();
     }
 

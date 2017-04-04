@@ -1,13 +1,13 @@
 package pl.hycom.pip.messanger.model;
 
-import java.io.Serializable;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import lombok.Data;
 
 @Data
 @Entity
@@ -22,10 +22,12 @@ public class Product implements Serializable {
 
     @NotNull
     @Column(length = 80)
+    @Size(min=1)
     private String name;
 
     @NotNull
     @Column(length = 80)
+    @Size(min=1)
     private String description;
 
     @NotNull
