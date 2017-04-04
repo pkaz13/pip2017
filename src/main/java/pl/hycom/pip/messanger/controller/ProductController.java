@@ -65,9 +65,13 @@ public class ProductController {
         model.addAttribute("productForm", product);
     }
 
+    //TODO: docelowo zmienic typ zwracany na liste keywordow
+    @ResponseBody
     @GetMapping("/admin/products/get_keywords_suggestions.json")
-    public @ResponseBody
-    List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
-        return keywordService.findAllKeywords().stream().map(k -> k.getWord()).filter(w -> w.contains(searchTerm)).collect(Collectors.toList());
+    public List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
+        return keywordService.findKeywordsBySearchTerm(searchTerm)
+                .stream()
+                .map(k -> k.getWord())
+                .collect(Collectors.toList());
     }
 }
