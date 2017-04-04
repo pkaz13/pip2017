@@ -49,36 +49,23 @@ $(document).ready(function () {
         var id = buttonId.split("_")[1];
         openDeleteModalWindow(id);
     });
-
-    var data = ["Amsterdam",
-        "London",
-        "Paris",
-        "Washington",
-        "New York",
-        "New Jersey",
-        "New Orleans",
-        "Los Angeles",
-        "Sydney",
-        "Melbourne",
-        "Canberra",
-        "Beijing",
-        "New Delhi",
-        "Kathmandu",
-        "Cairo",
-        "Cape Town",
-        "Kinshasa"];
-    var citynames = new Bloodhound({
+    
+    var keywords = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.whitespace,
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: data
+        remote: {
+            url: '/admin/products/get_keywords_suggestions.json?searchTerm=%QUERY',
+            wildcard: '%QUERY'
+        },
+        limit: 6
     });
-    citynames.initialize();
+    keywords.initialize();
 
     $('#keywords_form').tagsinput({
         allowDuplicates: false,
         typeaheadjs: {
-            name: "citynames",
-            source: citynames.ttAdapter()
+            name: "keywords",
+            source: keywords.ttAdapter()
         },
         freeInput: true
     });

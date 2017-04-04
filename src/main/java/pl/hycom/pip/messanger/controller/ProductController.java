@@ -10,13 +10,16 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import pl.hycom.pip.messanger.model.Product;
+import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -24,6 +27,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final KeywordService keywordService;
 
     @GetMapping("/admin/products")
     public String findAllProducts(Model model) {
@@ -61,4 +65,9 @@ public class ProductController {
         model.addAttribute("productForm", product);
     }
 
+    @GetMapping("/admin/products/get_keywords_suggestions.json")
+    public @ResponseBody
+    List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
+        return keywordService.findAllKeywords().stream().map(k -> k.getWord()).filter(w -> w.contains(searchTerm)).collect(Collectors.toList());
+    }
 }
