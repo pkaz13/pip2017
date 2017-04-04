@@ -1,12 +1,16 @@
 package pl.hycom.pip.messanger.model;
 
-import lombok.Data;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
 
 /**
  * Created by patry on 18/03/2017.
@@ -15,7 +19,9 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "KEYWORDS")
-public class Keyword implements Serializable{
+public class Keyword implements Serializable {
+
+    private static final long serialVersionUID = -8450849049742048985L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
