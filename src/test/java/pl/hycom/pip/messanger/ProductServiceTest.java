@@ -218,22 +218,6 @@ public class ProductServiceTest {
         assertEquals("list should contain all 3 products", 3 , productsWithKeywords.size());
     }
 
-    @Test
-    @Transactional
-    public void findAllProductsContainingAllKeywordsTest() {
-        //preparation
-        addKeywordsToProducts();
-
-        //action
-        productService.addProduct(product1);
-        productService.addProduct(product2);
-        productService.addProduct(product3);
-        List<Product> productsWithKeywords = productService.findAllProductsContainingAllKeywords(keyword1);
-
-        //assertion
-        assertEquals("list should contain only 1 product", 1, productsWithKeywords.size());
-    }
-
     @After
     public void cleanAll() {
         productService.deleteAllProducts();

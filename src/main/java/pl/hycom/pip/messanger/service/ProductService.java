@@ -10,6 +10,7 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -67,22 +68,18 @@ public class ProductService {
     }
 
     public List<Product> findAllProductsContainingAtLeastOneKeyword(Keyword... keywords) {
-        List<Product> productsWithKeywords = new ArrayList<>();
-        for (Keyword keyword : keywords) {
-            List<Product> productsWithKeyword = productRepository.findProductsWithKeyword(keyword);
-            for (Product product : productsWithKeyword) {
-                if (!productsWithKeywords.contains(product)) {
-                    productsWithKeywords.add(product);
-                }
-            }
-        }
-        return productsWithKeywords;
-    }
-
-    public List<Product> findAllProductsContainingAllKeywords(Keyword... keywords) {
-        Set<Keyword> keywordSet = Arrays.stream(keywords).collect(Collectors.toSet());
-        return productRepository.findAll((root, criteriaQuery, criteriaBuilder)
-                -> criteriaBuilder.equal(root.get(Product_.keywords), keywordSet));
+//        List<Product> productsWithKeywords = new ArrayList<>();
+//        for (Keyword keyword : keywords) {
+//            List<Product> productsWithKeyword = productRepository.findProductsWithKeyword(keyword);
+//            for (Product product : productsWithKeyword) {
+//                if (!productsWithKeywords.contains(product)) {
+//                    productsWithKeywords.add(product);
+//                }
+//            }
+//        }
+        return Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull).flatMap
+                (k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull).distinct().
+                collect(Collectors.toList());
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
