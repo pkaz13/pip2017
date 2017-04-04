@@ -24,6 +24,4 @@ public interface ProductRepository extends CrudRepository<Product, Integer>, Jpa
 
     @Query("select p from Product p where (:requiredKeyword) member of p.keywords")
     public List<Product> findProductsWithKeyword(@Param("requiredKeyword") Keyword keyword);
-
-//    public List<Product> findProductByKeywords(Specification<Product> specification);
 }
