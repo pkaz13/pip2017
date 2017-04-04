@@ -1,28 +1,23 @@
 package pl.hycom.pip.messanger.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
+
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-
 @Service
-@RequiredArgsConstructor(onConstructor=@__(@Inject))
+@RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
 public class ProductService {
     private final ProductRepository productRepository;
-
 
     public Product addProduct(Product product) {
         log.info("Invoking of addProduct(product) method from ProductService class");
@@ -52,8 +47,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProduct(Product product)
-    {
+    public Product updateProduct(Product product) {
         log.info("Invoking of updateProductName(id, newName) method from ProductService class");
         Product updatedProduct = productRepository.findOne(product.getId());
         updatedProduct.setName(product.getName());
@@ -62,21 +56,17 @@ public class ProductService {
         return productRepository.save(updatedProduct);
     }
 
-    public Product addOrUpdateProduct(Product product)
-    {
+    public Product addOrUpdateProduct(Product product) {
         if (product.getId() != 0) {
-            Product updatedProduct=updateProduct(product);
+            Product updatedProduct = updateProduct(product);
             log.info("Product updated !!!");
             return updatedProduct;
         }
-        else
-        {
-            Product addedProduct=addProduct(product);
-            log.info("Product added !!!");
-            return addedProduct;
-        }
-    }
 
+        Product addedProduct = addProduct(product);
+        log.info("Product added !!!");
+        return addedProduct;
+    }
 
     public List<Product> getRandomProducts(int howManyProducts) {
         List<Product> products = new ArrayList<>(howManyProducts);
@@ -86,11 +76,29 @@ public class ProductService {
             return products;
         }
         for (int i = 0; i < howManyProducts; i++) {
-        PageRequest pr = new PageRequest(new Random().nextInt(quantity-products.size()),1);
-        products.addAll( productRepository.findSomeProducts(products,pr));
+            PageRequest pr = new PageRequest(new Random().nextInt(quantity - products.size()), 1);
+            products.addAll(productRepository.findSomeProducts(products, pr));
         }
 
         return products;
+    }
+
+    public List<Product> findAllProductsContainingAtLeastOneKeyword(Keyword... keywords) {
+        return Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull).flatMap
+                (k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull).distinct().
+                collect(Collectors.toList());
+    }
+
+    public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
+        Product product = findProductById(id);
+        product.getKeywords().addAll(Arrays.asList(keywords));
+        return productRepository.save(product);
+    }
+
+    public Product removeKeywordsFromProduct(Integer id, Keyword... keywords) {
+        Product product = findProductById(id);
+        product.getKeywords().removeAll(Arrays.asList(keywords));
+        return productRepository.save(product);
     }
 
     public void deleteAllProducts() {
@@ -101,6 +109,3 @@ public class ProductService {
         return findAllProducts().size();
     }
 }
-
-
-

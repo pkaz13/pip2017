@@ -1,16 +1,17 @@
 package com.github.messenger4j.profile;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Rafal Lebioda on 18.03.2017.
@@ -34,21 +35,20 @@ public class GreetingsProfileResponse extends ProfileResponse {
 
     public static GreetingsProfileResponse fromJson(JsonObject jsonObject) throws MessengerIOException {
         JsonArray dataArray = getArray(jsonObject, "data");
-        JsonArray greetingsJsonArray;
-        if (isJsonArrayEmpty(dataArray) || isJsonArrayEmpty(greetingsJsonArray = getGreetingsJsonArray(dataArray))) {
+        if (isJsonArrayEmpty(dataArray)) {
             return new GreetingsProfileResponse(jsonObject.toString());
-        } else {
-            Greeting[] greetingsArray = new Gson().fromJson(greetingsJsonArray, Greeting[].class);
-            return new GreetingsProfileResponse(jsonObject.toString(), greetingsArray);
         }
+
+        JsonArray greetingsJsonArray = getArray(dataArray.get(0).getAsJsonObject(), "greeting");
+        if (isJsonArrayEmpty(greetingsJsonArray)) {
+            return new GreetingsProfileResponse(jsonObject.toString());
+        }
+
+        return new GreetingsProfileResponse(jsonObject.toString(), new Gson().fromJson(greetingsJsonArray, Greeting[].class));
     }
 
     private static JsonArray getArray(JsonObject jsonObject, String label) {
         return jsonObject.getAsJsonArray(label);
-    }
-
-    private static JsonArray getGreetingsJsonArray(JsonArray dataArray) {
-        return getArray(dataArray.get(0).getAsJsonObject(), "greeting");
     }
 
     private static boolean isJsonArrayEmpty(JsonArray jsonArray) {

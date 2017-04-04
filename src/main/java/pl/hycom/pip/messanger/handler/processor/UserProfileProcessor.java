@@ -29,6 +29,8 @@ public class UserProfileProcessor implements PipelineProcessor {
     @Override
     public int runProcess(PipelineContext ctx) throws PipelineException {
 
+        log.info("Started process of UserProfileProcessor");
+
         try {
             UserProfile userProfile = userProfileClient.queryUserProfile(ctx.get(PipelineMessageHandler.SENDER_ID, String.class));
 

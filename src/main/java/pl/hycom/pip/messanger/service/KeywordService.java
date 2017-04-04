@@ -21,9 +21,9 @@ import java.util.stream.StreamSupport;
 public class KeywordService {
     private final KeywordRepository keywordRepository;
 
-    public void addKeyword(Keyword keyword) {
+    public Keyword addKeyword(Keyword keyword) {
         log.info("addKeyword method from KeywordService class invoked");
-        keywordRepository.save(keyword);
+        return keywordRepository.save(keyword);
     }
 
     public Keyword findKeywordById(Integer id) {
@@ -47,6 +47,10 @@ public class KeywordService {
         Keyword keyword = keywordRepository.findOne(id);
         keyword.setWord(newWord);
         keywordRepository.save(keyword);
+    }
+
+    public void deleteAllKeywords() {
+        keywordRepository.deleteAll();
     }
 
     public List<Keyword> findKeywordsBySearchTerm(String searchTerm) {

@@ -11,15 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -37,6 +38,11 @@ public class ProductServiceTest {
     private Product product1;
     private Product product2;
     private Product product3;
+    private Keyword keyword;
+    private Keyword keyword1;
+    private Keyword keyword2;
+    private Keyword keyword3;
+    private Keyword keyword4;
 
     @Before
     public void setUp() {
@@ -54,6 +60,39 @@ public class ProductServiceTest {
         product3.setName("name3");
         product3.setDescription("desc3");
         product3.setImageUrl("url3");
+
+        keyword = new Keyword();
+        keyword.setWord("test_keyword");
+
+        keyword1 = new Keyword();
+        keyword2 = new Keyword();
+        keyword3 = new Keyword();
+        keyword4 = new Keyword();
+
+        keyword1.setWord("test1");
+        keyword2.setWord("test2");
+        keyword3.setWord("test3");
+        keyword4.setWord("test4");
+    }
+
+    private void addKeywordsToProduct1() {
+        LinkedHashSet<Keyword> keywords1 = new LinkedHashSet<>();
+        keywords1.add(keyword1);
+        keywords1.add(keyword2);
+        product1.setKeywords(keywords1);
+    }
+
+    private void addKeywordsToProducts() {
+        keywordService.addKeyword(keyword1);
+        keywordService.addKeyword(keyword2);
+        keywordService.addKeyword(keyword3);
+        keywordService.addKeyword(keyword4);
+
+        product1.getKeywords().add(keyword1);
+        product1.getKeywords().add(keyword2);
+        product1.getKeywords().add(keyword3);
+        product2.getKeywords().add(keyword2);
+        product3.getKeywords().add(keyword3);
     }
 
     @Test
@@ -62,16 +101,7 @@ public class ProductServiceTest {
 
         //preparation
         long productsCount = productService.count();
-
-        Keyword keyword1 = new Keyword();
-        Keyword keyword2 = new Keyword();
-        keyword1.setWord("test1");
-        keyword2.setWord("test2");
-
-        LinkedHashSet<Keyword> keywords1 = new LinkedHashSet<>();
-        keywords1.add(keyword1);
-        keywords1.add(keyword2);
-        product1.setKeywords(keywords1);
+        addKeywordsToProduct1();
 
         //action
         productService.addProduct(product1);
@@ -140,8 +170,57 @@ public class ProductServiceTest {
         assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 2", 2, productService.getRandomProducts(2).size());
     }
 
+    @Test
+    public void addKeywordToProductTest() {
+        //preparation
+        addKeywordsToProduct1();
+        long initialKeywordCount = product1.getKeywords().size();
+        productService.addProduct(product1);
+        keywordService.addKeyword(keyword);
+        keyword = keywordService.findKeywordById(keyword.getId());
+
+        //action
+        product1 = productService.addKeywordsToProduct(product1.getId(), keyword);
+
+        //assertion
+        assertEquals("product1 should have one more keyword than at the beginning of the test", initialKeywordCount + 1, product1.getKeywords().size());
+        assertTrue("product1 should contain keyword", product1.getKeywords().contains(keyword));
+    }
+
+    @Test
+    public void removeKeywordFromProductTest() {
+        //preparation
+        addKeywordsToProduct1();
+        long initialKeywordCount = product1.getKeywords().size();
+        productService.addProduct(product1);
+
+        //action
+        product1 = productService.removeKeywordsFromProduct(product1.getId(), keyword1);
+
+        //assertion
+        assertEquals("product1 should have one less keyword than at the beginning of the test", initialKeywordCount - 1, product1.getKeywords().size());
+        assertFalse("product1 should not contain keyword", product1.getKeywords().contains(keyword));
+    }
+
+    @Test
+    @Transactional
+    public void findAllProductsContainingAtLeastOneKeywordTest() {
+        //preparation
+        addKeywordsToProducts();
+
+        //action
+        productService.addProduct(product1);
+        productService.addProduct(product2);
+        productService.addProduct(product3);
+        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keyword1, keyword2, keyword3);
+
+        //assertion
+        assertEquals("list should contain all 3 products", 3 , productsWithKeywords.size());
+    }
+
     @After
     public void cleanAll() {
         productService.deleteAllProducts();
+        keywordService.deleteAllKeywords();
     }
 }
