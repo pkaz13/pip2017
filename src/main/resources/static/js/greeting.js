@@ -10,7 +10,6 @@ jQuery(function ($) {
 });
 
 function addText(el, text) {
-    lastSelected.val(lastSelected.val() + text);
-    $(el).blur();
+    lastSelected.focus().val(lastSelected.val() + text);
     return false;
 }
