@@ -1,6 +1,5 @@
 package pl.hycom.pip.messanger.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +11,6 @@ import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
 import com.github.messenger4j.user.UserProfileClient;
 
-import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
-import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
 import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 import pl.hycom.pip.messanger.pipeline.PipelineManager;
 
@@ -36,9 +33,6 @@ public class MessengerConfiguration {
     @Value("${messenger.pipeline.filepath}")
     private String pipelineFilepath;
 
-    @Autowired
-    private MessengerProductsRecommendationHandler messengerProductsRecommendationHandler;
-
     @Bean
     public PipelineManager pipelineManager() {
         return new PipelineManager(pipelineFilepath);
@@ -50,14 +44,8 @@ public class MessengerConfiguration {
     }
 
     @Bean
-    public MessengerHelloWorldHandler messengerHelloWorldHandler() {
-        return new MessengerHelloWorldHandler(sendClient());
-    }
-
-    @Bean
     public MessengerReceiveClient receiveClient() {
         return MessengerPlatformWrapper.newReceiveClientBuilder(appSecret, verifyToken)
-//                .onTextMessageEvent(messengerProductsRecommendationHandler)
                 .onTextMessageEvent(pipelineMessageHandler())
                 .build();
     }
