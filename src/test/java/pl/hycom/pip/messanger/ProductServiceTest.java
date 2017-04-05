@@ -1,6 +1,13 @@
 package pl.hycom.pip.messanger;
 
-import lombok.extern.log4j.Log4j2;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -12,19 +19,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@ActiveProfiles({"dev", "testdb"})
+@ActiveProfiles({ "dev", "testdb" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class ProductServiceTest {
@@ -99,14 +103,14 @@ public class ProductServiceTest {
     public void addProductWithKeywordsTest() {
         log.info("Test of addProduct method from ProductService class");
 
-        //preparation
+        // preparation
         long productsCount = productService.count();
         addKeywordsToProduct1();
 
-        //action
+        // action
         productService.addProduct(product1);
 
-        //assertion
+        // assertion
         assertEquals("size of returned productsList should be greater by one than productsCount", productsCount + 1, productService.findAllProducts().size());
         Product checkedProduct = productService.findProductById(product1.getId());
         assertEquals("size of returned keywordsList should be equal to 2", 2, checkedProduct.getKeywords().size());
@@ -116,13 +120,13 @@ public class ProductServiceTest {
     public void findProductByIdTest() {
         log.info("Test of findProductById method from ProductService class");
 
-        //preparation
+        // preparation
         productService.addProduct(product1);
         Product product = productService.findProductById(product1.getId());
 
-        //assertion
+        // assertion
         assertNotNull("added product shouldn't be null", product);
-        assertEquals("name of product1 should be equal to 'name1'","name1", product.getName());
+        assertEquals("name of product1 should be equal to 'name1'", "name1", product.getName());
         assertEquals("description of product1 should be equal to 'desc1'", "desc1", product.getDescription());
         assertEquals("url of product1 should be equal to 'url1'", "url1", product.getImageUrl());
     }
@@ -131,11 +135,11 @@ public class ProductServiceTest {
     public void deleteProductByIdTest() {
         log.info("Test of deleteProduct method from ProductService class");
 
-        //preparation
+        // preparation
         long count = productService.count();
         productService.addProduct(product1);
 
-        //assertion
+        // assertion
         assertEquals("after adding product: size of returned productList should be greater by one than count", count + 1, productService.count());
         productService.deleteProduct(product1.getId());
         assertEquals("after deleting product: size of returned productList should be equal to count", count, productService.count());
@@ -145,59 +149,60 @@ public class ProductServiceTest {
     public void updateProductNameTest() {
         log.info("Test of updateProductName method from ProductService class");
 
-        //preparation
-        productService.addProduct(product1);
+        // preparation
+        Product addedProduct = productService.addProduct(product1);
         String newName = "zażółć gęślą jaźń";
+        addedProduct.setName(newName);
 
-        //action
-        productService.updateProductName(product1.getId(), newName);
+        // action
+        productService.updateProduct(addedProduct);
 
-        //assertion
-        assertEquals("name of product1 should be updated and equal to " + newName, newName, productService.findProductById(product1.getId()).getName());
+        // assertion
+        assertEquals("name of product1 should be updated and equal to " + newName, newName, productService.findProductById(addedProduct.getId()).getName());
     }
 
     @Test
     public void getRandomElements() {
         log.info("Test of getRandomElements method from ProductService class");
 
-        //preparation
+        // preparation
         productService.addProduct(product1);
         productService.addProduct(product2);
         productService.addProduct(product3);
 
-        //assertion
+        // assertion
         assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 3", 3, productService.getRandomProducts(3).size());
         assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 2", 2, productService.getRandomProducts(2).size());
     }
 
     @Test
     public void addKeywordToProductTest() {
-        //preparation
+        // preparation
         addKeywordsToProduct1();
         long initialKeywordCount = product1.getKeywords().size();
         productService.addProduct(product1);
         keywordService.addKeyword(keyword);
         keyword = keywordService.findKeywordById(keyword.getId());
 
-        //action
+        // action
         product1 = productService.addKeywordsToProduct(product1.getId(), keyword);
 
-        //assertion
+        // assertion
         assertEquals("product1 should have one more keyword than at the beginning of the test", initialKeywordCount + 1, product1.getKeywords().size());
         assertTrue("product1 should contain keyword", product1.getKeywords().contains(keyword));
     }
 
     @Test
     public void removeKeywordFromProductTest() {
-        //preparation
+        // preparation
         addKeywordsToProduct1();
         long initialKeywordCount = product1.getKeywords().size();
         productService.addProduct(product1);
 
-        //action
+        // action
         product1 = productService.removeKeywordsFromProduct(product1.getId(), keyword1);
 
-        //assertion
+        // assertion
         assertEquals("product1 should have one less keyword than at the beginning of the test", initialKeywordCount - 1, product1.getKeywords().size());
         assertFalse("product1 should not contain keyword", product1.getKeywords().contains(keyword));
     }
@@ -205,17 +210,17 @@ public class ProductServiceTest {
     @Test
     @Transactional
     public void findAllProductsContainingAtLeastOneKeywordTest() {
-        //preparation
+        // preparation
         addKeywordsToProducts();
 
-        //action
+        // action
         productService.addProduct(product1);
         productService.addProduct(product2);
         productService.addProduct(product3);
         List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keyword1, keyword2, keyword3);
 
-        //assertion
-        assertEquals("list should contain all 3 products", 3 , productsWithKeywords.size());
+        // assertion
+        assertEquals("list should contain all 3 products", 3, productsWithKeywords.size());
     }
 
     @After
