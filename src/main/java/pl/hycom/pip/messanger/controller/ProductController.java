@@ -35,20 +35,16 @@ public class ProductController {
 
     @PostMapping("/admin/products")
     public String addOrUpdateProduct(@Valid Product product, BindingResult bindingResult, Model model) {
-        try {
-            if (bindingResult.hasErrors()) {
-                prepareModel(model, product);
-                model.addAttribute("errors", bindingResult.getFieldErrors());
-                log.info("Validation product error !!!");
 
-                return PRODUCTS_VIEW;
-            }
+        if (bindingResult.hasErrors()) {
+            prepareModel(model, product);
+            model.addAttribute("errors", bindingResult.getFieldErrors());
+            log.info("Validation product error !!!");
 
-            productService.addOrUpdateProduct(product);
-
-        } catch (Exception ex) {
-            log.error("Error during post request from admin/products" + ex);
+            return PRODUCTS_VIEW;
         }
+
+        productService.addOrUpdateProduct(product);
 
         return "redirect:/admin/products";
     }
