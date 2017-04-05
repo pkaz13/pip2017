@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Zarządzanie produktami</title>
+    <script th:src="@{/js/products.js}"></script>
+</head>
+<body>
+    <div layout:fragment="content">
+        
+        <div class="row">
+    	    <h1 class="page-header">
+        	   	Zarządzanie produktami
+				<button class="btn btn-primary pull-right" data-toggle="modal" data-target="#product-form-modal">Dodaj nowy produkt</button>
+           	</h1>
+        </div>
+        
+        <div th:if="${errors != null}" class="row">
+	         <div class="alert alert-danger fade in" th:each="error : ${errors}">
+    	         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        	     <strong th:text="${error.field}"></strong>: <span th:text="${error.defaultMessage}"></span>
+             </div>
+        </div>
+
+        <div class="row">
+            <div class="table-responsive">
+                <table id="mytable" class="table table-bordred table-striped table-condensed">
+                    <thead>
+                        <th>ID</th>
+                        <th>Nazwa</th>
+                        <th>Opis</th>
+                        <th>Zdjęcie</th>
+                        <th class="text-center"></th>
+                        <th class="text-center"></th>
+                    </thead>
+                    <tbody>
+                    <tr th:id="'product-' + ${product.id}" th:each="product : ${products}">
+                        <td th:text="${product.id}">ID</td>
+                        <td th:text="${product.name}">Name</td>
+                        <td th:text="${product.description}">Description</td>
+                        <td><img th:src="${product.imageUrl}" width="50" height="60"/></td>
+                        <td>
+                        	<div data-placement="top" data-toggle="tooltip" title="Edytuj">
+                        		<button class="btn btn-primary btn-xs button-edit center-block" th:attr="data-product-id=${product.id}" data-toggle="modal" data-target="#product-form-modal">
+                        			<span class="glyphicon glyphicon-pencil"></span>
+                        		</button>
+                        	</div>
+                        </td>
+                        <td>
+                        	<div data-placement="top" data-toggle="tooltip" title="Usuń">
+                        		<button class="btn btn-danger btn-xs button-delete center-block" th:attr="data-product-id=${product.id}" data-toggle="modal" data-target="#confirm-delete-modal">
+                        			<span class="glyphicon glyphicon-trash"></span>
+                        		</button>
+                        	</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!--<div class="clearfix"></div>
+                <ul class="pagination pull-right">
+                    <li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                </ul>-->
+            </div>
+        </div>
+        
+
+
+        <div class="modal fade" id="product-form-modal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="form-horizontal" th:action="@{/admin/products}" method="post" th:object="${productForm}">
+                        <fieldset>
+		                    <div class="modal-header">
+		                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+		                        <h4 class="modal-title">Edit Product</h4>
+		                    </div>
+
+		                    <div class="modal-body">
+                                <div class="form-group" id="id_form_div" th:classappend="${#fields.hasErrors('id')}? 'has-error'">
+                                    <label class="col-sm-3 control-label">ID</label>  
+                                    <div class="col-sm-9">
+                                    	<p id="id_form_static" class="form-control-static" th:text="*{id}">123</p>
+                                    	<input id="id_form" type="hidden" th:field="*{id}"/>
+                                    </div> 
+                                    <p th:if="${#fields.hasErrors('id')}" th:errors="*{id}">Name Error</p>
+                                </div>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
+                                    <label class="col-sm-3 control-label" for="name_form">Nazwa</label>
+                                    <div class="col-sm-9">
+                                    	<input id="name_form" class="form-control" th:field="*{name}"/>
+                                    </div>
+                                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
+                                </div>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('imageUrl')}? 'has-error'">
+                                    <label class="col-sm-3 control-label" for="imageUrl_form">URL zdjęcia</label>
+                                    <div class="col-sm-9">
+                                    	<input id="imageUrl_form" class="form-control" th:field="*{imageUrl}"/>
+                                    </div>
+                                    <p th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}">Name Error</p>
+                                </div>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('description')}? 'has-error'">
+                                    <label class="col-sm-3 control-label" for="description_form">Opis</label>
+                                    <div class="col-sm-9">
+                                    	<textarea class="form-control" id="description_form" th:field="*{description}"></textarea>
+                                    </div>
+                                    <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</p>
+                                </div>
+		                    </div>
+		                    <div class="modal-footer ">
+		                        <button type="submit" class="btn btn-primary btn-lg btn-block button-submit">Zapisz</button>
+		                    </div>
+	                    </fieldset>
+                  	</form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="confirm-delete-modal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                        <h4 class="modal-title custom_align" id="Heading">Potwierdź usunięcie produktu</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger">
+                        	<span class="glyphicon glyphicon-warning-sign"></span> Czy na pewno chcesz usunąć produkt &quot;<span class="name-placeholder"></span>&quot;?
+                        </div>
+                    </div>
+                    <div class="modal-footer ">
+                        <button type="button" class="btn btn-success button-delete">
+                        	<span class="glyphicon glyphicon-ok-sign"></span> Tak
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                        	<span class="glyphicon glyphicon-remove"></span> Nie
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+package pl.hycom.pip.messanger.controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.github.messenger4j.exceptions.MessengerApiException;
+import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.profile.MessengerProfileClient;
+
+import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Greeting;
+import pl.hycom.pip.messanger.model.GreetingListWrapper;
+
+/**
+ * Created by piotr on 12.03.2017.
+ *
+ */
+
+@Log4j2
+@Controller
+public class GreetingController {
+
+    @Autowired
+    private MessengerProfileClient profileClient;
+
+    private Map<String, String> availableLocale;
+
+    @GetMapping("/admin/greeting")
+    public String getGreetings(Model model) {
+        List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
+        sortByLocale(greetings);
+
+        GreetingListWrapper greetingListWrapper = new GreetingListWrapper(greetings);
+        model.addAttribute("greetingListWrapper", greetingListWrapper);
+        model.addAttribute("greeting", new Greeting());
+        model.addAttribute("availableLocale", getAvailableLocale(greetings));
+        return "greetings";
+    }
+
+    private Map<String, String> getAvailableLocale(List<com.github.messenger4j.profile.Greeting> greetings) {
+
+        if (availableLocale == null) {
+            try {
+                DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+                Document document = docBuilder.parse("https://www.facebook.com/translations/FacebookLocales.xml");
+
+                availableLocale = new HashMap<>();
+
+                NodeList nl = document.getElementsByTagName("locale");
+                for (int i = 0; i < nl.getLength(); i++) {
+                    Element e = (Element) nl.item(i);
+                    availableLocale.put(e.getElementsByTagName("representation").item(0).getTextContent(), e.getElementsByTagName("englishName").item(0).getTextContent());
+                }
+
+                log.info("Loaded available locale from facebook: " + availableLocale);
+            } catch (SAXException | IOException | ParserConfigurationException e) {
+                log.error(e.toString());
+                return Collections.emptyMap();
+            }
+        }
+
+        Map<String, String> locale = new TreeMap<>(availableLocale);
+
+        // remove existing locale
+        greetings.stream().forEach(g -> locale.remove(g.getLocale()));
+
+        return locale;
+    }
+
+    @PostMapping("/admin/greetings")
+    public String addGreetings(@ModelAttribute GreetingListWrapper greetingListWrapper) {
+        try {
+            profileClient.setupWelcomeMessages(greetingListWrapper.extractGreetings());
+            log.info("Greeting text correctly updated");
+        } catch (MessengerApiException | MessengerIOException e) {
+            log.error("Error during changing greeting message", e);
+        }
+        return "redirect:/admin/greeting";
+    }
+
+    @PostMapping("/admin/greeting")
+    public String addGreeting(@ModelAttribute Greeting greeting) {
+        try {
+            if (!availableLocale.containsKey(greeting.getLocale())) {
+                log.warn("Not supported locale[" + greeting.getLocale() + "]");
+                return "redirect:/admin/greeting";
+            }
+
+            List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
+            com.github.messenger4j.profile.Greeting profileGreeting = new com.github.messenger4j.profile.Greeting(greeting.getText(), greeting.getLocale());
+            greetings.add(profileGreeting);
+            profileClient.setupWelcomeMessages(greetings);
+            log.info("Greeting text correctly updated");
+        } catch (MessengerApiException | MessengerIOException e) {
+            log.error("Error during changing greeting message", e);
+        }
+
+        return "redirect:/admin/greeting";
+    }
+
+    // Jest get, bo nie wiedziałem jak odwołać sie do posta/deleta z linka z front-endu
+    @GetMapping("/admin/deleteGreeting/{locale}")
+    public String removeGreeting(@PathVariable String locale) {
+        if (StringUtils.equals(locale, "default")) {
+            // TODO: pokazac komunikat ze nie wolno usuwac default lub zablokować taką opcję
+            return "redirect:/admin/greeting";
+        }
+        try {
+            List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
+            greetings.removeIf(g -> StringUtils.equals(g.getLocale(), locale));
+            profileClient.removeWelcomeMessage();
+            profileClient.setupWelcomeMessages(greetings);
+            log.info("Deleting greeting succeeded");
+        } catch (MessengerApiException | MessengerIOException e) {
+            log.info("Deleting greeting failed", e);
+        }
+        return "redirect:/admin/greeting";
+    }
+
+    private List<com.github.messenger4j.profile.Greeting> getGreetingsWithDefaultLocale(MessengerProfileClient profileClient) {
+        List<com.github.messenger4j.profile.Greeting> greetings = getGreetings(profileClient);
+        injectDefaultLocale(greetings);
+        return greetings;
+    }
+
+    private List<com.github.messenger4j.profile.Greeting> getGreetings(MessengerProfileClient profileClient) {
+        try {
+            return new ArrayList<>(profileClient.getWelcomeMessage().getGreetings());
+        } catch (MessengerApiException | MessengerIOException e) {
+            log.error("Error during getting greeting text from facebook", e);
+            return Collections.emptyList();
+        }
+    }
+
+    private void injectDefaultLocale(List<com.github.messenger4j.profile.Greeting> greetings) {
+        if (!containsLocale(greetings, "default")) {
+            greetings.add(new com.github.messenger4j.profile.Greeting("Hello", "default"));
+        }
+    }
+
+    private void sortByLocale(List<com.github.messenger4j.profile.Greeting> greetings) {
+        greetings.sort((g1, g2) -> StringUtils.compare(g1.getLocale(), g2.getLocale()));
+    }
+
+    private boolean containsLocale(List<com.github.messenger4j.profile.Greeting> greetings, String locale) {
+        return greetings.stream().anyMatch(g -> StringUtils.equals(g.getLocale(), locale));
+    }
+}

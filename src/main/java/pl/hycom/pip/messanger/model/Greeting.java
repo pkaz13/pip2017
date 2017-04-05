@@ -14,7 +14,7 @@ import java.util.MissingResourceException;
 public class Greeting {
 
     private String text;
-    private String locale;
+    private String locale = "";
 
     public Greeting(com.github.messenger4j.profile.Greeting profileGreeting) {
         setText(profileGreeting.getText());

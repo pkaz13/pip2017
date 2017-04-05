@@ -1,16 +1,3 @@
 messenger:
-  pageAccessToken: XXX
-  appSecret: XXX
-  verifyToken: XXX
-
-spring:
-  datasource:
-    url: jdbc:h2:mem:production;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: test
-    password: test
-    driver-class-name: org.h2.Driver
-    platform: h2
-  h2:
-    console:
-      enabled: true
-      path: /db-admin/console
+  pageAccessToken: EAAVYyRyq4z8BAJFUHerYi7D1HGydwuUTjznS3vEecDOhMfttfSwrRhuWPBgYRs0TuGozHZAIwdN7rRKPTiHyTdZAjJ1iHIHbbqn18Nb0NKD8vXwQiaWP2EXtJZAD65YFYxfPv2AjRVZCfbngxECO4TzEvFbC4enERVfAlVWftEt3mSHhRFb0
+  appSecret: 8f44de54941a9ae9cf05608a4c6aa3bc
