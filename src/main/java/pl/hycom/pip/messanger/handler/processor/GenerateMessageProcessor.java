@@ -1,25 +1,27 @@
 package pl.hycom.pip.messanger.handler.processor;
 
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.send.templates.GenericTemplate;
 import com.github.messenger4j.send.templates.Template;
+
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 
-import java.util.List;
-
 @Component
 @Log4j2
-public class GenerateMessageProcessor implements PipelineProcessor{
+public class GenerateMessageProcessor implements PipelineProcessor {
 
     @Autowired
     private MessengerSendClient sendClient;
@@ -28,14 +30,16 @@ public class GenerateMessageProcessor implements PipelineProcessor{
     public int runProcess(PipelineContext ctx) throws PipelineException {
 
         log.info("Started process of GenerateMessageProcessor");
+
         List<Product> products = ctx.get("products", List.class);
         String senderId = ctx.get(PipelineMessageHandler.SENDER_ID, String.class);
+
         if (CollectionUtils.isEmpty(products)) {
             sendTextMessage(senderId, "No products found.");
-        } else {
-            final GenericTemplate genericTemplate = getStructuredMessage(products);
-            sendStructuredMessage(senderId, genericTemplate);
+            return 1;
         }
+
+        sendStructuredMessage(senderId, getStructuredMessage(products));
         return 1;
     }
 

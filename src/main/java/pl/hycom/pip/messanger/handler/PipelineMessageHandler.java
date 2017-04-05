@@ -17,6 +17,8 @@ import pl.hycom.pip.messanger.pipeline.PipelineManager;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 public class PipelineMessageHandler implements TextMessageEventHandler {
 
+    private static final String PIPELINECHAIN_NAME = "processMessage";
+
     public static final String SENDER_ID = "senderId";
     public static final String MESSAGE = "message";
 
@@ -31,7 +33,7 @@ public class PipelineMessageHandler implements TextMessageEventHandler {
         params.put(MESSAGE, msg.getText());
 
         try {
-            pipelineManager.runProcess("processMessage", params);
+            pipelineManager.runProcess(PIPELINECHAIN_NAME, params);
         } catch (PipelineException e) {
             log.error(e);
         }
