@@ -55,8 +55,6 @@ public class KeywordService {
 
     public List<Keyword> findKeywordsBySearchTerm(String searchTerm) {
         log.info("findKeywordsBySearchTerm method from KeywordService invoked");
-        return StreamSupport.stream(keywordRepository.findAll().spliterator(), false)
-                .filter(k -> k.getWord().contains(searchTerm))
-                .collect(Collectors.toList());
+        return keywordRepository.findByWordIgnoreCaseStartingWith(searchTerm);
     }
 }
