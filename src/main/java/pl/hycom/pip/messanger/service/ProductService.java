@@ -1,15 +1,11 @@
 package pl.hycom.pip.messanger.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -92,7 +88,9 @@ public class ProductService {
     }
 
     public List<Product> findAllProductsContainingAtLeastOneKeyword(Keyword... keywords) {
-        return Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull).flatMap(k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        return Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull)
+                .flatMap(k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull)
+                .distinct().collect(Collectors.toList());
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
@@ -105,6 +103,30 @@ public class ProductService {
         Product product = findProductById(id);
         product.getKeywords().removeAll(Arrays.asList(keywords));
         return productRepository.save(product);
+    }
+
+    public List<Product> findBestFittingProducts(Keyword ... keywords) {
+        log.info("Finding best fitting products");
+        //TODO: move this constant to some properties
+        final int numberOfProducts = 3;
+
+        List<Product> productsWithKeywords = findAllProductsContainingAtLeastOneKeyword(keywords);
+        PriorityQueue<Map.Entry<Product, Integer>> productsQueue =
+                new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));
+        for (Product product : productsWithKeywords) {
+            Map.Entry<Product, Integer> queueEntry = new HashMap.SimpleEntry<Product, Integer>(product, 0);
+            for (Keyword keyword : keywords) {
+                if (product.containsKeyword(keyword)) {
+                    queueEntry.setValue(queueEntry.getValue() + 1);
+                }
+            }
+            productsQueue.add(queueEntry);
+        }
+        List<Product> bestFittingProducts = new ArrayList<>();
+        for (int i = 0; i < numberOfProducts && !productsQueue.isEmpty(); ++i) {
+            bestFittingProducts.add(productsQueue.poll().getKey());
+        }
+        return bestFittingProducts;
     }
 
     public void deleteAllProducts() {

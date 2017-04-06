@@ -44,14 +44,7 @@ public class Product implements Serializable {
     @OrderColumn
     private Set<Keyword> keywords = new LinkedHashSet<>();
 
-    public boolean containsKeywords(String[] keywordValues) {
-        for (String keywordValue : keywordValues) {
-            if (keywords.stream()
-                    .filter(keyword -> keyword.getWord().equals(keywordValue))
-                    .count() == 0) {
-                return false;
-            }
-        }
-        return true;
+    public boolean containsKeyword(Keyword keyword) {
+        return keywords.contains(keyword);
     }
 }
