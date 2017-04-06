@@ -1,16 +1,15 @@
 package com.github.messenger4j.profile;
 
-import static com.github.messenger4j.common.MessengerHttpClient.HttpMethod.DELETE;
-import static com.github.messenger4j.common.MessengerHttpClient.HttpMethod.GET;
-import static com.github.messenger4j.common.MessengerHttpClient.HttpMethod.POST;
-
 import com.github.messenger4j.common.MessengerHttpClient.HttpMethod;
 import com.github.messenger4j.common.MessengerRestClientAbstract;
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.google.gson.JsonObject;
-
 import lombok.extern.log4j.Log4j2;
+
+import java.util.List;
+
+import static com.github.messenger4j.common.MessengerHttpClient.HttpMethod.*;
 
 /**
  * Created by rafal on 18.03.2017.
@@ -34,28 +33,38 @@ final class MessengerProfileClientImpl extends MessengerRestClientAbstract<Profi
     }
 
     @Override
-    public ProfileResponse setupWelcomeMessage(String greeting) throws MessengerApiException, MessengerIOException {
+    public ProfileResponse setupWelcomeMessage(Greeting greeting) throws MessengerApiException, MessengerIOException {
         final ProfilePayload payload = ProfilePayload.newBuilder()
                 .greeting(greeting)
                 .build();
+        String url = requestUrl + String.format(POST_AND_DELETE_URL_PARAMETERS, pageAccessToken);
 
-        return sendPayload(POST, payload, requestUrl + String.format(POST_AND_DELETE_URL_PARAMETERS, pageAccessToken));
+        return sendPayload(POST, payload, url);
+    }
+
+    @Override
+    public ProfileResponse setupWelcomeMessages(List<Greeting> greetingList) throws MessengerApiException, MessengerIOException {
+        final ProfilePayload payload = new ProfilePayload(greetingList);
+        String url = requestUrl + String.format(POST_AND_DELETE_URL_PARAMETERS, pageAccessToken);
+        return sendPayload(POST, payload, url);
     }
 
     @Override
     public ProfileResponse removeWelcomeMessage() throws MessengerApiException, MessengerIOException {
         final ProfilePayload payload = ProfilePayload.newBuilder()
                 .build();
+        String url = requestUrl + String.format(POST_AND_DELETE_URL_PARAMETERS, pageAccessToken);
 
-        return sendPayload(DELETE, payload, requestUrl + String.format(POST_AND_DELETE_URL_PARAMETERS, pageAccessToken));
+        return sendPayload(DELETE, payload, url);
     }
 
     @Override
     public GreetingsProfileResponse getWelcomeMessage() throws MessengerApiException, MessengerIOException {
         final ProfilePayload payload = ProfilePayload.newBuilder()
                 .build();
+        String url = requestUrl + String.format(GET_URL_PARAMETERS, pageAccessToken);
 
-        return (GreetingsProfileResponse) sendPayload(GET, payload, requestUrl + String.format(GET_URL_PARAMETERS, pageAccessToken));
+        return (GreetingsProfileResponse) sendPayload(GET, payload, url);
     }
 
     @Override
@@ -64,10 +73,9 @@ final class MessengerProfileClientImpl extends MessengerRestClientAbstract<Profi
         try {
             if (responseJsonObject.has("data")) {
                 return GreetingsProfileResponse.fromJson(responseJsonObject);
+            } else {
+                return ProfileResponse.fromJson(responseJsonObject);
             }
-
-            return ProfileResponse.fromJson(responseJsonObject);
-
         } catch (MessengerIOException e) {
             log.error(e);
             return null;
