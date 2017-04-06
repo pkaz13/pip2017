@@ -19,7 +19,7 @@ import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 @Log4j2
 public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
 
-    public static final String KEYWORDS = "KEYWORDS";
+    public static final String KEYWORDS = "keywords";
     private static final String CHARS_TO_REMOVE_REGEX = "[{}\\[\\]()!@#$%^&*~'?\".,/+]";
 
     @Override
@@ -28,25 +28,27 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
 
         String message = ctx.get(PipelineMessageHandler.MESSAGE, String.class);
         String[] keywords = extractKeywords(message);
-        log.debug("Keywords extracted from message [{}]: {}", message, Arrays.toString(keywords));
+        log.info("Keywords extracted from message [{}]: {}", message, Arrays.toString(keywords));
 
         ctx.put(KEYWORDS, keywords);
         return 1;
     }
 
-    protected String[] extractKeywords(String message) {
+    String[] extractKeywords(String message) {
         message = processMessage(message);
         String[] keywords = StringUtils.split(message, " ");
-        keywords = processKeywords(keywords);
-        return keywords;
+
+        return processKeywords(keywords);
     }
 
     protected String processMessage(String message) {
         if (message == null) {
             return StringUtils.EMPTY;
         }
+
         message = StringUtils.replaceAll(message, CHARS_TO_REMOVE_REGEX, "");
         message = StringUtils.lowerCase(message);
+
         return message;
     }
 
