@@ -26,8 +26,9 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
 
         String message = ctx.get(PipelineMessageHandler.MESSAGE, String.class);
         String[] keywords = extractKeywords(message);
-        ctx.put(KEYWORDS, keywords);
+        log.debug(Arrays.toString(keywords));
 
+        ctx.put(KEYWORDS, keywords);
         return 1;
     }
 
