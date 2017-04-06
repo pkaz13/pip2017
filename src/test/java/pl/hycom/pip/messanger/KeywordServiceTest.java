@@ -1,6 +1,13 @@
 package pl.hycom.pip.messanger;
 
-import lombok.extern.log4j.Log4j2;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -12,27 +19,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
 import pl.hycom.pip.messanger.service.KeywordService;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 
 /**
  * Created by Piotr on 20.03.2017.
  */
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest()
-@ActiveProfiles({"dev", "kazmierczak", "testdb"})
+@ActiveProfiles({ "dev", "testdb" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class KeywordServiceTest {
@@ -53,15 +52,15 @@ public class KeywordServiceTest {
      * and keyword which is used is some tests
      */
     @Before
-    public void setUp(){
+    public void setUp() {
 
         keyword = new Keyword();
         keyword.setWord("test");
 
-        keyword1 = new Keyword();   //always in repository before test
+        keyword1 = new Keyword(); // always in repository before test
         keyword1.setWord("test1");
 
-        keyword2 = new Keyword();   //always in repository before test
+        keyword2 = new Keyword(); // always in repository before test
         keyword2.setWord("test2");
 
         repository.save(keyword1);
@@ -70,131 +69,137 @@ public class KeywordServiceTest {
 
     /**
      * Adds unique keyword to repository
+     * 
      * @result Keyword will be added without any error,
-     *          number of keywords in repository is expected to be 3
+     *         number of keywords in repository is expected to be 3
      */
     @Test
-    public void addUniqueKeywordTest(){
+    public void addUniqueKeywordTest() {
 
-         //act
+        // act
         keywordService.addKeyword(keyword);
 
-        //assert
-        assertEquals("number of keywords in repository is expected to be 3" ,3, keywordService.findAllKeywords().size());
+        // assert
+        assertEquals("number of keywords in repository is expected to be 3", 3, keywordService.findAllKeywords().size());
     }
 
     /**
      * Adds non-unique keyword to repository
+     * 
      * @result DataIntegrityViolationException will be thrown
      */
     @Test(expected = DataIntegrityViolationException.class)
     public void addNonUniqueKeywordTest() {
-        //preparation
+        // preparation
         Keyword keyword = new Keyword();
         keyword.setWord("test1");
 
-        //act
+        // act
         keywordService.addKeyword(keyword);
     }
 
     /**
      * Finds keyword using its specific id
+     * 
      * @result Null will not be returned,
-     *          returned will be "test"
+     *         returned will be "test"
      */
     @Test
     public void findKeywordByIdTest() {
-        //act
+        // act
         repository.save(keyword);
 
-        //assert
-        assertNotNull("Null will not be returned" ,keywordService.findKeywordById(keyword.getId()));
-        assertEquals( "Returned keyword will be 'test'", "test", keywordService.findKeywordById(keyword.getId()).getWord());
+        // assert
+        assertNotNull("Null will not be returned", keywordService.findKeywordById(keyword.getId()));
+        assertEquals("Returned keyword will be 'test'", "test", keywordService.findKeywordById(keyword.getId()).getWord());
     }
 
     /**
      * Returns all keywords from repository
+     * 
      * @result Size of returned list will be the same as
-     *          the size of prepared list of keywords
+     *         the size of prepared list of keywords
      */
     @Test
     public void findAllKeyWordsTest() {
 
-        //preparation
+        // preparation
         List<Keyword> keywords = new ArrayList<>();
         keywords.add(keyword1);
         keywords.add(keyword2);
         List<Keyword> keywordsFromRepository;
 
-        //act
+        // act
         keywordsFromRepository = keywordService.findAllKeywords();
 
-        //assert
+        // assert
         assertEquals("Size of returned list will be the same as the size of prepared list of keywords", keywords.size(), keywordsFromRepository.size());
 
     }
 
     /**
      * Updates existing keyword in repository
+     * 
      * @result Keyword specified by id will be updated by "newWord"
      */
     @Test
-    public void updateKeywordTest(){
+    public void updateKeywordTest() {
 
-        //preparation
+        // preparation
         String newWord = "newWord";
 
-        //act
-        keywordService.updateKeyword(keyword1.getId(),newWord);
+        // act
+        keywordService.updateKeyword(keyword1.getId(), newWord);
 
-        //assert
+        // assert
         assertEquals("Keyword specified by id will be updated by \"newWord\"", newWord, repository.findOne(keyword1.getId()).getWord());
     }
 
     /**
      * Deletes keyword from repository
+     * 
      * @result Keyword added to repository will be deleted without error,
-     *          size of repository keywords before adding keyword will be equal to 2,
-     *          size of repository keywords after adding keyword will be equal to 3,
-     *          size of repository keywords after deleting will be equal to
-     *          to the size of repository keywords before adding keyword
+     *         size of repository keywords before adding keyword will be equal to 2,
+     *         size of repository keywords after adding keyword will be equal to 3,
+     *         size of repository keywords after deleting will be equal to
+     *         to the size of repository keywords before adding keyword
      */
     @Test
-    public void deleteKeywordTest(){
+    public void deleteKeywordTest() {
 
-        //preparation
+        // preparation
         long numberOfKeywordsBeforeAddingKeyword = repository.count();
         repository.save(keyword);
         long numberOfKeywordsAfterAddingKeyword = repository.count();
 
-        //act
+        // act
         keywordService.deleteKeyword(keyword.getId());
         long numberOfKeywordsAfterDeletingKeyword = repository.count();
 
-        //assert
-        assertEquals("size of repository keywords before adding keyword will be equal to 2",2,numberOfKeywordsBeforeAddingKeyword);
-        assertEquals("size of repository keywords after adding keyword will be equal to 3",3,numberOfKeywordsAfterAddingKeyword);
+        // assert
+        assertEquals("size of repository keywords before adding keyword will be equal to 2", 2, numberOfKeywordsBeforeAddingKeyword);
+        assertEquals("size of repository keywords after adding keyword will be equal to 3", 3, numberOfKeywordsAfterAddingKeyword);
         assertEquals("size of repository keywords after deleting will be equal to\n" +
-                " to the size of repository keywords before adding keyword",numberOfKeywordsBeforeAddingKeyword,numberOfKeywordsAfterDeletingKeyword);
+                " to the size of repository keywords before adding keyword", numberOfKeywordsBeforeAddingKeyword, numberOfKeywordsAfterDeletingKeyword);
     }
 
     /**
      * Adds to repository keyword with Polish diacritic characters
+     * 
      * @result Added keyword will keep Polish diacritic characters in repository
      */
     @Test
-    public void checkIfCharsNoChange(){
+    public void checkIfCharsNoChange() {
 
-        //preparation
+        // preparation
         Keyword keyword = new Keyword();
         keyword.setWord("zażółć gęślą jaźń");
 
-
-        //act
+        // act
         repository.save(keyword);
 
-        //assert
-        assertThat("Added keyword will keep Polish diacritic characters in repository",repository.findOne(keyword.getId()).getWord(), is("zażółć gęślą jaźń"));
+        // assert
+        assertThat("Added keyword will keep Polish diacritic characters in repository", repository.findOne(keyword.getId()).getWord(), is("zażółć gęślą jaźń"));
     }
 
     /**

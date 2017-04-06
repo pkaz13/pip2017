@@ -1,16 +1,16 @@
 package pl.hycom.pip.messanger.handler.processor;
 
-import com.sun.istack.internal.Nullable;
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
-
-import java.util.Arrays;
 
 /**
  * Created by szale_000 on 2017-04-06.
@@ -34,14 +34,14 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
         return 1;
     }
 
-    protected String[] extractKeywords(@Nullable String message) {
+    protected String[] extractKeywords(String message) {
         message = processMessage(message);
         String[] keywords = StringUtils.split(message, " ");
         keywords = processKeywords(keywords);
         return keywords;
     }
 
-    protected String processMessage(@Nullable String message) {
+    protected String processMessage(String message) {
         if (message == null) {
             return StringUtils.EMPTY;
         }

@@ -1,15 +1,28 @@
-package pl.hycom.pip.messanger.model;
+package pl.hycom.pip.messanger;
 
 import org.assertj.core.api.Assertions;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Greeting;
 import pl.hycom.pip.messanger.service.GreetingService;
 
 /**
  * Created by marcinus on 04.04.17.
  */
-public class GreetingTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest()
+@ActiveProfiles({ "dev", "testdb" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Log4j2
+public class GreetingServiceTest {
 
     @Autowired
     private GreetingService greetingService;
