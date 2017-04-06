@@ -10,9 +10,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * Created by szale_000 on 2017-04-06.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-public class GenerateKeywordsProcessorTest {
+public class ExtractKeywordsFromMessageProcessorTest {
 
-    GenerateKeywordsProcessor sut = new GenerateKeywordsProcessor();
+    ExtractKeywordsFromMessageProcessor sut = new ExtractKeywordsFromMessageProcessor();
 
     @Test
     public void processMessageShouldRemoveUnwantedSymbols() throws Exception {
@@ -85,13 +85,24 @@ public class GenerateKeywordsProcessorTest {
     }
 
     @Test
-    public void generateKeywordsTest() throws Exception {
+    public void extractKeywordsTest() throws Exception {
         //given
         String message = "Ala m4 kota, a kot ma ale(?), nie mam pomysłu na stringa wcale!!";
         //when
-        String[] processKeywords = sut.generateKeywords(message);
+        String[] processKeywords = sut.extractKeywords(message);
         //then
         Assertions.assertThat(processKeywords).containsOnlyOnce("kota", "pomysłu", "stringa", "wcale");
     }
+
+    @Test
+    public void extractKeywordsShouldReturnEmptyListGivenNull() throws Exception {
+        //given
+        String message = null;
+        //when
+        String[] processKeywords = sut.extractKeywords(message);
+        //then
+        Assertions.assertThat(processKeywords).isEmpty();
+    }
+
 
 }

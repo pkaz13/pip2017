@@ -15,22 +15,24 @@ import java.util.Arrays;
  */
 @Component
 @Log4j2
-public class GenerateKeywordsProcessor implements PipelineProcessor {
+public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
 
     public static final String KEYWORDS = "KEYWORDS";
+    private static final String CHARS_TO_REMOVE_REGEX = "[{}\\[\\]()!@#$%^&*~'?\".,/+]";
 
     @Override
     public int runProcess(PipelineContext ctx) throws PipelineException {
         log.info("Started keyword generating");
 
         String message = ctx.get(PipelineMessageHandler.MESSAGE, String.class);
-        String[] keywords = generateKeywords(message);
-        ctx.put(KEYWORDS, keywords);
+        String[] keywords = extractKeywords(message);
+        log.debug(Arrays.toString(keywords));
 
+        ctx.put(KEYWORDS, keywords);
         return 1;
     }
 
-    protected String[] generateKeywords(String message) {
+    protected String[] extractKeywords(String message) {
         message = processMessage(message);
         String[] keywords = StringUtils.split(message, " ");
         keywords = processKeywords(keywords);
@@ -38,18 +40,19 @@ public class GenerateKeywordsProcessor implements PipelineProcessor {
     }
 
     protected String processMessage(String message) {
-        final String regex = "[{}\\[\\]()!@#$%^&*~'?\".,/+]";
-        message = StringUtils.replaceAll(message, regex, "");
+        if (message == null) {
+            return StringUtils.EMPTY;
+        }
+        message = StringUtils.replaceAll(message, CHARS_TO_REMOVE_REGEX, "");
         message = StringUtils.lowerCase(message);
-        return message != null ? message : "";
+        return message;
     }
 
     protected String[] processKeywords(String[] keywords) {
-        String[] processedKeywords = Arrays.stream(Arrays.copyOf(keywords, keywords.length))
+        return Arrays.stream(Arrays.copyOf(keywords, keywords.length))
                 .filter(s -> StringUtils.length(s) > 2)
                 .distinct()
                 .toArray(String[]::new);
-        return processedKeywords;
     }
 
 }
