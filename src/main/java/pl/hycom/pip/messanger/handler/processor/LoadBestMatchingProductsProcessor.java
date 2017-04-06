@@ -54,6 +54,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
             Arrays.stream(keywords).filter(Objects::nonNull).distinct().filter(product::containsKeyword).count()))
                 .forEach(productsQueue::add);
 
+        //This is just regular for loop, but using stream instead, so it's 100 times better, because of reasons
         List<Product> bestMatchingProducts = IntStream.iterate(0, i -> i + 1).limit(numberOfProducts)
                 .filter(i -> !productsQueue.isEmpty()).mapToObj(i -> productsQueue.poll().getKey())
                 .filter(Objects::nonNull).collect(Collectors.toList());
