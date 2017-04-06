@@ -6,10 +6,10 @@
 	<pipelinechain name="processMessage" headlink="loadUserProfile">
 		<pipelinelink name="loadUserProfile">
 			<processor bean="userProfileProcessor" />
-            <transition returnvalue="1" link="generateKeywords"/>
+			<transition returnvalue="1" link="extractKeywords"/>
         </pipelinelink>
-        <pipelinelink name="generateKeywords">
-            <processor bean="generateKeywordsProcessor"/>
+		<pipelinelink name="extractKeywords">
+			<processor bean="extractKeywordsFromMessageProcessor"/>
             <transition returnvalue="1" link="loadProducts" />
         </pipelinelink>
 		<pipelinelink name="loadProducts">
