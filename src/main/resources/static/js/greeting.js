@@ -1,6 +1,6 @@
 /**
-    * Created by Rafal Lebioda on 14.03.2017.
-    */
+ * Created by Rafal Lebioda on 14.03.2017.
+ */
 var lastSelected = $(':focus');
 
 jQuery(function ($) {
@@ -13,3 +13,5 @@ function addText(el, text) {
     lastSelected.focus().val(lastSelected.val() + text);
     return false;
 }
+
+
