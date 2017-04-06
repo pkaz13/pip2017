@@ -74,10 +74,11 @@ public class ProductService {
     }
 
     public List<Product> getRandomProducts(int howManyProducts) {
-        log.info("Searching for [" + howManyProducts + "] random products");
-
         List<Product> products = new ArrayList<>(howManyProducts);
+
         int quantity = (int) productRepository.count();
+        log.info("Searching for [" + howManyProducts + "] random products from quantity[" + quantity + "]");
+
         if (quantity == 0 || howManyProducts > quantity) {
             products.addAll(findAllProducts());
             return products;
