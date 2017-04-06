@@ -13,6 +13,7 @@ import pl.hycom.pip.messanger.service.ProductService;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @Log4j2
@@ -42,21 +43,21 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
     public List<Product> findBestMatchingProducts(int numberOfProducts, PipelineContext ctx, Keyword... keywords) {
         log.info("Finding best matching products");
 
-        if (keywords.length == 0) {
+        if (keywords == null || keywords.length == 0) {
             return Collections.emptyList();
         }
         List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keywords);
         PriorityQueue<Map.Entry<Product, Long>> productsQueue =
-                new PriorityQueue<>((o1, o2) -> (int)(o2.getValue() - o1.getValue()));
+                new PriorityQueue<>((o1, o2) -> Math.toIntExact(o2.getValue() - o1.getValue()));
 
         productsWithKeywords.stream().filter(Objects::nonNull).map(product -> new HashMap.SimpleEntry<>(product,
-            Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull)
-                    .distinct().filter(product::containsKeyword).count())).forEach(productsQueue::add);
+            Arrays.stream(keywords).filter(Objects::nonNull).distinct().filter(product::containsKeyword).count()))
+                .forEach(productsQueue::add);
 
-        List<Product> bestMatchingProducts = new ArrayList<>();
-        for (int i = 0; i < numberOfProducts && !productsQueue.isEmpty(); ++i) {
-            bestMatchingProducts.add(productsQueue.poll().getKey());
-        }
+        List<Product> bestMatchingProducts = IntStream.iterate(0, i -> i + 1).limit(numberOfProducts)
+                .filter(i -> !productsQueue.isEmpty()).mapToObj(i -> productsQueue.poll().getKey())
+                .filter(Objects::nonNull).collect(Collectors.toList());
+
         if (ctx != null) {
             saveKeywordsThatWereInAnyProduct(productsWithKeywords, Arrays.asList(keywords), ctx);
         }
