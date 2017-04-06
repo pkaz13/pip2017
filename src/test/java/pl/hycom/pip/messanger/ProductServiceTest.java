@@ -27,8 +27,6 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @ActiveProfiles({ "dev", "testdb" })
@@ -289,7 +287,7 @@ public class ProductServiceTest {
         productService.addProduct(product4);
         productService.addProduct(product5);
         productService.addProduct(product6);
-        List<Product> bestFittingProducts = productService.findBestFittingProducts(keyword1, keyword2, keyword3, keyword4);
+        List<Product> bestFittingProducts = productService.findBestMatchingProducts(keyword1, keyword2, keyword3, keyword4);
 
         //assertion
         assertEquals("List should contain " + Integer.toString(expectedNumberOfProducts)  + " products", 3, bestFittingProducts.size());

@@ -109,28 +109,23 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> findBestFittingProducts(Keyword ... keywords) {
+    public List<Product> findBestMatchingProducts(Keyword ... keywords) {
         log.info("Finding best fitting products");
-        //TODO: move this constant to some properties
-        //final int numberOfProducts = 3;
 
         List<Product> productsWithKeywords = findAllProductsContainingAtLeastOneKeyword(keywords);
-        PriorityQueue<Map.Entry<Product, Integer>> productsQueue =
-                new PriorityQueue<>((o1, o2) -> o2.getValue() - o1.getValue());
-        for (Product product : productsWithKeywords) {
-            Map.Entry<Product, Integer> queueEntry = new HashMap.SimpleEntry<>(product, 0);
-            for (Keyword keyword : keywords) {
-                if (product.containsKeyword(keyword)) {
-                    queueEntry.setValue(queueEntry.getValue() + 1);
-                }
-            }
-            productsQueue.add(queueEntry);
-        }
-        List<Product> bestFittingProducts = new ArrayList<>();
+        PriorityQueue<Map.Entry<Product, Long>> productsQueue =
+                new PriorityQueue<>((o1, o2) -> (int)(o2.getValue() - o1.getValue()));
+
+        productsWithKeywords.stream().filter(Objects::nonNull).map(product -> new HashMap.SimpleEntry<>(product,
+                Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull)
+                        .filter(product::containsKeyword).count()))
+                .forEach(productsQueue::add);
+
+        List<Product> bestMatchingProducts = new ArrayList<>();
         for (int i = 0; i < numberOfProducts && !productsQueue.isEmpty(); ++i) {
-            bestFittingProducts.add(productsQueue.poll().getKey());
+            bestMatchingProducts.add(productsQueue.poll().getKey());
         }
-        return bestFittingProducts;
+        return bestMatchingProducts;
     }
 
     public void deleteAllProducts() {
