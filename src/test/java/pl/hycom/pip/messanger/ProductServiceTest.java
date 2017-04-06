@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,6 +26,8 @@ import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -50,6 +53,9 @@ public class ProductServiceTest {
     private Keyword keyword2;
     private Keyword keyword3;
     private Keyword keyword4;
+
+    @Value("${messenger.recommendation.products-amount}")
+    Integer expectedNumberOfProducts;
 
     @Before
     public void setUp() {
@@ -277,18 +283,16 @@ public class ProductServiceTest {
         preparefindBestFittingProductsTest();
 
         //action
-        //TODO: remove assignment
-        product1 = productService.addProduct(product1);
-        product2 = productService.addProduct(product2);
-        product3 = productService.addProduct(product3);
-        product4 = productService.addProduct(product4);
-        product5 = productService.addProduct(product5);
-        product6 = productService.addProduct(product6);
+        productService.addProduct(product1);
+        productService.addProduct(product2);
+        productService.addProduct(product3);
+        productService.addProduct(product4);
+        productService.addProduct(product5);
+        productService.addProduct(product6);
         List<Product> bestFittingProducts = productService.findBestFittingProducts(keyword1, keyword2, keyword3, keyword4);
 
         //assertion
-        //TODO: replace 3 with value from properties
-        assertEquals("List should contain 3 products", 3, bestFittingProducts.size());
+        assertEquals("List should contain " + Integer.toString(expectedNumberOfProducts)  + " products", 3, bestFittingProducts.size());
         assertTrue("List should contain product1", bestFittingProducts.contains(product1));
         assertTrue("List should contain product3", bestFittingProducts.contains(product3));
         assertTrue("List should contain product4", bestFittingProducts.contains(product4));

@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ import pl.hycom.pip.messanger.repository.ProductRepository;
 @Log4j2
 public class ProductService {
     private final ProductRepository productRepository;
+
+    @Value("${messenger.recommendation.products-amount}")
+    private Integer numberOfProducts;
 
     public Product addProduct(Product product) {
         log.info("Adding product: " + product);
@@ -108,7 +112,7 @@ public class ProductService {
     public List<Product> findBestFittingProducts(Keyword ... keywords) {
         log.info("Finding best fitting products");
         //TODO: move this constant to some properties
-        final int numberOfProducts = 3;
+        //final int numberOfProducts = 3;
 
         List<Product> productsWithKeywords = findAllProductsContainingAtLeastOneKeyword(keywords);
         PriorityQueue<Map.Entry<Product, Integer>> productsQueue =
