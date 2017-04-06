@@ -47,14 +47,18 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
             return Collections.emptyList();
         }
         List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keywords);
+        //This is priority queue, works like a stack, you can only access top element, but always has highest
+        //element on top. The priority of elements is decided by comparator passed in constructor
         PriorityQueue<Map.Entry<Product, Long>> productsQueue =
                 new PriorityQueue<>((o1, o2) -> Math.toIntExact(o2.getValue() - o1.getValue()));
 
+        //This stream maps each product into an entry to priorityQueue with product as a key and number of keywords
+        //it has from list as value
         productsWithKeywords.stream().filter(Objects::nonNull).map(product -> new HashMap.SimpleEntry<>(product,
             Arrays.stream(keywords).filter(Objects::nonNull).distinct().filter(product::containsKeyword).count()))
                 .forEach(productsQueue::add);
 
-        //This is just regular for loop, but using stream instead, so it's 100 times better, because of reasons
+        //This stream takes x first products from queue end puts them into list
         List<Product> bestMatchingProducts = IntStream.iterate(0, i -> i + 1).limit(numberOfProducts)
                 .filter(i -> !productsQueue.isEmpty()).mapToObj(i -> productsQueue.poll().getKey())
                 .filter(Objects::nonNull).collect(Collectors.toList());
@@ -66,6 +70,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
     }
 
     private void saveKeywordsThatWereInAnyProduct(List<Product> products, List<Keyword> keywords, PipelineContext ctx) {
+        //This stream takes only these keywords from list that appear in at least one product
         List<Keyword> keywordsToBeSaved = keywords.stream().distinct().filter(keyword -> products.stream()
                 .anyMatch(product -> product.containsKeyword(keyword))).collect(Collectors.toList());
         ctx.put(KEYWORDS_FOUND, keywordsToBeSaved);
