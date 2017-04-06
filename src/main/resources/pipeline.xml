@@ -6,8 +6,12 @@
 	<pipelinechain name="processMessage" headlink="loadUserProfile">
 		<pipelinelink name="loadUserProfile">
 			<processor bean="userProfileProcessor" />
-			<transition returnvalue="1" link="loadProducts" />
-		</pipelinelink>
+            <transition returnvalue="1" link="generateKeywords"/>
+        </pipelinelink>
+        <pipelinelink name="generateKeywords">
+            <processor bean="generateKeywordsProcessor"/>
+            <transition returnvalue="1" link="loadProducts" />
+        </pipelinelink>
 		<pipelinelink name="loadProducts">
 			<processor bean="loadProductsProcessor" />
 			<transition returnvalue="1" link="sendProductsResponse" />
