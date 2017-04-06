@@ -1,5 +1,7 @@
 package pl.hycom.pip.messanger.handler.processor;
 
+import com.sun.istack.internal.Nullable;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -26,20 +28,20 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
 
         String message = ctx.get(PipelineMessageHandler.MESSAGE, String.class);
         String[] keywords = extractKeywords(message);
-        log.debug("Keywords extracted from message [" + message + "]: " + Arrays.toString(keywords));
+        log.debug("Keywords extracted from message [{}]: {}", message, Arrays.toString(keywords));
 
         ctx.put(KEYWORDS, keywords);
         return 1;
     }
 
-    protected String[] extractKeywords(String message) {
+    protected String[] extractKeywords(@Nullable String message) {
         message = processMessage(message);
         String[] keywords = StringUtils.split(message, " ");
         keywords = processKeywords(keywords);
         return keywords;
     }
 
-    protected String processMessage(String message) {
+    protected String processMessage(@Nullable String message) {
         if (message == null) {
             return StringUtils.EMPTY;
         }
@@ -48,7 +50,7 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
         return message;
     }
 
-    protected String[] processKeywords(String[] keywords) {
+    protected String[] processKeywords(@NonNull String[] keywords) {
         return Arrays.stream(Arrays.copyOf(keywords, keywords.length))
                 .filter(s -> StringUtils.length(s) > 2)
                 .distinct()
