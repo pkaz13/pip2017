@@ -37,7 +37,7 @@ public class GreetingController {
     @Autowired
     private GreetingService greetingService;
 
-    @GetMapping("/admin/greeting")
+    @GetMapping("/admin/greetings")
     public String getGreetings(Model model) {
         List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
         sortByLocale(greetings);
