@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -25,9 +26,14 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
-public class GreetingService {
+public class GreetingService implements InitializingBean {
 
     private Map<String, String> availableLocale = Collections.synchronizedMap(new HashMap<>());
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        retrieveLocaleFromFacebook();
+    }
 
     public Map<String, String> getAvailableLocale(List<com.github.messenger4j.profile.Greeting> greetings) {
         Map<String, String> locale = new TreeMap<>(availableLocale);
@@ -42,7 +48,7 @@ public class GreetingService {
         return availableLocale.containsKey(locale);
     }
 
-    @Scheduled(fixedDelay = 60 * 60 * 1000) // every 1 hour
+    @Scheduled(fixedDelay = 60 * 60 * 1000, initialDelay = 60 * 60 * 1000) // every 1 hour
     private synchronized void retrieveLocaleFromFacebook() {
         Map<String, String> availableLocaleTmp = new HashMap<>();
 

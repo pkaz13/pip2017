@@ -42,6 +42,7 @@ public class ProductServiceTest {
     private Product product1;
     private Product product2;
     private Product product3;
+    private Product product4;
     private Keyword keyword;
     private Keyword keyword1;
     private Keyword keyword2;
@@ -64,6 +65,11 @@ public class ProductServiceTest {
         product3.setName("name3");
         product3.setDescription("desc3");
         product3.setImageUrl("url3");
+
+        product4 = new Product();
+        product4.setName("name4");
+        product4.setDescription("desc4");
+        product4.setImageUrl("url4");
 
         keyword = new Keyword();
         keyword.setWord("test_keyword");
@@ -173,6 +179,12 @@ public class ProductServiceTest {
         // assertion
         assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 3", 3, productService.getRandomProducts(3).size());
         assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 2", 2, productService.getRandomProducts(2).size());
+        assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 4", 3, productService.getRandomProducts(4).size());
+
+        productService.addProduct(product4);
+        assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 3", 3, productService.getRandomProducts(3).size());
+        assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 2", 2, productService.getRandomProducts(2).size());
+        assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 4", 4, productService.getRandomProducts(4).size());
     }
 
     @Test
