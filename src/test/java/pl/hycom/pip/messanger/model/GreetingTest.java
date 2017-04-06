@@ -2,18 +2,24 @@ package pl.hycom.pip.messanger.model;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import pl.hycom.pip.messanger.service.GreetingService;
 
 /**
  * Created by marcinus on 04.04.17.
  */
 public class GreetingTest {
 
+    @Autowired
+    private GreetingService greetingService;
+
     @Test
     public void isValid_pl_PL() throws Exception {
         Greeting greeting = new Greeting();
         greeting.setLocale("pl_PL");
 
-        boolean valid = greeting.isValid();
+        boolean valid = greetingService.isValidLocale(greeting.getLocale());
 
         Assertions.assertThat(valid).isTrue();
     }
@@ -23,7 +29,7 @@ public class GreetingTest {
         Greeting greeting = new Greeting();
         greeting.setLocale("pl");
 
-        boolean valid = greeting.isValid();
+        boolean valid = greetingService.isValidLocale(greeting.getLocale());
 
         Assertions.assertThat(valid).isFalse();
     }
@@ -33,7 +39,7 @@ public class GreetingTest {
         Greeting greeting = new Greeting();
         greeting.setLocale("en_US");
 
-        boolean valid = greeting.isValid();
+        boolean valid = greetingService.isValidLocale(greeting.getLocale());
 
         Assertions.assertThat(valid).isTrue();
     }
@@ -43,7 +49,7 @@ public class GreetingTest {
         Greeting greeting = new Greeting();
         greeting.setLocale("adadads");
 
-        boolean valid = greeting.isValid();
+        boolean valid = greetingService.isValidLocale(greeting.getLocale());
 
         Assertions.assertThat(valid).isFalse();
     }
@@ -53,7 +59,7 @@ public class GreetingTest {
         Greeting greeting = new Greeting();
         greeting.setLocale("sdvkj_skdksdsf");
 
-        boolean valid = greeting.isValid();
+        boolean valid = greetingService.isValidLocale(greeting.getLocale());
 
         Assertions.assertThat(valid).isFalse();
     }
@@ -63,7 +69,7 @@ public class GreetingTest {
         Greeting greeting = new Greeting();
         greeting.setLocale("pl_skdksdsf");
 
-        boolean valid = greeting.isValid();
+        boolean valid = greetingService.isValidLocale(greeting.getLocale());
 
         Assertions.assertThat(valid).isFalse();
     }
@@ -73,7 +79,7 @@ public class GreetingTest {
         Greeting greeting = new Greeting();
         greeting.setLocale("sdvkj_PL");
 
-        boolean valid = greeting.isValid();
+        boolean valid = greetingService.isValidLocale(greeting.getLocale());
 
         Assertions.assertThat(valid).isFalse();
     }

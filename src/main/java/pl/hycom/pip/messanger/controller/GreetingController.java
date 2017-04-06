@@ -1,16 +1,8 @@
 package pl.hycom.pip.messanger.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
@@ -32,6 +20,7 @@ import com.github.messenger4j.profile.MessengerProfileClient;
 import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Greeting;
 import pl.hycom.pip.messanger.model.GreetingListWrapper;
+import pl.hycom.pip.messanger.service.GreetingService;
 
 /**
  * Created by piotr on 12.03.2017.
@@ -45,7 +34,8 @@ public class GreetingController {
     @Autowired
     private MessengerProfileClient profileClient;
 
-    private Map<String, String> availableLocale;
+    @Autowired
+    private GreetingService greetingService;
 
     @GetMapping("/admin/greeting")
     public String getGreetings(Model model) {
@@ -55,39 +45,8 @@ public class GreetingController {
         GreetingListWrapper greetingListWrapper = new GreetingListWrapper(greetings);
         model.addAttribute("greetingListWrapper", greetingListWrapper);
         model.addAttribute("greeting", new Greeting());
-        model.addAttribute("availableLocale", getAvailableLocale(greetings));
+        model.addAttribute("availableLocale", greetingService.getAvailableLocale(greetings));
         return "greetings";
-    }
-
-    private Map<String, String> getAvailableLocale(List<com.github.messenger4j.profile.Greeting> greetings) {
-
-        if (availableLocale == null) {
-            try {
-                DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-                Document document = docBuilder.parse("https://www.facebook.com/translations/FacebookLocales.xml");
-
-                availableLocale = new HashMap<>();
-
-                NodeList nl = document.getElementsByTagName("locale");
-                for (int i = 0; i < nl.getLength(); i++) {
-                    Element e = (Element) nl.item(i);
-                    availableLocale.put(e.getElementsByTagName("representation").item(0).getTextContent(), e.getElementsByTagName("englishName").item(0).getTextContent());
-                }
-
-                log.info("Loaded available locale from facebook: " + availableLocale);
-            } catch (SAXException | IOException | ParserConfigurationException e) {
-                log.error(e.toString());
-                return Collections.emptyMap();
-            }
-        }
-
-        Map<String, String> locale = new TreeMap<>(availableLocale);
-
-        // remove existing locale
-        greetings.stream().forEach(g -> locale.remove(g.getLocale()));
-
-        return locale;
     }
 
     @PostMapping("/admin/greetings")
@@ -104,7 +63,7 @@ public class GreetingController {
     @PostMapping("/admin/greeting")
     public String addGreeting(@ModelAttribute Greeting greeting) {
         try {
-            if (!availableLocale.containsKey(greeting.getLocale())) {
+            if (!greetingService.isValidLocale(greeting.getLocale())) {
                 log.warn("Not supported locale[" + greeting.getLocale() + "]");
                 return "redirect:/admin/greeting";
             }
