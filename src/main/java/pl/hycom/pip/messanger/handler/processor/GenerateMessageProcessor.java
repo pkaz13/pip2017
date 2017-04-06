@@ -1,56 +1,46 @@
-package pl.hycom.pip.messanger.handler;
+package pl.hycom.pip.messanger.handler.processor;
+
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
-import com.github.messenger4j.receive.events.TextMessageEvent;
-import com.github.messenger4j.receive.handlers.TextMessageEventHandler;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.send.templates.GenericTemplate;
 import com.github.messenger4j.send.templates.Template;
+
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 import pl.hycom.pip.messanger.model.Product;
-import pl.hycom.pip.messanger.service.ProductService;
+import pl.hycom.pip.messanger.pipeline.PipelineContext;
+import pl.hycom.pip.messanger.pipeline.PipelineException;
+import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
-
-/**
- * Created by maciek on 19.03.17.
- */
 @Component
 @Log4j2
-public class MessengerProductsRecommendationHandler implements TextMessageEventHandler {
-
-    @Autowired
-    private ProductService productService;
+public class GenerateMessageProcessor implements PipelineProcessor {
 
     @Autowired
     private MessengerSendClient sendClient;
 
-    @Value("${messenger.recommendation.products-amount:3}")
-    private Integer productsAmount;
-
     @Override
-    public void handle(TextMessageEvent msg) {
-        sendAnswer(msg.getSender().getId());
-    }
+    public int runProcess(PipelineContext ctx) throws PipelineException {
 
-    private void sendAnswer(String id) {
+        log.info("Started process of GenerateMessageProcessor");
 
-        log.info("Sending answer message to[" + id + "]");
-
-        final List<Product> products = productService.getRandomProducts(productsAmount);
+        List<Product> products = ctx.get("products", List.class);
+        String senderId = ctx.get(PipelineMessageHandler.SENDER_ID, String.class);
 
         if (CollectionUtils.isEmpty(products)) {
-            sendTextMessage(id, "No products found.");
-        } else {
-            final GenericTemplate genericTemplate = getStructuredMessage(products);
-            sendStructuredMessage(id, genericTemplate);
+            sendTextMessage(senderId, "No products found.");
+            return 1;
         }
+
+        sendStructuredMessage(senderId, getStructuredMessage(products));
+        return 1;
     }
 
     private void sendStructuredMessage(String id, Template template) {
@@ -80,12 +70,5 @@ public class MessengerProductsRecommendationHandler implements TextMessageEventH
                     .toList();
         }
         return listBuilder.done().build();
-    }
-
-    @PostConstruct
-    public void validate() {
-        if (productsAmount < 0 || productsAmount > 10) {
-            throw new IllegalArgumentException("Products amount cannot be negative or bigger than 10");
-        }
     }
 }

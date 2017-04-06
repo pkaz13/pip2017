@@ -178,3 +178,9 @@ tt-highlight{
     color:red;
 }
 /*KONIEC STYLU DLA PODPOWIEDZI TOKENAHEAD*/
+
+/*styl dla tagow bootrap-labels*/
+.keyword-label {
+    margin: 0.1em;
+    display: inline-block;
+}

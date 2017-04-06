@@ -4,6 +4,8 @@ messenger:
   verifyToken: ${MESSENGER_VERIFY_TOKEN}
   recommendation:
     products-amount: 3
+  pipeline:
+    filepath: /pipeline.xml
 
 management:
   port: 8081

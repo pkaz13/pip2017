@@ -1,13 +1,13 @@
 package pl.hycom.pip.messanger.model;
 
-import java.io.Serializable;
+import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.Set;
-
-import lombok.Data;
 
 @Data
 @Entity
@@ -42,5 +42,16 @@ public class Product implements Serializable {
             fetch = FetchType.EAGER
     )
     @OrderColumn
-    private Set<Keyword> keywords;
+    private Set<Keyword> keywords = new LinkedHashSet<>();
+
+    public boolean containsKeywords(String[] keywordValues) {
+        for (String keywordValue : keywordValues) {
+            if (keywords.stream()
+                    .filter(keyword -> keyword.getWord().equals(keywordValue))
+                    .count() == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
