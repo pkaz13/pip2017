@@ -112,9 +112,9 @@ public class ProductService {
 
         List<Product> productsWithKeywords = findAllProductsContainingAtLeastOneKeyword(keywords);
         PriorityQueue<Map.Entry<Product, Integer>> productsQueue =
-                new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));
+                new PriorityQueue<>((o1, o2) -> o2.getValue() - o1.getValue());
         for (Product product : productsWithKeywords) {
-            Map.Entry<Product, Integer> queueEntry = new HashMap.SimpleEntry<Product, Integer>(product, 0);
+            Map.Entry<Product, Integer> queueEntry = new HashMap.SimpleEntry<>(product, 0);
             for (Keyword keyword : keywords) {
                 if (product.containsKeyword(keyword)) {
                     queueEntry.setValue(queueEntry.getValue() + 1);

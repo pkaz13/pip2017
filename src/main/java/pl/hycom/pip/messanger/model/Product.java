@@ -47,4 +47,8 @@ public class Product implements Serializable {
     public boolean containsKeyword(Keyword keyword) {
         return keywords.contains(keyword);
     }
+
+    public boolean addKeyword(Keyword keyword) {
+        return keywords.add(keyword);
+    }
 }

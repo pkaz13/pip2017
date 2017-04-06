@@ -42,6 +42,9 @@ public class ProductServiceTest {
     private Product product1;
     private Product product2;
     private Product product3;
+    private Product product4;
+    private Product product5;
+    private Product product6;
     private Keyword keyword;
     private Keyword keyword1;
     private Keyword keyword2;
@@ -65,6 +68,21 @@ public class ProductServiceTest {
         product3.setDescription("desc3");
         product3.setImageUrl("url3");
 
+        product4 = new Product();
+        product4.setName("name4");
+        product4.setDescription("desc4");
+        product4.setImageUrl("url4");
+
+        product5 = new Product();
+        product5.setName("name5");
+        product5.setDescription("desc5");
+        product5.setImageUrl("url5");
+
+        product6 = new Product();
+        product6.setName("name6");
+        product6.setDescription("desc6");
+        product6.setImageUrl("url6");
+
         keyword = new Keyword();
         keyword.setWord("test_keyword");
 
@@ -86,17 +104,21 @@ public class ProductServiceTest {
         product1.setKeywords(keywords1);
     }
 
-    private void addKeywordsToProducts() {
+    private void addKeywordsToDB() {
         keywordService.addKeyword(keyword1);
         keywordService.addKeyword(keyword2);
         keywordService.addKeyword(keyword3);
         keywordService.addKeyword(keyword4);
+    }
 
-        product1.getKeywords().add(keyword1);
-        product1.getKeywords().add(keyword2);
-        product1.getKeywords().add(keyword3);
-        product2.getKeywords().add(keyword2);
-        product3.getKeywords().add(keyword3);
+    private void addKeywordsToProducts() {
+        addKeywordsToDB();
+
+        product1.addKeyword(keyword1);
+        product1.addKeyword(keyword2);
+        product1.addKeyword(keyword3);
+        product2.addKeyword(keyword2);
+        product3.addKeyword(keyword3);
     }
 
     @Test
@@ -221,6 +243,55 @@ public class ProductServiceTest {
 
         // assertion
         assertEquals("list should contain all 3 products", 3, productsWithKeywords.size());
+    }
+
+    private void preparefindBestFittingProductsTest() {
+        addKeywordsToDB();
+
+        product1.addKeyword(keyword1);
+        product1.addKeyword(keyword2);
+        product1.addKeyword(keyword3);
+        product1.addKeyword(keyword4);
+
+        product2.addKeyword(keyword1);
+        product2.addKeyword(keyword2);
+
+        product3.addKeyword(keyword1);
+        product3.addKeyword(keyword2);
+        product3.addKeyword(keyword4);
+
+        product4.addKeyword(keyword1);
+        product4.addKeyword(keyword2);
+        product4.addKeyword(keyword4);
+
+        product5.addKeyword(keyword3);
+        product5.addKeyword(keyword4);
+
+        product6.addKeyword(keyword1);
+    }
+
+    @Test
+    @Transactional
+    public void findBestFittingProductsTest() {
+        //preparation
+        preparefindBestFittingProductsTest();
+
+        //action
+        //TODO: remove assignment
+        product1 = productService.addProduct(product1);
+        product2 = productService.addProduct(product2);
+        product3 = productService.addProduct(product3);
+        product4 = productService.addProduct(product4);
+        product5 = productService.addProduct(product5);
+        product6 = productService.addProduct(product6);
+        List<Product> bestFittingProducts = productService.findBestFittingProducts(keyword1, keyword2, keyword3, keyword4);
+
+        //assertion
+        //TODO: replace 3 with value from properties
+        assertEquals("List should contain 3 products", 3, bestFittingProducts.size());
+        assertTrue("List should contain product1", bestFittingProducts.contains(product1));
+        assertTrue("List should contain product3", bestFittingProducts.contains(product3));
+        assertTrue("List should contain product4", bestFittingProducts.contains(product4));
     }
 
     @After
