@@ -249,53 +249,6 @@ public class ProductServiceTest {
         assertEquals("list should contain all 3 products", 3, productsWithKeywords.size());
     }
 
-    private void preparefindBestFittingProductsTest() {
-        addKeywordsToDB();
-
-        product1.addKeyword(keyword1);
-        product1.addKeyword(keyword2);
-        product1.addKeyword(keyword3);
-        product1.addKeyword(keyword4);
-
-        product2.addKeyword(keyword1);
-        product2.addKeyword(keyword2);
-
-        product3.addKeyword(keyword1);
-        product3.addKeyword(keyword2);
-        product3.addKeyword(keyword4);
-
-        product4.addKeyword(keyword1);
-        product4.addKeyword(keyword2);
-        product4.addKeyword(keyword4);
-
-        product5.addKeyword(keyword3);
-        product5.addKeyword(keyword4);
-
-        product6.addKeyword(keyword1);
-    }
-
-    @Test
-    @Transactional
-    public void findBestFittingProductsTest() {
-        //preparation
-        preparefindBestFittingProductsTest();
-
-        //action
-        productService.addProduct(product1);
-        productService.addProduct(product2);
-        productService.addProduct(product3);
-        productService.addProduct(product4);
-        productService.addProduct(product5);
-        productService.addProduct(product6);
-        List<Product> bestFittingProducts = productService.findBestMatchingProducts(keyword1, keyword2, keyword3, keyword4);
-
-        //assertion
-        assertEquals("List should contain " + Integer.toString(expectedNumberOfProducts)  + " products", 3, bestFittingProducts.size());
-        assertTrue("List should contain product1", bestFittingProducts.contains(product1));
-        assertTrue("List should contain product3", bestFittingProducts.contains(product3));
-        assertTrue("List should contain product4", bestFittingProducts.contains(product4));
-    }
-
     @After
     public void cleanAll() {
         productService.deleteAllProducts();

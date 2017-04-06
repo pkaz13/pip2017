@@ -23,9 +23,6 @@ import pl.hycom.pip.messanger.repository.ProductRepository;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    @Value("${messenger.recommendation.products-amount}")
-    private Integer numberOfProducts;
-
     public Product addProduct(Product product) {
         log.info("Adding product: " + product);
 
@@ -107,25 +104,6 @@ public class ProductService {
         Product product = findProductById(id);
         product.getKeywords().removeAll(Arrays.asList(keywords));
         return productRepository.save(product);
-    }
-
-    public List<Product> findBestMatchingProducts(Keyword ... keywords) {
-        log.info("Finding best fitting products");
-
-        List<Product> productsWithKeywords = findAllProductsContainingAtLeastOneKeyword(keywords);
-        PriorityQueue<Map.Entry<Product, Long>> productsQueue =
-                new PriorityQueue<>((o1, o2) -> (int)(o2.getValue() - o1.getValue()));
-
-        productsWithKeywords.stream().filter(Objects::nonNull).map(product -> new HashMap.SimpleEntry<>(product,
-                Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull)
-                        .filter(product::containsKeyword).count()))
-                .forEach(productsQueue::add);
-
-        List<Product> bestMatchingProducts = new ArrayList<>();
-        for (int i = 0; i < numberOfProducts && !productsQueue.isEmpty(); ++i) {
-            bestMatchingProducts.add(productsQueue.poll().getKey());
-        }
-        return bestMatchingProducts;
     }
 
     public void deleteAllProducts() {
