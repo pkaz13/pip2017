@@ -72,8 +72,7 @@ $(document).ready(function() {
             name: "keywords",
             displayKey: "word",
             source: keywords.ttAdapter()
-        },
-        freeInput: false
+        }
     });
     
 });
