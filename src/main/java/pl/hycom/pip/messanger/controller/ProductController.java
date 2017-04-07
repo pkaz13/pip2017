@@ -18,6 +18,8 @@ import pl.hycom.pip.messanger.service.ProductService;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -59,16 +61,24 @@ public class ProductController {
         return new ModelAndView("redirect:/admin/products");
     }
 
+    @ResponseBody
+    @GetMapping("/admin/products/get_keywords_suggestions")
+    public List<Keyword> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
+        return keywordService.findKeywordsBySearchTerm(searchTerm);
+    }
+
+    @ResponseBody
+    @GetMapping("/admin/products/get_product_keywords")
+    public Set<Keyword> getProductKeywords(@RequestParam("productID") final int id) {
+        log.info("Searching for product's [" + id + "] keywords");
+
+        return productService.findProductById(id).getKeywords();
+    }
+
     private void prepareModel(Model model, Product product) {
         List<Product> allProducts = productService.findAllProducts();
         model.addAttribute("products", allProducts);
         model.addAttribute("productForm", product);
-    }
-
-    @ResponseBody
-    @GetMapping("/admin/products/get_keywords_suggestions.json")
-    public List<Keyword> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
-        return keywordService.findKeywordsBySearchTerm(searchTerm);
     }
     
 }
