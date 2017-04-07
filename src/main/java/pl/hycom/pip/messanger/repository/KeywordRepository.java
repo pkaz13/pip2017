@@ -12,4 +12,6 @@ import java.util.List;
 public interface KeywordRepository extends CrudRepository<Keyword, Integer> {
 
     List<Keyword> findByWordIgnoreCaseStartingWith(String keyword);
+
+    Keyword findByWordIgnoreCase(String keyword);
 }

@@ -57,4 +57,9 @@ public class KeywordService {
         log.info("findKeywordsBySearchTerm method from KeywordService invoked");
         return keywordRepository.findByWordIgnoreCaseStartingWith(searchTerm);
     }
+
+    public Keyword findKeywordByWord(String word) {
+        log.info("findKeywordsByWord method from KeywordService invoked");
+        return keywordRepository.findByWordIgnoreCase(word);
+    }
 }
