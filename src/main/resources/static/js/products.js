@@ -55,7 +55,7 @@ $(document).ready(function() {
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         // prefetch: '/admin/products/get_all_keywords_suggestions',
         remote: {
-            url: '/admin/products/get_keywords_suggestions?searchTerm=%QUERY',
+            url: '/product/keyword/suggestions?searchTerm=%QUERY',
             wildcard: '%QUERY'
         },
         limit: 6

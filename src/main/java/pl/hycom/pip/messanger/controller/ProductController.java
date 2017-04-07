@@ -65,7 +65,7 @@ public class ProductController {
     }
 
     @ResponseBody
-    @GetMapping("/admin/products/get_keywords_suggestions")
+    @GetMapping("/admin//product/keyword/suggestions")
     public List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
         return keywordService.findKeywordsBySearchTerm(searchTerm).stream().map(k -> k.getWord()).collect(Collectors.toList());
     }
