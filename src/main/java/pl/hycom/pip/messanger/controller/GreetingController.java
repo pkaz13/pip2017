@@ -31,13 +31,16 @@ import pl.hycom.pip.messanger.service.GreetingService;
 @Controller
 public class GreetingController {
 
+    private static final String ADMIN_GREETINGS = "/admin/greetings";
+    private static final String REDIRECT_ADMIN_GREETINGS = "redirect:" + ADMIN_GREETINGS;
+
     @Autowired
     private MessengerProfileClient profileClient;
 
     @Autowired
     private GreetingService greetingService;
 
-    @GetMapping("/admin/greetings")
+    @GetMapping(ADMIN_GREETINGS)
     public String getGreetings(Model model) {
         List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
         sortByLocale(greetings);
@@ -49,7 +52,7 @@ public class GreetingController {
         return "greetings";
     }
 
-    @PostMapping("/admin/greetings")
+    @PostMapping(ADMIN_GREETINGS)
     public String addGreetings(@ModelAttribute GreetingListWrapper greetingListWrapper) {
         try {
             profileClient.setupWelcomeMessages(greetingListWrapper.extractGreetings());
@@ -57,7 +60,7 @@ public class GreetingController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during changing greeting message", e);
         }
-        return "redirect:/admin/greeting";
+        return REDIRECT_ADMIN_GREETINGS;
     }
 
     @PostMapping("/admin/greeting")
@@ -65,7 +68,7 @@ public class GreetingController {
         try {
             if (!greetingService.isValidLocale(greeting.getLocale())) {
                 log.warn("Not supported locale[" + greeting.getLocale() + "]");
-                return "redirect:/admin/greeting";
+                return REDIRECT_ADMIN_GREETINGS;
             }
 
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
@@ -77,7 +80,7 @@ public class GreetingController {
             log.error("Error during changing greeting message", e);
         }
 
-        return "redirect:/admin/greeting";
+        return REDIRECT_ADMIN_GREETINGS;
     }
 
     // Jest get, bo nie wiedziałem jak odwołać sie do posta/deleta z linka z front-endu
@@ -85,7 +88,7 @@ public class GreetingController {
     public String removeGreeting(@PathVariable String locale) {
         if (StringUtils.equals(locale, "default")) {
             // TODO: pokazac komunikat ze nie wolno usuwac default lub zablokować taką opcję
-            return "redirect:/admin/greeting";
+            return REDIRECT_ADMIN_GREETINGS;
         }
         try {
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
@@ -96,7 +99,7 @@ public class GreetingController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.info("Deleting greeting failed", e);
         }
-        return "redirect:/admin/greeting";
+        return REDIRECT_ADMIN_GREETINGS;
     }
 
     private List<com.github.messenger4j.profile.Greeting> getGreetingsWithDefaultLocale(MessengerProfileClient profileClient) {
