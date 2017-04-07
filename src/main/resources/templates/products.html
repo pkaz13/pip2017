@@ -95,7 +95,7 @@
                                 <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
                                     <label class="col-sm-3 control-label" for="name_form">Nazwa</label>
                                     <div class="col-sm-9">
-                                    	<input id="name_form" class="form-control" th:field="*{name}"/>
+                                    	<input id="name_form" class="form-control" maxlength="80" th:field="*{name}"/>
                                     </div>
                                     <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
                                 </div>
@@ -109,7 +109,7 @@
                                 <div class="form-group" th:classappend="${#fields.hasErrors('description')}? 'has-error'">
                                     <label class="col-sm-3 control-label" for="description_form">Opis</label>
                                     <div class="col-sm-9">
-                                    	<textarea class="form-control" id="description_form" th:field="*{description}"></textarea>
+                                    	<textarea class="form-control" id="description_form" maxlength="80" th:field="*{description}"></textarea>
                                     </div>
                                     <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</p>
                                 </div>
