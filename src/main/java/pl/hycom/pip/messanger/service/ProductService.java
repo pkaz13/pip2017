@@ -1,21 +1,17 @@
 package pl.hycom.pip.messanger.service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
+
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -55,6 +51,7 @@ public class ProductService {
         updatedProduct.setName(product.getName());
         updatedProduct.setDescription(product.getDescription());
         updatedProduct.setImageUrl(product.getImageUrl());
+        updatedProduct.setKeywords(product.getKeywords());
         return productRepository.save(updatedProduct);
     }
 
@@ -71,20 +68,24 @@ public class ProductService {
     }
 
     public List<Product> getRandomProducts(int howManyProducts) {
-        log.info("Searching for [" + howManyProducts + "] random products");
-
         List<Product> products = new ArrayList<>(howManyProducts);
+
         int quantity = (int) productRepository.count();
+        log.info("Searching for [" + howManyProducts + "] random products from quantity[" + quantity + "]");
+
         if (quantity == 0 || howManyProducts > quantity) {
             products.addAll(findAllProducts());
+
+            log.info("Returning all products");
             return products;
         }
 
         for (int i = 0; i < howManyProducts; i++) {
             PageRequest pr = new PageRequest(new Random().nextInt(quantity - products.size()), 1);
-            products.addAll(productRepository.findSomeProducts(products, pr));
+            products.addAll(i == 0 ? productRepository.findSomeProducts(pr) : productRepository.findSomeProducts(products, pr));
         }
 
+        log.info("Found [" + products.size() + "] random products");
         return products;
     }
 

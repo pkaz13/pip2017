@@ -52,4 +52,9 @@ public class KeywordService {
     public void deleteAllKeywords() {
         keywordRepository.deleteAll();
     }
+
+    public List<Keyword> findKeywordsBySearchTerm(String searchTerm) {
+        log.info("findKeywordsBySearchTerm method from KeywordService invoked");
+        return keywordRepository.findByWordIgnoreCaseStartingWith(searchTerm);
+    }
 }
