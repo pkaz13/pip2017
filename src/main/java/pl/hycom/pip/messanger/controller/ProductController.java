@@ -18,7 +18,6 @@ import pl.hycom.pip.messanger.service.ProductService;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -66,7 +65,6 @@ public class ProductController {
         model.addAttribute("productForm", product);
     }
 
-    //TODO: docelowo zmienic typ zwracany na liste keywordow
     @ResponseBody
     @GetMapping("/admin/products/get_keywords_suggestions.json")
     public List<Keyword> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
