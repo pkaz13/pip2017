@@ -116,10 +116,10 @@
                                     <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</p>
                                 </div>
                                 <!--keywords-->
-                                <div class="form-group">
+                                <div class="form-group" th:classappend="${#fields.hasErrors('keywords')}? 'has-error'">
                                     <label class="col-sm-3 control-label" for="keywords_form">Słowa kluczowe</label>
                                     <div class="col-sm-9">
-                                        <input id="keywords_form" type="text" name="keywords" th:field="*{keywords}" placeholder="Dodaj słowo kluczowe"/>
+                                        <input id="keywords_form" type="text" name="keywords" th:field="*{keywords}" placeholder="Dodaj"/>
                                     </div>
                                 </div>
                                 <!--keywords-->
