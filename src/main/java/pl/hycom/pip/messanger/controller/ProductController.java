@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
@@ -68,10 +69,8 @@ public class ProductController {
     //TODO: docelowo zmienic typ zwracany na liste keywordow
     @ResponseBody
     @GetMapping("/admin/products/get_keywords_suggestions.json")
-    public List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
-        return keywordService.findKeywordsBySearchTerm(searchTerm)
-                .stream()
-                .map(k -> k.getWord())
-                .collect(Collectors.toList());
+    public List<Keyword> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
+        return keywordService.findKeywordsBySearchTerm(searchTerm);
     }
+    
 }

@@ -42,6 +42,7 @@ $(document).ready(function() {
     var keywords = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.whitespace,
         queryTokenizer: Bloodhound.tokenizers.whitespace,
+        // prefetch: '/admin/products/get_all_keywords_suggestions.json',
         remote: {
             url: '/admin/products/get_keywords_suggestions.json?searchTerm=%QUERY',
             wildcard: '%QUERY'
@@ -52,8 +53,11 @@ $(document).ready(function() {
 
     $('#keywords_form').tagsinput({
         allowDuplicates: false,
+        itemValue: 'id',
+        itemText: 'word',
         typeaheadjs: {
             name: "keywords",
+            displayKey: "word",
             source: keywords.ttAdapter()
         },
         freeInput: true
