@@ -47,7 +47,7 @@ $(document).ready(function() {
 
         var columns = $("#product-"+productId).find('td');
         $(this).find('.name-placeholder').text(columns.eq(1).text());
-        $(this).find('.button-delete').attr('onclick', 'location.href="/admin/products/delete?productId='+productId+'"');
+        $(this).find('.button-delete').attr('onclick', 'location.href="/admin/products/'+productId+'/delete');
     });
 
     var keywords = new Bloodhound({
