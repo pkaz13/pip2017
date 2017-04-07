@@ -14,12 +14,10 @@ $(document).ready(function() {
 			$("#id_form_div").show();
 
             $.ajax({
-                url: "/admin/products/get_product_keywords",
-                data: { productID : productId},
+                url: "/admin/products/"+productId+"/keywords",
                 success: function(data) {
                     $.each(data, function(index, item) {
                         $("#keywords_form").tagsinput('add', item);
-                        console.log(item);
                     })
                 }
             });
@@ -64,13 +62,10 @@ $(document).ready(function() {
     });
     keywords.initialize();
 
-    $('#keywords_form').tagsinput({
+    $('.keywords').tagsinput({
         allowDuplicates: false,
-        itemValue: 'id',
-        itemText: 'word',
+        trimValue: true,
         typeaheadjs: {
-            name: "keywords",
-            displayKey: "word",
             source: keywords.ttAdapter()
         }
     });

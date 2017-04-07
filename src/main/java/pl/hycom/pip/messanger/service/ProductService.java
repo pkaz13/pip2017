@@ -1,23 +1,37 @@
 package pl.hycom.pip.messanger.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.model.Keyword;
-import pl.hycom.pip.messanger.model.Product;
-import pl.hycom.pip.messanger.repository.ProductRepository;
-
-import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Keyword;
+import pl.hycom.pip.messanger.model.Product;
+import pl.hycom.pip.messanger.repository.KeywordRepository;
+import pl.hycom.pip.messanger.repository.ProductRepository;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
 public class ProductService {
+
     private final ProductRepository productRepository;
+    private final KeywordRepository keywordRepository;
 
     public Product addProduct(Product product) {
         log.info("Adding product: " + product);
@@ -53,6 +67,29 @@ public class ProductService {
         updatedProduct.setImageUrl(product.getImageUrl());
         updatedProduct.setKeywords(product.getKeywords());
         return productRepository.save(updatedProduct);
+    }
+
+    public Product addOrUpdateProduct(Product product, String[] keywordsStr) {
+        final Set<Keyword> keywords = new HashSet<>();
+
+        if (keywordsStr != null) {
+            Arrays.stream(keywordsStr).map(k -> StringUtils.lowerCase(k)).forEach(new Consumer<String>() {
+                @Override
+                public void accept(String k) {
+                    // TODO pobrac albo stwozyc keyword
+                    Keyword keyword = keywordRepository.findByWord(k);
+                    if (keyword == null) {
+                        keyword = new Keyword();
+                        keyword.setWord(k);
+                    }
+                    keywords.add(keyword);
+                }
+            });
+        }
+
+        product.setKeywords(keywords);
+
+        return addOrUpdateProduct(product);
     }
 
     public Product addOrUpdateProduct(Product product) {
