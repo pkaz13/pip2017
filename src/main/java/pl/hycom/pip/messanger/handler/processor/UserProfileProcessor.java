@@ -18,10 +18,10 @@ import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 @Log4j2
 public class UserProfileProcessor implements PipelineProcessor {
 
-    public static final String LOCALE = "message";
-    public static final String GENDER = "message";
-    public static final String FIRST_NAME = "message";
-    public static final String LAST_NAME = "message";
+    public static final String LOCALE = "user.locale";
+    public static final String GENDER = "user.gender";
+    public static final String FIRST_NAME = "user.firstname";
+    public static final String LAST_NAME = "user.lastname";
 
     @Autowired
     private UserProfileClient userProfileClient;

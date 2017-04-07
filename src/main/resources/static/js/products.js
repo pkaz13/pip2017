@@ -8,8 +8,8 @@ $(document).ready(function() {
 		var productId = $(event.relatedTarget).data('product-id');
 
 		if (productId) {
-			$(this).find('.modal-title').text("Editing product");
-			$(this).find('.button-submit').text("Update");
+			$(this).find('.modal-title').text("Edycja produktu");
+			$(this).find('.button-submit').text("Aktualizuj");
 			$("#id_form_div").show();
 
 			var columns = $("#product-"+productId).find('td');
@@ -19,8 +19,8 @@ $(document).ready(function() {
 			$("#description_form").val(columns.eq(2).text());
 			$("#imageUrl_form").val(columns.eq(4).find("img").attr('src'));
 		} else {
-			$(this).find('.modal-title').text("Adding new product");
-	        $(this).find('.button-submit').text("Add product");
+			$(this).find('.modal-title').text("Dodaj nowy produkt");
+	        $(this).find('.button-submit').text("Dodaj");
 	        $("#id_form_div").hide();
 
 	        $("#id_form").val("0");

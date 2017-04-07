@@ -20,6 +20,7 @@ import com.github.messenger4j.profile.MessengerProfileClient;
 import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Greeting;
 import pl.hycom.pip.messanger.model.GreetingListWrapper;
+import pl.hycom.pip.messanger.service.GreetingService;
 
 /**
  * Created by piotr on 12.03.2017.
@@ -33,7 +34,10 @@ public class GreetingController {
     @Autowired
     private MessengerProfileClient profileClient;
 
-    @GetMapping("/admin/greeting")
+    @Autowired
+    private GreetingService greetingService;
+
+    @GetMapping("/admin/greetings")
     public String getGreetings(Model model) {
         List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
         sortByLocale(greetings);
@@ -41,6 +45,7 @@ public class GreetingController {
         GreetingListWrapper greetingListWrapper = new GreetingListWrapper(greetings);
         model.addAttribute("greetingListWrapper", greetingListWrapper);
         model.addAttribute("greeting", new Greeting());
+        model.addAttribute("availableLocale", greetingService.getAvailableLocale(greetings));
         return "greetings";
     }
 
@@ -58,6 +63,11 @@ public class GreetingController {
     @PostMapping("/admin/greeting")
     public String addGreeting(@ModelAttribute Greeting greeting) {
         try {
+            if (!greetingService.isValidLocale(greeting.getLocale())) {
+                log.warn("Not supported locale[" + greeting.getLocale() + "]");
+                return "redirect:/admin/greeting";
+            }
+
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
             com.github.messenger4j.profile.Greeting profileGreeting = new com.github.messenger4j.profile.Greeting(greeting.getText(), greeting.getLocale());
             greetings.add(profileGreeting);
@@ -66,6 +76,7 @@ public class GreetingController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.error("Error during changing greeting message", e);
         }
+
         return "redirect:/admin/greeting";
     }
 
