@@ -1,15 +1,17 @@
 package pl.hycom.pip.messanger.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.model.Keyword;
-import pl.hycom.pip.messanger.repository.KeywordRepository;
-
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Keyword;
+import pl.hycom.pip.messanger.repository.KeywordRepository;
 
 /**
  * Created by patry on 18/03/2017.

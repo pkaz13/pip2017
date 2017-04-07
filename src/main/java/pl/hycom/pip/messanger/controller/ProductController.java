@@ -1,25 +1,28 @@
 package pl.hycom.pip.messanger.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import pl.hycom.pip.messanger.model.Keyword;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -38,7 +41,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/products")
-    public String addOrUpdateProduct(@Valid Product product, BindingResult bindingResult, Model model) {
+    public String addOrUpdateProduct(@Valid Product product, BindingResult bindingResult, Model model, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, product);
@@ -48,7 +51,7 @@ public class ProductController {
             return PRODUCTS_VIEW;
         }
 
-        productService.addOrUpdateProduct(product);
+        productService.addOrUpdateProduct(product, StringUtils.split(request.getParameter("keywords-holder"), ','));
 
         return "redirect:/admin/products";
     }
@@ -63,16 +66,16 @@ public class ProductController {
 
     @ResponseBody
     @GetMapping("/admin/products/get_keywords_suggestions")
-    public List<Keyword> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
-        return keywordService.findKeywordsBySearchTerm(searchTerm);
+    public List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
+        return keywordService.findKeywordsBySearchTerm(searchTerm).stream().map(k -> k.getWord()).collect(Collectors.toList());
     }
 
     @ResponseBody
-    @GetMapping("/admin/products/get_product_keywords")
-    public Set<Keyword> getProductKeywords(@RequestParam("productID") final int id) {
+    @GetMapping("/admin/products/{productId}/keywords")
+    public List<String> getProductKeywords(@PathVariable("productId") Integer id) {
         log.info("Searching for product's [" + id + "] keywords");
 
-        return productService.findProductById(id).getKeywords();
+        return productService.findProductById(id).getKeywords().stream().map(k -> k.getWord()).collect(Collectors.toList());
     }
 
     private void prepareModel(Model model, Product product) {
@@ -80,5 +83,5 @@ public class ProductController {
         model.addAttribute("products", allProducts);
         model.addAttribute("productForm", product);
     }
-    
+
 }
