@@ -36,18 +36,20 @@
                     </thead>
                     <tbody>
                     <tr th:id="'product-' + ${product.id}" th:each="product : ${products}">
-                        <td th:text="${product.id}">ID</td>
-                        <td th:text="${product.name}">Name</td>
-                        <td th:text="${product.description}">Description</td>
-                        <td><img th:src="${product.imageUrl}" width="auto" height="60px"/></td>
-                        <td>
+                        <td class="align-middle" th:text="${product.id}">ID</td>
+                        <td class="align-middle"><strong th:text="${product.name}">Name</strong></td>
+                        <td class="align-middle" th:text="${product.description}">Description</td>
+                        <td class="align-middle">
+                        	<a th:href="${product.imageUrl}" target="_blank"><img th:src="${product.imageUrl}" width="auto" height="70px"/></a>
+                        </td>
+                        <td class="align-middle">
                         	<div data-placement="top" data-toggle="tooltip" title="Edytuj">
                         		<button class="btn btn-primary btn-xs button-edit center-block" th:attr="data-product-id=${product.id}" data-toggle="modal" data-target="#product-form-modal">
                         			<span class="glyphicon glyphicon-pencil"></span>
                         		</button>
                         	</div>
                         </td>
-                        <td>
+                        <td class="align-middle">
                         	<div data-placement="top" data-toggle="tooltip" title="Usuń">
                         		<button class="btn btn-danger btn-xs button-delete center-block" th:attr="data-product-id=${product.id}" data-toggle="modal" data-target="#confirm-delete-modal">
                         			<span class="glyphicon glyphicon-trash"></span>
