@@ -135,6 +135,10 @@ ul.ui-autocomplete {
 }
 
 /*STYL DLA PODPOWIEDZI*/
+.bootstrap-tagsinput {
+    width: 100%;
+}
+
  .typeahead,
  .tt-query,
  .tt-hint {
