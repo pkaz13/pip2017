@@ -13,7 +13,6 @@ import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,7 +37,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
     public int runProcess(PipelineContext ctx) throws PipelineException {
         log.info("Started process of LoadBestMatchingProductsProcessor");
 
-        String[] keywords = (String[]) ctx.get(KEYWORDS);
+        String[] keywords = ctx.get(KEYWORDS, String[].class);
         List<Product> products = findBestMatchingProducts(numberOfProducts, ctx, keywords);
         ctx.put(PRODUCTS, products);
 
@@ -51,11 +50,11 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
         if (keywords == null || keywords.length == 0) {
             return Collections.emptyList();
         }
-        //This stream maps Array of strings into array of keywords
-        Keyword[] keywordsArray = Arrays.stream(keywords).map(s -> keywordService.findKeywordByWord(s))
-                .collect(Collectors.toList()).toArray(new Keyword[0]);
+        //This stream maps Array of strings into list of keywords
+        List<Keyword> keywordsList = Arrays.stream(keywords).map(s -> keywordService.findKeywordByWord(s))
+                .filter(Objects::nonNull).collect(Collectors.toList());
 
-        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keywordsArray);
+        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keywordsList);
         //This is priority queue, works like a stack, you can only access top element, but always has highest
         //element on top. The priority of elements is decided by comparator passed in constructor
         PriorityQueue<Map.Entry<Product, Long>> productsQueue =
@@ -64,7 +63,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
         //This stream maps each product into an entry to priorityQueue with product as a key and number of keywords
         //it has from list as value
         productsWithKeywords.stream().filter(Objects::nonNull).map(product -> new HashMap.SimpleEntry<>(product,
-            Arrays.stream(keywordsArray).filter(Objects::nonNull).distinct().filter(product::containsKeyword).count()))
+            keywordsList.stream().filter(Objects::nonNull).distinct().filter(product::containsKeyword).count()))
                 .forEach(productsQueue::add);
 
         //This stream takes x first products from queue end puts them into list
@@ -73,7 +72,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor{
                 .filter(Objects::nonNull).collect(Collectors.toList());
 
         if (ctx != null) {
-            saveKeywordsThatWereInAnyProduct(productsWithKeywords, Arrays.asList(keywordsArray), ctx);
+            saveKeywordsThatWereInAnyProduct(productsWithKeywords, keywordsList, ctx);
         }
         return bestMatchingProducts;
     }

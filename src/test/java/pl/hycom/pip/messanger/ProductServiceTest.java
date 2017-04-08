@@ -18,6 +18,7 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -245,7 +246,7 @@ public class ProductServiceTest {
         productService.addProduct(product1);
         productService.addProduct(product2);
         productService.addProduct(product3);
-        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keyword1, keyword2, keyword3);
+        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(keyword1, keyword2, keyword3));
 
         // assertion
         assertEquals("list should contain all 3 products", 3, productsWithKeywords.size());

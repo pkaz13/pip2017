@@ -139,7 +139,7 @@ public class LoadBestMatchingProductsProcessorTest {
         productService.addProduct(product4);
         productService.addProduct(product5);
         productService.addProduct(product6);
-        List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, null, "test1", "test2", "test3", "test4");
+        List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, null, "test1", "test2", "test3", "test4", "test5");
 
         //assertion
         assertEquals("List should contain 3 products", 3, bestFittingProducts.size());
