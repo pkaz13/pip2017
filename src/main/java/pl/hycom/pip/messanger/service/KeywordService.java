@@ -25,6 +25,11 @@ public class KeywordService {
 
     public Keyword addKeyword(Keyword keyword) {
         log.info("addKeyword method from KeywordService class invoked");
+        Keyword keywordByWord = findKeywordByWord(keyword.getWord());
+        if (keywordByWord != null) {
+            log.info("addKeyword: Keyword already exists !!");
+            return keywordByWord;
+        }
         return keywordRepository.save(keyword);
     }
 
@@ -61,8 +66,10 @@ public class KeywordService {
             keyword.setWord(updatedKeyword.getWord());
             log.info("Updating keyword " + updatedKeyword);
 
-            keywordRepository.save(keyword);
+            return keywordRepository.save(keyword);
         }
+
+        log.info("updateKeyword: cannot update " + updatedKeyword + " with given word");
         return keyword;
     }
 
@@ -79,10 +86,8 @@ public class KeywordService {
         log.info("findKeywordsByWord method from KeywordService invoked");
         return keywordRepository.findByWordIgnoreCase(word);
     }
-    
-    // // TODO: 2017-04-08  zapisywanie takich samych slow kluczowych o roznej wielkosci liter
-    public void addOrUpdateKeyword(Keyword keyword) {
 
+    public void addOrUpdateKeyword(Keyword keyword) {
        if (keyword.getId() != null && keyword.getId() != 0) {
             updateKeyword(keyword);
        } else {
