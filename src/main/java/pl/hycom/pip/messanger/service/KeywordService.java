@@ -55,6 +55,17 @@ public class KeywordService {
         }
     }
 
+    public Keyword updateKeyword(Keyword updatedKeyword) {
+        Keyword keyword = keywordRepository.findOne(updatedKeyword.getId());
+        if (findKeywordByWord(updatedKeyword.getWord()) == null) {
+            keyword.setWord(updatedKeyword.getWord());
+            log.info("Updating keyword " + updatedKeyword);
+
+            keywordRepository.save(keyword);
+        }
+        return keyword;
+    }
+
     public void deleteAllKeywords() {
         keywordRepository.deleteAll();
     }
@@ -73,7 +84,7 @@ public class KeywordService {
     public void addOrUpdateKeyword(Keyword keyword) {
 
        if (keyword.getId() != null && keyword.getId() != 0) {
-            updateKeyword(keyword.getId(), keyword.getWord());
+            updateKeyword(keyword);
        } else {
             addKeyword(keyword);
        }

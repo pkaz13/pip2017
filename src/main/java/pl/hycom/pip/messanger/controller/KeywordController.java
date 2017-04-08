@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
+import pl.hycom.pip.messanger.service.ProductService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -24,6 +26,7 @@ public class KeywordController {
     private static final String KEYWORDS_VIEW = "keywords";
 
     private final KeywordService keywordService;
+    private final ProductService productService;
 
     @GetMapping("/admin/keywords")
     public String showProducts(Model model) {
@@ -47,11 +50,16 @@ public class KeywordController {
         return "redirect:/admin/keywords";
     }
 
-    //// TODO: 2017-04-08 nie pozwolic na usuniecie keywordow przypisanych do produktow 
     @GetMapping("/admin/keywords/{keywordId}/delete")
     public ModelAndView deleteKeyword(@PathVariable("keywordId") final Integer id) {
-        keywordService.deleteKeyword(id);
-        log.info("Keyword[" + id + "] deleted !!!");
+
+        Keyword deletedKeyword = keywordService.findKeywordById(id);
+        if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(deletedKeyword)).isEmpty()) {
+            log.info("cannot delete keyword = " + deletedKeyword);
+        } else {
+            keywordService.deleteKeyword(id);
+            log.info("Keyword[" + id + "] deleted !!!");
+        }
 
         return new ModelAndView("redirect:/admin/keywords");
     }
