@@ -51,6 +51,7 @@ public class ProductService {
         updatedProduct.setName(product.getName());
         updatedProduct.setDescription(product.getDescription());
         updatedProduct.setImageUrl(product.getImageUrl());
+        updatedProduct.setKeywords(product.getKeywords());
         return productRepository.save(updatedProduct);
     }
 
@@ -67,20 +68,24 @@ public class ProductService {
     }
 
     public List<Product> getRandomProducts(int howManyProducts) {
-        log.info("Searching for [" + howManyProducts + "] random products");
-
         List<Product> products = new ArrayList<>(howManyProducts);
+
         int quantity = (int) productRepository.count();
+        log.info("Searching for [" + howManyProducts + "] random products from quantity[" + quantity + "]");
+
         if (quantity == 0 || howManyProducts > quantity) {
             products.addAll(findAllProducts());
+
+            log.info("Returning all products");
             return products;
         }
 
         for (int i = 0; i < howManyProducts; i++) {
             PageRequest pr = new PageRequest(new Random().nextInt(quantity - products.size()), 1);
-            products.addAll(productRepository.findSomeProducts(products, pr));
+            products.addAll(i == 0 ? productRepository.findSomeProducts(pr) : productRepository.findSomeProducts(products, pr));
         }
 
+        log.info("Found [" + products.size() + "] random products");
         return products;
     }
 

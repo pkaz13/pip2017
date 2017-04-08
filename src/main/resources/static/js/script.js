@@ -20,4 +20,6 @@ jQuery(function($) {
 	    	 $(this).val($(this).val());
 	    }
     });
+    
+    $('[data-toggle="tooltip"]').tooltip();
 });
