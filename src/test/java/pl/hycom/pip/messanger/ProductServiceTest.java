@@ -1,13 +1,6 @@
 package pl.hycom.pip.messanger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.LinkedHashSet;
-import java.util.List;
-
+import lombok.extern.log4j.Log4j2;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -15,16 +8,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -43,11 +41,16 @@ public class ProductServiceTest {
     private Product product2;
     private Product product3;
     private Product product4;
+    private Product product5;
+    private Product product6;
     private Keyword keyword;
     private Keyword keyword1;
     private Keyword keyword2;
     private Keyword keyword3;
     private Keyword keyword4;
+
+    @Value("${messenger.recommendation.products-amount}")
+    Integer expectedNumberOfProducts;
 
     @Before
     public void setUp() {
@@ -71,6 +74,16 @@ public class ProductServiceTest {
         product4.setDescription("desc4");
         product4.setImageUrl("url4");
 
+        product5 = new Product();
+        product5.setName("name5");
+        product5.setDescription("desc5");
+        product5.setImageUrl("url5");
+
+        product6 = new Product();
+        product6.setName("name6");
+        product6.setDescription("desc6");
+        product6.setImageUrl("url6");
+
         keyword = new Keyword();
         keyword.setWord("test_keyword");
 
@@ -92,17 +105,21 @@ public class ProductServiceTest {
         product1.setKeywords(keywords1);
     }
 
-    private void addKeywordsToProducts() {
+    private void addKeywordsToDB() {
         keywordService.addKeyword(keyword1);
         keywordService.addKeyword(keyword2);
         keywordService.addKeyword(keyword3);
         keywordService.addKeyword(keyword4);
+    }
 
-        product1.getKeywords().add(keyword1);
-        product1.getKeywords().add(keyword2);
-        product1.getKeywords().add(keyword3);
-        product2.getKeywords().add(keyword2);
-        product3.getKeywords().add(keyword3);
+    private void addKeywordsToProducts() {
+        addKeywordsToDB();
+
+        product1.addKeyword(keyword1);
+        product1.addKeyword(keyword2);
+        product1.addKeyword(keyword3);
+        product2.addKeyword(keyword2);
+        product3.addKeyword(keyword3);
     }
 
     @Test
@@ -229,7 +246,7 @@ public class ProductServiceTest {
         productService.addProduct(product1);
         productService.addProduct(product2);
         productService.addProduct(product3);
-        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keyword1, keyword2, keyword3);
+        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(keyword1, keyword2, keyword3));
 
         // assertion
         assertEquals("list should contain all 3 products", 3, productsWithKeywords.size());

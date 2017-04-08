@@ -49,14 +49,11 @@ public class Product implements Serializable {
     }, fetch = FetchType.EAGER)
     private Set<Keyword> keywords = new HashSet<>();
 
-    public boolean containsKeywords(String[] keywordValues) {
-        for (String keywordValue : keywordValues) {
-            if (keywords.stream()
-                    .filter(keyword -> keyword.getWord().equals(keywordValue))
-                    .count() == 0) {
-                return false;
-            }
-        }
-        return true;
+    public boolean containsKeyword(Keyword keyword) {
+        return keywords.contains(keyword);
+    }
+
+    public boolean addKeyword(Keyword keyword) {
+        return keywords.add(keyword);
     }
 }
