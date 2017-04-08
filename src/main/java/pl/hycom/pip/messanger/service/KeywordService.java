@@ -47,8 +47,12 @@ public class KeywordService {
     public void updateKeyword(Integer id, String newWord) {
         log.info("updateKeyword method from KeywordService class invoked");
         Keyword keyword = keywordRepository.findOne(id);
-        keyword.setWord(newWord);
-        keywordRepository.save(keyword);
+        if (findKeywordByWord(newWord) == null) {
+            keyword.setWord(newWord);
+            log.info("keyword update");
+
+            keywordRepository.save(keyword);
+        }
     }
 
     public void deleteAllKeywords() {
@@ -63,5 +67,15 @@ public class KeywordService {
     public Keyword findKeywordByWord(String word) {
         log.info("findKeywordsByWord method from KeywordService invoked");
         return keywordRepository.findByWordIgnoreCase(word);
+    }
+    
+    // // TODO: 2017-04-08  zapisywanie takich samych slow kluczowych o roznej wielkosci liter
+    public void addOrUpdateKeyword(Keyword keyword) {
+
+       if (keyword.getId() != null && keyword.getId() != 0) {
+            updateKeyword(keyword.getId(), keyword.getWord());
+       } else {
+            addKeyword(keyword);
+       }
     }
 }

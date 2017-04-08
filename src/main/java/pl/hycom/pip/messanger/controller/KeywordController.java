@@ -4,11 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -26,9 +31,35 @@ public class KeywordController {
         return KEYWORDS_VIEW;
     }
 
+    @PostMapping("/admin/keywords")
+    public String addOrUpdateKeyword(@Valid Keyword keyword, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            prepareModel(model, keyword);
+            model.addAttribute("errors", bindingResult.getFieldErrors());
+            log.info("Validation keyword error");
+
+            return KEYWORDS_VIEW;
+        }
+
+        keywordService.addOrUpdateKeyword(keyword);
+
+        return "redirect:/admin/keywords";
+    }
+
+    //// TODO: 2017-04-08 nie pozwolic na usuniecie keywordow przypisanych do produktow 
+    @GetMapping("/admin/keywords/{keywordId}/delete")
+    public ModelAndView deleteKeyword(@PathVariable("keywordId") final Integer id) {
+        keywordService.deleteKeyword(id);
+        log.info("Keyword[" + id + "] deleted !!!");
+
+        return new ModelAndView("redirect:/admin/keywords");
+    }
+
     private void prepareModel(Model model, Keyword keyword) {
         List<Keyword> allKeywords = keywordService.findAllKeywords();
         model.addAttribute("keywords", allKeywords);
+        model.addAttribute("keywordForm", keyword);
     }
 
 }
