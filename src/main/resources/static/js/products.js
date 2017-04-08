@@ -14,12 +14,10 @@ $(document).ready(function() {
 			$("#id_form_div").show();
 
             $.ajax({
-                url: "/admin/products/get_product_keywords",
-                data: { productID : productId},
+                url: "/admin/products/"+productId+"/keywords",
                 success: function(data) {
                     $.each(data, function(index, item) {
                         $("#keywords_form").tagsinput('add', item);
-                        console.log(item);
                     })
                 }
             });
@@ -49,7 +47,7 @@ $(document).ready(function() {
 
         var columns = $("#product-"+productId).find('td');
         $(this).find('.name-placeholder').text(columns.eq(1).text());
-        $(this).find('.button-delete').attr('onclick', 'location.href="/admin/products/delete?productId='+productId+'"');
+        $(this).find('.button-delete').attr('onclick', 'location.href="/admin/products/'+productId+'/delete');
     });
 
     var keywords = new Bloodhound({
@@ -57,20 +55,17 @@ $(document).ready(function() {
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         // prefetch: '/admin/products/get_all_keywords_suggestions',
         remote: {
-            url: '/admin/products/get_keywords_suggestions?searchTerm=%QUERY',
+            url: '/admin/product/keyword/suggestions?searchTerm=%QUERY',
             wildcard: '%QUERY'
         },
         limit: 6
     });
     keywords.initialize();
 
-    $('#keywords_form').tagsinput({
+    $('.keywords').tagsinput({
         allowDuplicates: false,
-        itemValue: 'id',
-        itemText: 'word',
+        trimValue: true,
         typeaheadjs: {
-            name: "keywords",
-            displayKey: "word",
             source: keywords.ttAdapter()
         }
     });
