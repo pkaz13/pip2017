@@ -1,24 +1,18 @@
 package pl.hycom.pip.messanger.service;
 
-import java.io.IOException;
-import java.util.Collections;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,11 +22,18 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GreetingService implements InitializingBean {
 
-    private Map<String, String> availableLocale = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, String> availableLocale = new HashMap<>();
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        retrieveLocaleFromFacebook();
+        try (Reader in = new InputStreamReader(getClass().getResourceAsStream("/messenger-locale.csv"))) {
+            Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+            for (CSVRecord record : records) {
+                availableLocale.put(record.get(0), record.get(1));
+            }
+        }
+
+        log.info("Locale loaded: " + availableLocale);
     }
 
     public Map<String, String> getAvailableLocale(List<com.github.messenger4j.profile.Greeting> greetings) {
@@ -47,33 +48,4 @@ public class GreetingService implements InitializingBean {
     public boolean isValidLocale(String locale) {
         return availableLocale.containsKey(locale);
     }
-
-    @Scheduled(fixedDelay = 60 * 60 * 1000, initialDelay = 60 * 60 * 1000) // every 1 hour
-    private synchronized void retrieveLocaleFromFacebook() {
-        Map<String, String> availableLocaleTmp = new HashMap<>();
-
-        try {
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document document = docBuilder.parse("https://www.facebook.com/translations/FacebookLocales.xml");
-
-            NodeList nl = document.getElementsByTagName("locale");
-            for (int i = 0; i < nl.getLength(); i++) {
-                Element e = (Element) nl.item(i);
-                availableLocaleTmp.put(e.getElementsByTagName("representation").item(0).getTextContent(), e.getElementsByTagName("englishName").item(0).getTextContent());
-            }
-
-            log.info("Loaded available locale from facebook: " + availableLocaleTmp);
-
-        } catch (SAXException | IOException | ParserConfigurationException e) {
-            log.error(e.toString());
-            availableLocaleTmp = Collections.emptyMap();
-        }
-
-        synchronized (availableLocale) {
-            availableLocale.clear();
-            availableLocale.putAll(availableLocaleTmp);
-        }
-    }
-
 }
