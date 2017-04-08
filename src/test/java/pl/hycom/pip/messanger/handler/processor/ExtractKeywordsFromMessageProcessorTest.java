@@ -1,5 +1,7 @@
 package pl.hycom.pip.messanger.handler.processor;
 
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -16,93 +18,92 @@ public class ExtractKeywordsFromMessageProcessorTest {
 
     @Test
     public void processMessageShouldRemoveUnwantedSymbols() throws Exception {
-        //given
+        // given
         String message = "te{}[]()!@#$%s^&*~'?\".,/+t";
-        //when
+        // when
         String refactoredMessage = sut.processMessage(message);
-        //then
+        // then
         Assertions.assertThat(refactoredMessage).isEqualTo("test");
     }
 
     @Test
     public void processMessageShouldMakeLowerCase() throws Exception {
-        //given
+        // given
         String message = "rANdoM TESt";
-        //when
+        // when
         String refactoredMessage = sut.processMessage(message);
-        //then
+        // then
         Assertions.assertThat(refactoredMessage).isEqualTo("random test");
     }
 
     @Test
     public void processMessageShouldReturnEmptyIfGivenNull() throws Exception {
-        //given
+        // given
         String message = null;
-        //when
+        // when
         String refactoredMessage = sut.processMessage(message);
-        //then
+        // then
         Assertions.assertThat(refactoredMessage).isEqualTo("");
     }
 
     @Test
     public void processMessageShouldNotRemoveDash() throws Exception {
-        //given
+        // given
         String message = "auto-pilot";
-        //when
+        // when
         String refactoredMessage = sut.processMessage(message);
-        //then
+        // then
         Assertions.assertThat(refactoredMessage).isEqualTo("auto-pilot");
     }
 
     @Test
     public void processKeywordsShouldRemoveSmallWords() throws Exception {
-        //given
+        // given
         String[] keywords = StringUtils.split("A bb ccc dddd eeeee f ggg", " ");
-        //when
-        String[] processKeywords = sut.processKeywords(keywords);
-        //then
+        // when
+        Set<String> processKeywords = sut.processKeywords(keywords);
+        // then
         Assertions.assertThat(processKeywords).containsOnly("ccc", "dddd", "eeeee", "ggg");
     }
 
     @Test
     public void processKeywordsShouldRemoveDuplicates() throws Exception {
-        //given
+        // given
         String[] keywords = StringUtils.split("aaa aaa bbb bbb ccc ccc", " ");
-        //when
-        String[] processKeywords = sut.processKeywords(keywords);
-        //then
+        // when
+        Set<String> processKeywords = sut.processKeywords(keywords);
+        // then
         Assertions.assertThat(processKeywords).containsOnlyOnce("aaa", "bbb", "ccc");
     }
 
     @Test
     public void processKeywordsShouldIgnoreMultipleSpaces() throws Exception {
-        //given
+        // given
         String[] keywords = StringUtils.split("aaa     bbb", " ");
-        //when
-        String[] processKeywords = sut.processKeywords(keywords);
-        //then
+        // when
+        Set<String> processKeywords = sut.processKeywords(keywords);
+        // then
         Assertions.assertThat(processKeywords).containsOnly("aaa", "bbb");
     }
 
     @Test
     public void extractKeywordsTest() throws Exception {
-        //given
+        // given
         String message = "Ala m4 kota, a kot ma ale(?), nie mam pomysłu na stringa wcale!!";
-        //when
-        String[] processKeywords = sut.extractKeywords(message);
-        //then
+        // when
+        Set<String> processKeywords = sut.extractKeywords(message);
+        // then
         Assertions.assertThat(processKeywords).containsOnlyOnce("kota", "pomysłu", "stringa", "wcale");
     }
 
     @Test
     public void extractKeywordsShouldReturnEmptyListGivenNull() throws Exception {
-        //given
+        // given
         String message = null;
-        //when
-        String[] processKeywords = sut.extractKeywords(message);
-        //then
+        // when
+        Set<String> processKeywords = sut.extractKeywords(message);
+        // then
         Assertions.assertThat(processKeywords).isEmpty();
     }
-
 
 }
