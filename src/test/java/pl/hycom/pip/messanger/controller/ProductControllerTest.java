@@ -26,21 +26,18 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import pl.hycom.pip.messanger.service.ProductService;
 
-import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
@@ -71,6 +68,14 @@ public class ProductControllerTest {
     private List<Product> products = new ArrayList<>();
 
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
+    @Mock
+    private ProductService productService;
+    @Autowired
+    @InjectMocks
+    private ProductController productController;
+
+
+    /////////////unit tests
 
     @Autowired
     private void setConverters(HttpMessageConverter<?>[] converters) {
@@ -91,25 +96,15 @@ public class ProductControllerTest {
         return mockHttpOutputMessage.getBodyAsString();
     }
 
-
-    /////////////unit tests
-
-//    @Mock
-//    private ProductService productService;
-//
-//    @Autowired
-//    @InjectMocks
-//    private ProductController productController;
-
     @Before
     public void setUp() {
         ////unit tests
-//        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-//        viewResolver.setPrefix("/main/resources/templates/");
-//        viewResolver.setSuffix(".html");
-//
-//        MockitoAnnotations.initMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(productController).setViewResolvers(viewResolver).addFilters(new CorsFilter()).build();
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/main/resources/templates/");
+        viewResolver.setSuffix(".html");
+
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(productController).setViewResolvers(viewResolver).addFilters(new CorsFilter()).build();
 
 
         ////integration tests
@@ -145,23 +140,23 @@ public class ProductControllerTest {
 //        assertNotNull("Product Controller should not be null", productController);
 //    }
 
-//    @Test
-//    public void findAllProductsTest() throws Exception {
-//
-//        when(productService.findAllProducts()).thenReturn(products);
-//
-//        mockMvc.perform(get("/admin/products"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(contentType))
-//                .andExpect(jsonPath("$", hasSize(2)))
-//                .andExpect(jsonPath("$[0].id", is(1)))
-//                .andExpect(jsonPath("$[0].name", is("name1")))
-//                .andExpect(jsonPath("$[1].id", is(2)))
-//                .andExpect(jsonPath("$[1].name", is("name2")));
-//
-//        verify(productService, times(1)).findAllProducts();
-//        verifyNoMoreInteractions(productService);
-//    }
+    @Test
+    public void findAllProductsTest() throws Exception {
+
+        when(productService.findAllProducts()).thenReturn(products);
+
+        mockMvc.perform(get("/admin/products"))
+                .andExpect(status().isOk())
+                //.andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].name", is("name1")))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].name", is("name2")));
+
+        verify(productService, times(1)).findAllProducts();
+        verifyNoMoreInteractions(productService);
+    }
 
     @Test
     public void pageNotFoundTest() throws Exception {
