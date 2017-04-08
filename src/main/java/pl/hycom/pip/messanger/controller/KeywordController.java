@@ -55,10 +55,10 @@ public class KeywordController {
 
         Keyword deletedKeyword = keywordService.findKeywordById(id);
         if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(deletedKeyword)).isEmpty()) {
-            log.info("cannot delete keyword = " + deletedKeyword);
-        } else {
             keywordService.deleteKeyword(id);
             log.info("Keyword[" + id + "] deleted !!!");
+        } else {
+            log.info("cannot delete keyword = " + deletedKeyword);
         }
 
         return new ModelAndView("redirect:/admin/keywords");
