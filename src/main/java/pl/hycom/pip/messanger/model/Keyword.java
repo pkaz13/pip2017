@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by patry on 18/03/2017.
@@ -19,9 +20,15 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "KEYWORDS")
+@NoArgsConstructor
 public class Keyword implements Serializable {
 
     private static final long serialVersionUID = -8450849049742048985L;
+
+    public Keyword(String word) {
+        super();
+        this.word = word;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

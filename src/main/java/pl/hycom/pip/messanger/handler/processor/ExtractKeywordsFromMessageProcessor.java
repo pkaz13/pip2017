@@ -1,6 +1,8 @@
 package pl.hycom.pip.messanger.handler.processor;
 
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -27,22 +29,19 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
         log.info("Started keyword generating");
 
         String message = ctx.get(PipelineMessageHandler.MESSAGE, String.class);
-        String[] keywords = extractKeywords(message);
-        log.info("Keywords extracted from message [{}]: {}", message, Arrays.toString(keywords));
+        Set<String> keywords = extractKeywords(message);
+        log.info("Keywords extracted from message [{}]: {}", message, keywords);
 
         ctx.put(KEYWORDS, keywords);
         return 1;
     }
 
-    String[] extractKeywords(String message) {
-        message = processMessage(message);
-        String[] keywords = StringUtils.split(message, " ");
-
-        return processKeywords(keywords);
+    Set<String> extractKeywords(String message) {
+        return processKeywords(StringUtils.split(processMessage(message), " "));
     }
 
     protected String processMessage(String message) {
-        if (message == null) {
+        if (StringUtils.isBlank(message)) {
             return StringUtils.EMPTY;
         }
 
@@ -52,11 +51,10 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
         return message;
     }
 
-    protected String[] processKeywords(@NonNull String[] keywords) {
-        return Arrays.stream(Arrays.copyOf(keywords, keywords.length))
+    protected Set<String> processKeywords(@NonNull String[] keywords) {
+        return Arrays.stream(keywords)
                 .filter(s -> StringUtils.length(s) > 2)
-                .distinct()
-                .toArray(String[]::new);
+                .collect(Collectors.toSet());
     }
 
 }

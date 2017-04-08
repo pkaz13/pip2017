@@ -31,7 +31,7 @@ public class GenerateMessageProcessor implements PipelineProcessor {
 
         log.info("Started process of GenerateMessageProcessor");
 
-        List<Product> products = ctx.get("products", List.class);
+        List<Product> products = ctx.get(LoadBestMatchingProductsProcessor.PRODUCTS, List.class);
         String senderId = ctx.get(PipelineMessageHandler.SENDER_ID, String.class);
 
         if (CollectionUtils.isEmpty(products)) {
@@ -59,7 +59,6 @@ public class GenerateMessageProcessor implements PipelineProcessor {
         }
     }
 
-    // TODO: przeniesc metode do innej klasy
     private GenericTemplate getStructuredMessage(List<Product> products) {
         GenericTemplate.Element.ListBuilder listBuilder = GenericTemplate.newBuilder().addElements();
         for (Product product : products) {

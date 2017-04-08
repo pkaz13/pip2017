@@ -1,6 +1,13 @@
 package pl.hycom.pip.messanger;
 
-import lombok.extern.log4j.Log4j2;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -12,17 +19,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.handler.processor.LoadBestMatchingProductsProcessor;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
-
-import java.util.LinkedHashSet;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -92,17 +95,11 @@ public class LoadBestMatchingProductsProcessorTest {
         keyword2.setWord("test2");
         keyword3.setWord("test3");
         keyword4.setWord("test4");
-    }
 
-    private void addKeywordsToDB() {
-        keywordService.addKeyword(keyword1);
-        keywordService.addKeyword(keyword2);
-        keywordService.addKeyword(keyword3);
-        keywordService.addKeyword(keyword4);
-    }
-
-    private void prepareFindBestFittingProductsTest() {
-        addKeywordsToDB();
+        keyword1 = keywordService.addKeyword(keyword1);
+        keyword2 = keywordService.addKeyword(keyword2);
+        keyword3 = keywordService.addKeyword(keyword3);
+        keyword4 = keywordService.addKeyword(keyword4);
 
         product1.addKeyword(keyword1);
         product1.addKeyword(keyword2);
@@ -124,24 +121,23 @@ public class LoadBestMatchingProductsProcessorTest {
         product5.addKeyword(keyword4);
 
         product6.addKeyword(keyword1);
+
+        product1 = productService.addProduct(product1);
+        product2 = productService.addProduct(product2);
+        product3 = productService.addProduct(product3);
+        product4 = productService.addProduct(product4);
+        product5 = productService.addProduct(product5);
+        product6 = productService.addProduct(product6);
     }
 
     @Test
     @Transactional
     public void findBestFittingProductsTest() {
-        //preparation
-        prepareFindBestFittingProductsTest();
+        List<Keyword> keywords = processor.convertStringsToKeywords(Stream.of("test1", "test2", "test3", "test4", "test5").collect(Collectors.toSet()));
 
-        //action
-        productService.addProduct(product1);
-        productService.addProduct(product2);
-        productService.addProduct(product3);
-        productService.addProduct(product4);
-        productService.addProduct(product5);
-        productService.addProduct(product6);
-        List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, null, "test1", "test2", "test3", "test4", "test5");
+        List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, keywords);
 
-        //assertion
+        // assertion
         assertEquals("List should contain 3 products", 3, bestFittingProducts.size());
         assertTrue("List should contain product1", bestFittingProducts.contains(product1));
         assertTrue("List should contain product3", bestFittingProducts.contains(product3));
@@ -151,19 +147,9 @@ public class LoadBestMatchingProductsProcessorTest {
     @Test
     @Transactional
     public void findBestFittingProductsTestNoKeywords() {
-        //preparation
-        prepareFindBestFittingProductsTest();
+        List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, Collections.emptyList());
 
-        //action
-        productService.addProduct(product1);
-        productService.addProduct(product2);
-        productService.addProduct(product3);
-        productService.addProduct(product4);
-        productService.addProduct(product5);
-        productService.addProduct(product6);
-        List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, null);
-
-        //assertion
+        // assertion
         assertEquals("List should contain no products", 0, bestFittingProducts.size());
     }
 
