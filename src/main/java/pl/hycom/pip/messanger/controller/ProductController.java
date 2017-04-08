@@ -56,8 +56,8 @@ public class ProductController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/admin/products/delete")
-    public ModelAndView deleteProduct(@RequestParam(value = "productId") final int id) {
+    @GetMapping("/admin/products/{productId}/delete")
+    public ModelAndView deleteProduct(@PathVariable("productId") final Integer id) {
         productService.deleteProduct(id);
         log.info("Product[" + id + "] deleted !!!");
 
@@ -65,14 +65,14 @@ public class ProductController {
     }
 
     @ResponseBody
-    @GetMapping("/admin//product/keyword/suggestions")
+    @GetMapping("/admin/product/keyword/suggestions")
     public List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
         return keywordService.findKeywordsBySearchTerm(searchTerm).stream().map(k -> k.getWord()).collect(Collectors.toList());
     }
 
     @ResponseBody
     @GetMapping("/admin/products/{productId}/keywords")
-    public List<String> getProductKeywords(@PathVariable("productId") Integer id) {
+    public List<String> getProductKeywords(@PathVariable("productId") final Integer id) {
         log.info("Searching for product's [" + id + "] keywords");
 
         return productService.findProductById(id).getKeywords().stream().map(k -> k.getWord()).collect(Collectors.toList());

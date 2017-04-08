@@ -126,8 +126,10 @@ public class ProductService {
         return products;
     }
 
-    public List<Product> findAllProductsContainingAtLeastOneKeyword(Keyword... keywords) {
-        return Arrays.stream(Optional.ofNullable(keywords).orElse(new Keyword[] {})).filter(Objects::nonNull).flatMap(k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull).distinct().collect(Collectors.toList());
+    public List<Product> findAllProductsContainingAtLeastOneKeyword(List<Keyword> keywords) {
+        return keywords.stream().filter(Objects::nonNull)
+                .flatMap(k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull)
+                .distinct().collect(Collectors.toList());
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
