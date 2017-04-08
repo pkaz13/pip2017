@@ -37,19 +37,21 @@
                     </thead>
                     <tbody>
                     <tr th:id="'product-' + ${product.id}" th:each="product : ${products}">
-                        <td th:text="${product.id}">ID</td>
-                        <td th:text="${product.name}">Name</td>
-                        <td th:text="${product.description}">Description</td>
-                        <td><span class="label label-primary keyword-label" th:each="keyword : ${product.keywords}" th:text="${keyword.word}"></span></td>
-                        <td><img th:src="${product.imageUrl}" width="auto" height="60px"/></td>
-                        <td>
+                        <td class="align-middle" th:text="${product.id}">ID</td>
+                        <td class="align-middle"><strong th:text="${product.name}">Name</strong></td>
+                        <td class="align-middle" th:text="${product.description}">Description</td>
+                        <td class="align-middle"><span class="label label-primary keyword-label" th:each="keyword : ${product.keywords}" th:text="${keyword.word}"></span></td>
+                        <td class="align-middle">
+                        	<a th:href="${product.imageUrl}" target="_blank"><img th:src="${product.imageUrl}" width="auto" height="70px"/></a>
+                        </td>
+                        <td class="align-middle">
                         	<div data-placement="top" data-toggle="tooltip" title="Edytuj">
                         		<button class="btn btn-primary btn-xs button-edit center-block" th:attr="data-product-id=${product.id}" data-toggle="modal" data-target="#product-form-modal">
                         			<span class="glyphicon glyphicon-pencil"></span>
                         		</button>
                         	</div>
                         </td>
-                        <td>
+                        <td class="align-middle">
                         	<div data-placement="top" data-toggle="tooltip" title="Usuń">
                         		<button class="btn btn-danger btn-xs button-delete center-block" th:attr="data-product-id=${product.id}" data-toggle="modal" data-target="#confirm-delete-modal">
                         			<span class="glyphicon glyphicon-trash"></span>
@@ -97,7 +99,7 @@
                                 <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
                                     <label class="col-sm-3 control-label" for="name_form">Nazwa</label>
                                     <div class="col-sm-9">
-                                    	<input id="name_form" class="form-control" th:field="*{name}"/>
+                                    	<input id="name_form" class="form-control autofocus" maxlength="80" th:field="*{name}"/>
                                     </div>
                                     <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
                                 </div>
@@ -111,7 +113,7 @@
                                 <div class="form-group" th:classappend="${#fields.hasErrors('description')}? 'has-error'">
                                     <label class="col-sm-3 control-label" for="description_form">Opis</label>
                                     <div class="col-sm-9">
-                                    	<textarea class="form-control" id="description_form" th:field="*{description}"></textarea>
+                                    	<textarea class="form-control" id="description_form" maxlength="80" th:field="*{description}"></textarea>
                                     </div>
                                     <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</p>
                                 </div>
@@ -119,7 +121,7 @@
                                 <div class="form-group" th:classappend="${#fields.hasErrors('keywords')}? 'has-error'">
                                     <label class="col-sm-3 control-label" for="keywords_form">Słowa kluczowe</label>
                                     <div class="col-sm-9">
-                                        <input id="keywords_form" type="text" name="keywords" th:field="*{keywords}" placeholder="Dodaj"/>
+                                        <input class="form-control keywords" id="keywords_form" type="text" name="keywords-holder" placeholder="Dodaj"/>
                                     </div>
                                 </div>
                                 <!--keywords-->

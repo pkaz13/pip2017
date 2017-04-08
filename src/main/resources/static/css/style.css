@@ -60,6 +60,30 @@ html, body {
     color: #5bc0de;
 }
 
+.align-baseline {
+  vertical-align: baseline !important;
+}
+
+.align-top {
+  vertical-align: top !important;
+}
+
+.align-middle {
+  vertical-align: middle !important;
+}
+
+.align-bottom {
+  vertical-align: bottom !important;
+}
+
+.align-text-bottom {
+  vertical-align: text-bottom !important;
+}
+
+.align-text-top {
+  vertical-align: text-top !important;
+}
+
 .row-eq-height {
   display: -webkit-box;
   display: -webkit-flex;
@@ -111,6 +135,10 @@ ul.ui-autocomplete {
 }
 
 /*STYL DLA PODPOWIEDZI*/
+.bootstrap-tagsinput {
+    width: 100%;
+}
+
  .typeahead,
  .tt-query,
  .tt-hint {
