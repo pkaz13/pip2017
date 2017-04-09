@@ -33,6 +33,7 @@ import java.util.List;
 @Controller
 public class GreetingController {
 
+    private static final String VIEW_GREETINGS = "greetings";
     private static final String ADMIN_GREETINGS = "/admin/greetings";
     private static final String REDIRECT_ADMIN_GREETINGS = "redirect:" + ADMIN_GREETINGS;
 
@@ -48,7 +49,7 @@ public class GreetingController {
     @GetMapping(ADMIN_GREETINGS)
     public String getGreetings(Model model) {
         prepareModel(model);
-        return "greetings";
+        return VIEW_GREETINGS;
     }
 
     @PostMapping(ADMIN_GREETINGS)
@@ -72,9 +73,8 @@ public class GreetingController {
 
             if (bindingResult.hasErrors()) {
                 prepareModel(model, greeting);
-                model.addAttribute("errors", bindingResult.getFieldErrors());
                 log.error("Greeting validation errors: " + bindingResult.getAllErrors());
-                return "greetings";
+                return VIEW_GREETINGS;
             }
 
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
@@ -95,14 +95,12 @@ public class GreetingController {
 
     // Jest get, bo nie wiedziałem jak odwołać sie do posta/deleta z linka z front-endu
     @GetMapping("/admin/deleteGreeting/{locale}")
-    public String removeGreeting(@PathVariable String locale) {
+    public String removeGreeting(@PathVariable String locale, Model model) {
         if (StringUtils.equals(locale, "default")) {
-            /*addError(bindingResult, "greetings.invalidOperation");
             prepareModel(model);
-            model.addAttribute("errors", bindingResult.getFieldErrors());
-            log.error("Greetings validation errors: "+bindingResult.getAllErrors());
-            return "greetings";*/
-            return REDIRECT_ADMIN_GREETINGS;
+            String message = getMessage("greetings.invalidOperation");
+            model.addAttribute("errors", Collections.singletonList(message));
+            return VIEW_GREETINGS;
         }
         try {
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
@@ -133,14 +131,13 @@ public class GreetingController {
         prepareModel(model, greeting, greetingListWrapper, greetings);
     }
 
-    private void prepareModel(Model model, GreetingListWrapper greetingListWrapper) {
-        List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale(profileClient);
-        sortByLocale(greetings);
-        prepareModel(model, new Greeting(), greetingListWrapper, greetings);
+    private String getMessage(String messageCode, Object... args) {
+        return bundleMessageSource.getMessage(messageCode, args, "Unsupported operation", LocaleContextHolder.getLocale());
     }
 
+
     private void addError(BindingResult bindingResult, String objectName, String messageCode, Object... args) {
-        bindingResult.addError(new ObjectError(objectName, bundleMessageSource.getMessage(messageCode, args, "Unsupported operation", LocaleContextHolder.getLocale())));
+        bindingResult.addError(new ObjectError(objectName, getMessage(messageCode, args)));
     }
 
     private void addError(BindingResult bindingResult, String messageCode, Object... args) {
