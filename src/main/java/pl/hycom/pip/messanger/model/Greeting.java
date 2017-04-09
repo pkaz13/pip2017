@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class Greeting {
 
-    @Size(min = 2, max = 160)
+    @Size(min = 2, max = 160, message = "{greeting.text.size}")
     private String text;
     private String locale = "";
 
