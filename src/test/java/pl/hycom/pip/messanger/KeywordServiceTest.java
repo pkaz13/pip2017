@@ -86,16 +86,19 @@ public class KeywordServiceTest {
     /**
      * Adds non-unique keyword to repository
      * 
-     * @result DataIntegrityViolationException will be thrown
+     * @result Keyword that has given word
      */
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void addNonUniqueKeywordTest() {
         // preparation
         Keyword keyword = new Keyword();
         keyword.setWord("test1");
 
         // act
-        keywordService.addKeyword(keyword);
+        Keyword keywordResult = keywordService.addKeyword(keyword);
+
+        // assert
+        assertEquals(keyword.getWord(), keywordResult.getWord());
     }
 
     /**
