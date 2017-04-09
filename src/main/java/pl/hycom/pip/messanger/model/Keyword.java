@@ -2,13 +2,9 @@ package pl.hycom.pip.messanger.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,5 +32,6 @@ public class Keyword implements Serializable {
 
     @NotNull
     @Column(unique = true)
+    @Size(min = 1, max= 100)
     private String word;
 }
