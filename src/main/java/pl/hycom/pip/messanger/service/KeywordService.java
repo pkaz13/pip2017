@@ -25,6 +25,11 @@ public class KeywordService {
 
     public Keyword addKeyword(Keyword keyword) {
         log.info("addKeyword method from KeywordService class invoked");
+        Keyword keywordByWord = findKeywordByWord(keyword.getWord());
+        if (keywordByWord != null) {
+            log.info("addKeyword: Keyword already exists !!");
+            return keywordByWord;
+        }
         return keywordRepository.save(keyword);
     }
 
@@ -47,8 +52,25 @@ public class KeywordService {
     public void updateKeyword(Integer id, String newWord) {
         log.info("updateKeyword method from KeywordService class invoked");
         Keyword keyword = keywordRepository.findOne(id);
-        keyword.setWord(newWord);
-        keywordRepository.save(keyword);
+        if (findKeywordByWord(newWord) == null) {
+            keyword.setWord(newWord);
+            log.info("keyword update");
+
+            keywordRepository.save(keyword);
+        }
+    }
+
+    public Keyword updateKeyword(Keyword updatedKeyword) {
+        Keyword keyword = keywordRepository.findOne(updatedKeyword.getId());
+        if (findKeywordByWord(updatedKeyword.getWord()) == null) {
+            keyword.setWord(updatedKeyword.getWord());
+            log.info("Updating keyword " + updatedKeyword);
+
+            return keywordRepository.save(keyword);
+        }
+
+        log.info("updateKeyword: cannot update " + updatedKeyword + " with given word");
+        return keyword;
     }
 
     public void deleteAllKeywords() {
@@ -63,5 +85,13 @@ public class KeywordService {
     public Keyword findKeywordByWord(String word) {
         log.info("findKeywordsByWord method from KeywordService invoked");
         return keywordRepository.findByWordIgnoreCase(word);
+    }
+
+    public void addOrUpdateKeyword(Keyword keyword) {
+       if (keyword.getId() != null && keyword.getId() != 0) {
+            updateKeyword(keyword);
+       } else {
+            addKeyword(keyword);
+       }
     }
 }
