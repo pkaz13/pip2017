@@ -45,6 +45,13 @@ public class KeywordController {
             return KEYWORDS_VIEW;
         }
 
+        if(keywordService.findKeywordByWord(keyword.getWord()) != null) {
+            prepareModel(model, keyword);
+            model.addAttribute("error", new ObjectError("keywordExists", "Keyword already exists."));
+
+            return KEYWORDS_VIEW;
+        }
+
         keywordService.addOrUpdateKeyword(keyword);
 
         return "redirect:/admin/keywords";
