@@ -68,7 +68,7 @@ public class ProductService {
     }
 
     public Product addOrUpdateProduct(Product product, String[] keywordsStr) {
-        final Set<Keyword> keywords = new HashSet<>(keywordsStr.length);
+        final Set<Keyword> keywords = new HashSet<>();
 
         if (keywordsStr != null) {
             Arrays.stream(keywordsStr)
