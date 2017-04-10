@@ -1,10 +1,10 @@
 package pl.hycom.pip.messanger.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by marcinus on 25.03.17.
@@ -23,10 +23,10 @@ public class GreetingListWrapper {
     }
 
     public List<com.github.messenger4j.profile.Greeting> extractGreetings() {
-        List<com.github.messenger4j.profile.Greeting> greetings = new ArrayList<>();
-        for (Greeting greeting : getGreetings()) {
-            greetings.add(new com.github.messenger4j.profile.Greeting(greeting.getText(), greeting.getLocale()));
+        List<com.github.messenger4j.profile.Greeting> out = new ArrayList<>();
+        for (Greeting greeting : greetings) {
+            out.add(new com.github.messenger4j.profile.Greeting(greeting.getText(), greeting.getLocale()));
         }
-        return greetings;
+        return out;
     }
 }

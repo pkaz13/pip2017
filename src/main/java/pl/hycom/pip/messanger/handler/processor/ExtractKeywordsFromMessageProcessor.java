@@ -45,10 +45,11 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
             return StringUtils.EMPTY;
         }
 
-        message = StringUtils.replaceAll(message, CHARS_TO_REMOVE_REGEX, "");
-        message = StringUtils.lowerCase(message);
+        String out = message;
+        out = StringUtils.replaceAll(out, CHARS_TO_REMOVE_REGEX, StringUtils.EMPTY);
+        out = StringUtils.lowerCase(out);
 
-        return message;
+        return out;
     }
 
     protected Set<String> processKeywords(@NonNull String[] keywords) {

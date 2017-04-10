@@ -43,6 +43,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
     public int runProcess(PipelineContext ctx) throws PipelineException {
         log.info("Started process of LoadBestMatchingProductsProcessor");
 
+        @SuppressWarnings("unchecked")
         Set<String> keywordsStr = ctx.get(ExtractKeywordsFromMessageProcessor.KEYWORDS, Set.class);
 
         List<Keyword> keywords = convertStringsToKeywords(keywordsStr);
