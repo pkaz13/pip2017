@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -69,20 +68,19 @@ public class ProductService {
     }
 
     public Product addOrUpdateProduct(Product product, String[] keywordsStr) {
-        final Set<Keyword> keywords = new HashSet<>();
+        final Set<Keyword> keywords = new HashSet<>(keywordsStr.length);
 
         if (keywordsStr != null) {
-            Arrays.stream(keywordsStr).map(k -> StringUtils.lowerCase(k)).forEach(new Consumer<String>() {
-                @Override
-                public void accept(String k) {
-                    // TODO pobrac albo stwozyc keyword
-                    Keyword keyword = keywordRepository.findByWord(k);
-                    if (keyword == null) {
-                        keyword = new Keyword(k);
-                    }
-                    keywords.add(keyword);
-                }
-            });
+            Arrays.stream(keywordsStr)
+                    .map(StringUtils::lowerCase)
+                    .distinct()
+                    .forEach(k -> {
+                        Keyword keyword = keywordRepository.findByWord(k);
+                        if (keyword == null) {
+                            keyword = new Keyword(k);
+                        }
+                        keywords.add(keyword);
+                    });
         }
 
         product.setKeywords(keywords);
