@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
@@ -67,7 +68,7 @@ public class ProductController {
     @ResponseBody
     @GetMapping("/admin/product/keyword/suggestions")
     public List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
-        return keywordService.findKeywordsBySearchTerm(searchTerm).stream().map(k -> k.getWord()).collect(Collectors.toList());
+        return keywordService.findKeywordsBySearchTerm(searchTerm).stream().map(Keyword::getWord).collect(Collectors.toList());
     }
 
     @ResponseBody
@@ -75,7 +76,7 @@ public class ProductController {
     public List<String> getProductKeywords(@PathVariable("productId") final Integer id) {
         log.info("Searching for product's [" + id + "] keywords");
 
-        return productService.findProductById(id).getKeywords().stream().map(k -> k.getWord()).collect(Collectors.toList());
+        return productService.findProductById(id).getKeywords().stream().map(Keyword::getWord).collect(Collectors.toList());
     }
 
     private void prepareModel(Model model, Product product) {

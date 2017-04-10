@@ -1,22 +1,24 @@
 package pl.hycom.pip.messanger.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.security.Key;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -45,7 +47,7 @@ public class KeywordController {
             return KEYWORDS_VIEW;
         }
 
-        if(keywordService.findKeywordByWord(keyword.getWord()) != null) {
+        if (keywordService.findKeywordByWord(keyword.getWord()) != null) {
             prepareModel(model, keyword);
             model.addAttribute("error", new ObjectError("keywordExists", "Keyword already exists."));
 
@@ -73,7 +75,6 @@ public class KeywordController {
         }
 
         return "redirect:/admin/keywords";
-        //return new ModelAndView("redirect:/admin/keywords");
     }
 
     private void prepareModel(Model model, Keyword keyword) {

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -79,8 +78,7 @@ public class ProductService {
                     // TODO pobrac albo stwozyc keyword
                     Keyword keyword = keywordRepository.findByWord(k);
                     if (keyword == null) {
-                        keyword = new Keyword();
-                        keyword.setWord(k);
+                        keyword = new Keyword(k);
                     }
                     keywords.add(keyword);
                 }

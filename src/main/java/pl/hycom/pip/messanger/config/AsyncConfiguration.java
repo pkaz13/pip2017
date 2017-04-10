@@ -27,16 +27,13 @@ public class AsyncConfiguration implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new AsyncUncaughtExceptionHandler() {
-            @Override
-            public void handleUncaughtException(Throwable throwable, Method method, Object... obj) {
-                log.error(throwable);
+        return (Throwable throwable, Method method, Object... obj) -> {
+            log.error(throwable);
 
-                log.error("Exception message - " + throwable.getMessage());
-                log.error("Method name - " + method.getName());
-                for (Object param : obj) {
-                    log.error("Parameter value - " + param);
-                }
+            log.error("Exception message - " + throwable.getMessage());
+            log.error("Method name - " + method.getName());
+            for (Object param : obj) {
+                log.error("Parameter value - " + param);
             }
         };
     }
