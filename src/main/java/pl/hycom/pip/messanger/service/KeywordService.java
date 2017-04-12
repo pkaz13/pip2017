@@ -1,15 +1,17 @@
 package pl.hycom.pip.messanger.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.model.Keyword;
-import pl.hycom.pip.messanger.repository.KeywordRepository;
-
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Keyword;
+import pl.hycom.pip.messanger.repository.KeywordRepository;
 
 /**
  * Created by patry on 18/03/2017.
@@ -21,9 +23,14 @@ import java.util.stream.StreamSupport;
 public class KeywordService {
     private final KeywordRepository keywordRepository;
 
-    public void addKeyword(Keyword keyword) {
+    public Keyword addKeyword(Keyword keyword) {
         log.info("addKeyword method from KeywordService class invoked");
-        keywordRepository.save(keyword);
+        Keyword keywordByWord = findKeywordByWord(keyword.getWord());
+        if (keywordByWord != null) {
+            log.info("addKeyword: Keyword already exists !!");
+            return keywordByWord;
+        }
+        return keywordRepository.save(keyword);
     }
 
     public Keyword findKeywordById(Integer id) {
@@ -45,7 +52,46 @@ public class KeywordService {
     public void updateKeyword(Integer id, String newWord) {
         log.info("updateKeyword method from KeywordService class invoked");
         Keyword keyword = keywordRepository.findOne(id);
-        keyword.setWord(newWord);
-        keywordRepository.save(keyword);
+        if (findKeywordByWord(newWord) == null) {
+            keyword.setWord(newWord);
+            log.info("keyword update");
+
+            keywordRepository.save(keyword);
+        }
+    }
+
+    public Keyword updateKeyword(Keyword updatedKeyword) {
+        Keyword keyword = keywordRepository.findOne(updatedKeyword.getId());
+        if (findKeywordByWord(updatedKeyword.getWord()) == null) {
+            keyword.setWord(updatedKeyword.getWord());
+            log.info("Updating keyword " + updatedKeyword);
+
+            return keywordRepository.save(keyword);
+        }
+
+        log.info("updateKeyword: cannot update " + updatedKeyword + " with given word");
+        return keyword;
+    }
+
+    public void deleteAllKeywords() {
+        keywordRepository.deleteAll();
+    }
+
+    public List<Keyword> findKeywordsBySearchTerm(String searchTerm) {
+        log.info("findKeywordsBySearchTerm method from KeywordService invoked");
+        return keywordRepository.findByWordIgnoreCaseStartingWith(searchTerm);
+    }
+
+    public Keyword findKeywordByWord(String word) {
+        log.info("findKeywordsByWord method from KeywordService invoked");
+        return keywordRepository.findByWordIgnoreCase(word);
+    }
+
+    public void addOrUpdateKeyword(Keyword keyword) {
+       if (keyword.getId() != null && keyword.getId() != 0) {
+            updateKeyword(keyword);
+       } else {
+            addKeyword(keyword);
+       }
     }
 }

@@ -1,6 +1,5 @@
 package pl.hycom.pip.messanger.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +11,8 @@ import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
 import com.github.messenger4j.user.UserProfileClient;
 
-import pl.hycom.pip.messanger.handler.MessengerHelloWorldHandler;
-import pl.hycom.pip.messanger.handler.MessengerProductsRecommendationHandler;
 import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
+import pl.hycom.pip.messanger.pipeline.PipelineManager;
 
 /**
  * Created by patry on 07/03/2017.
@@ -32,24 +30,23 @@ public class MessengerConfiguration {
     @Value("${messenger.verifyToken}")
     private String verifyToken;
 
-    @Autowired
-    private MessengerProductsRecommendationHandler messengerProductsRecommendationHandler;
+    @Value("${messenger.pipeline.filepath}")
+    private String pipelineFilepath;
 
     @Bean
-    public PipelineMessageHandler pipelineMessageHandler() {
-        return new PipelineMessageHandler();
+    public PipelineManager pipelineManager() {
+        return new PipelineManager(pipelineFilepath);
     }
 
     @Bean
-    public MessengerHelloWorldHandler messengerHelloWorldHandler() {
-        return new MessengerHelloWorldHandler(sendClient());
+    public PipelineMessageHandler pipelineMessageHandler() {
+        return new PipelineMessageHandler(pipelineManager());
     }
 
     @Bean
     public MessengerReceiveClient receiveClient() {
         return MessengerPlatformWrapper.newReceiveClientBuilder(appSecret, verifyToken)
-                .onTextMessageEvent(messengerProductsRecommendationHandler)
-                // .onTextMessageEvent(pipelineMessageHandler())
+                .onTextMessageEvent(pipelineMessageHandler())
                 .build();
     }
 

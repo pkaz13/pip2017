@@ -1,12 +1,12 @@
 package pl.hycom.pip.messanger.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Created by patry on 18/03/2017.
@@ -15,13 +15,20 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "KEYWORDS")
-public class Keyword implements Serializable{
+@NoArgsConstructor
+public class Keyword implements Serializable {
 
+    private static final long serialVersionUID = -8450849049742048985L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
     @NotNull
     @Column(unique = true)
+    @Size(min = 1, max = 100, message = "{keyword.word.size}")
     private String word;
+
+    public Keyword(String word) {
+        super();
+        this.word = word;
+    }
 }

@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
 <head>
     <title>Konfiguracja tekstu powitalnego</title>
     <script th:src="@{/js/greeting.js}"></script>
@@ -10,85 +8,83 @@
 <div layout:fragment="content">
 
     <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">Wiadomość powitalna na mesengerze</h1>
-        </div>
+        <h1 class="page-header">Wiadomość powitalna na mesengerze</h1>
+    </div>
+	<div class="row">
+    <!--/*@thymesVar id="greetingListWrapper" type="pl.hycom.pip.messanger.model.GreetingListWrapper"*/-->
+		<form action="#" th:action="@{/admin/greetings}" th:object="${greetingListWrapper}" method="post" class="clearfix">
+            <div class="alert alert-danger" th:if="${errors}">
+                <p th:each="err : ${errors}" th:text="${err}">...</p>
+            </div>
+	        <div th:each="greeting, stat: *{greetings}" class="form-group">
+                <input type="hidden" th:field="*{greetings[__${stat.index}__].locale}"/>
+                <label th:text="'Wiadomość dla: ' + *{greetings[__${stat.index}__].locale}"></label>
+                <a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}" class="btn btn-danger btn-xs button-delete pull-right" data-toggle="tooltip" data-placement="top" title="Usuń">
+                	<span class="glyphicon glyphicon-trash"></span>
+                </a>
+                <textarea class="form-control message-item" name="message" th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
+	        </div>
+	        <div class="pull-right">
+	            <a th:href="@{/admin/greeting}" class="btn btn-default">Przeładuj</a>
+	            <button type="reset" class="btn btn-default">Resetuj</button>
+	            <button type="submit" class="btn btn-primary">Zapisz</button>
+	        </div>
+	    </form>
+	</div>
+
+
+    <div class="row" th:unless="${#lists.isEmpty(availableLocale)}">
+		<hr />
+	    <!--/*@thymesVar id="greeting" type="pl.hycom.pip.messanger.model.Greeting"*/-->
+	    <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}" method="post">
+            <div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
+                <p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>
+            </div>
+	         <div class="form-horizontal">
+	         	<div class="form-group">
+	         		<div class="col-sm-12">
+	         			<select class="form-control" th:field="*{locale}" placeholder="Locale">
+	         				<option value="" disabled="disabled" hidden="true">Locale</option>
+	         				<option th:each="l : ${availableLocale}" th:value="${l.key}" th:text="'[' + ${l.key} + '] ' + ${l.value}">pl_PL</option>						  
+						</select>	         			
+	            	</div>
+	         	</div>
+		        <div class="form-group">
+		        	<div class="col-sm-12">
+		        		<textarea placeholder="Wiadomość powitalna" th:field="*{text}" class="form-control message-item autofocus" th:maxlength="160"></textarea>
+		        	</div>
+		        </div>
+	         </div>
+	         <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
+	    </form>
     </div>
 
     <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Ustaw wiadomość</div>
-                <div class="panel-body">
-                    <!--/*@thymesVar id="greetingListWrapper" type="pl.hycom.pip.messanger.model.GreetingListWrapper"*/-->
-                    <form action="#" th:action="@{/admin/greetings}" th:object="${greetingListWrapper}"
-                          method="post">
-                        <div th:each="greeting, stat: *{greetings}" class="form-group" id="container">
-                            <div class="greetingEntry">
-                                <input type="hidden" th:field="*{greetings[__${stat.index}__].locale}"/>
-                                <label for="message"
-                                       th:text="'Wiadomość dla: ' + *{greetings[__${stat.index}__].locale}"></label>
-                                <textarea id="message" class="form-control autofocus message-item" name="message"
-                                          th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
-                                <a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}"><span>Delete</span></a>
-                            </div>
-                        </div>
-                        <div class="pull-right">
-                            <a th:href="@{/admin/greeting}" class="btn btn-default">Przeładuj</a>
-                            <button type="reset" class="btn btn-default">Resetuj</button>
-                            <button type="submit" class="btn btn-primary">Zatwierdź</button>
-                        </div>
-                    </form>
-                    <!--/*@thymesVar id="greeting" type="pl.hycom.pip.messanger.model.Greeting"*/-->
-                    <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}"
-                          method="post">
-                        <div class="control-row">
-                            <div class="control-group">
-                                <div class="input-group">
-                                    <div class="col-lg-2">
-                                        <textarea placeholder="Locale" class="form-control" th:field="*{locale}"/>
-                                    </div>
-                                    <div class="col-lg-10">
-                                        <textarea placeholder="Wiadomość powitalna" th:field="*{text}"
-                                          class="form-control message-item"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
-                    </form>
-                </div>
-            </div>
+        <div class="bs-callout bs-callout-default">
+            <h4>Istnieje możliwość wpisania specjalnych znaczników dotyczących użytkownika który otwiera okno
+                rozmowy</h4>
+            <p>Możesz umieśćic następujące znaczniki:</p>
+            <ul>
+                <li>{{user_first_name}} - w to miejsce zostanie umieszczone imie użytkownika który otwiera okno
+                    rozmowy
+                    <button class="btn btn-info btn-xs" onclick="addText(this, '{{user_first_name}}')">Dodaj
+                        znacznik
+                    </button>
+                </li>
+                <li>{{user_last_name}} - jak wyżej tylko, że nazwisko
+                    <button class="btn btn-info btn-xs" onclick="addText(this, '{{user_last_name}}')">Dodaj
+                        znacznik
+                    </button>
+                </li>
+                <li>{{user_full_name}} - oraz jedno i drugie
+                    <button class="btn btn-info btn-xs" onclick="addText(this, '{{user_full_name}}')">Dodaj
+                        znacznik
+                    </button>
+                </li>
+            </ul>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="bs-callout bs-callout-default">
-                <h4>Istnieje możliwość wpisania specjalnych znaczników dotyczących użytkownika który otwiera okno
-                    rozmowy</h4>
-                <p>Możesz umieśćic następujące znaczniki:</p>
-                <ul>
-                    <li>{{user_first_name}} - w to miejsce zostanie umieszczone imie użytkownika który otwiera okno
-                        rozmowy
-                        <button class="btn btn-info btn-xs" onclick="addText(this, '{{user_first_name}}')">Dodaj
-                            znacznik
-                        </button>
-                    </li>
-                    <li>{{user_last_name}} - jak wyżej tylko, że nazwisko
-                        <button class="btn btn-info btn-xs" onclick="addText(this, '{{user_last_name}}')">Dodaj
-                            znacznik
-                        </button>
-                    </li>
-                    <li>{{user_full_name}} - oraz jedno i drugie
-                        <button class="btn btn-info btn-xs" onclick="addText(this, '{{user_full_name}}')">Dodaj
-                            znacznik
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    
 </div>
 </body>
 </html>
