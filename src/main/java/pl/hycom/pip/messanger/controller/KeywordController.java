@@ -1,11 +1,8 @@
 package pl.hycom.pip.messanger.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,12 +10,14 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -29,6 +28,7 @@ public class KeywordController {
 
     private final KeywordService keywordService;
     private final ProductService productService;
+    private MessageSource messageSource;
 
     @GetMapping("/admin/keywords")
     public String showProducts(Model model) {
@@ -49,7 +49,7 @@ public class KeywordController {
 
         if (keywordService.findKeywordByWord(keyword.getWord()) != null) {
             prepareModel(model, keyword);
-            model.addAttribute("error", new ObjectError("keywordExists", "Keyword already exists."));
+            model.addAttribute("error", new ObjectError("keywordExists", "Słowo kluczowe już istnieje."));
 
             return KEYWORDS_VIEW;
         }
@@ -68,7 +68,7 @@ public class KeywordController {
             log.info("Keyword[" + id + "] deleted !!!");
         } else {
             prepareModel(model, new Keyword());
-            ObjectError error = new ObjectError("keywordInUsage", "Keyword is bound to product(s).");
+            ObjectError error = new ObjectError("keywordInUsage", "Słowo kluczowe jest przypisane do produktu.");
             model.addAttribute("error", error);
             log.info("cannot delete keyword = " + deletedKeyword);
             return KEYWORDS_VIEW;
