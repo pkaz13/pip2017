@@ -1,40 +1,24 @@
 package pl.hycom.pip.messanger.controller;
 
-import com.github.messenger4j.profile.MessengerProfileClient;
-import javafx.application.Application;
 import lombok.extern.log4j.Log4j2;
-import org.apache.catalina.filters.CorsFilter;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.ModelAndView;
 import pl.hycom.pip.messanger.MessengerRecommendationsApplication;
 
-
-import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.isNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
- * Created by Piotr on 01.04.2017.
+ * Created by piotr on 01.04.2017.
  */
 
 @RunWith(SpringRunner.class)
@@ -47,40 +31,24 @@ public class AdminControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext applicationContext;
-
-    @Mock
-    private MessengerProfileClient profileClient;
-
-    @Autowired
-    @InjectMocks
-    private AdminController adminController;
+    private WebApplicationContext webApplicationContext;
 
     @Before
     public void setUp() {
-        //this.mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext).build();
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(adminController).addFilters(new CorsFilter()).build();
+        this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    public void mockCreationTest() {
-        assertNotNull("MessengerProfileClient should not be null",profileClient);
+    public void PageFoundTest() throws Exception {
+        mockMvc.perform(get("/admin"))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void adminControllerIsNotNullTest() {
-        assertNotNull("AdminController should not be null",adminController);
+    public void PageNotFoundTest() throws Exception {
+        mockMvc.perform(get("/user"))
+                .andExpect(status().isNotFound());
     }
-
-    @Test
-    public void shouldReturnAdminViewTest() {
-        ModelAndView modelAndView = adminController.admin();
-        Assert.assertThat("View name should be 'admin'",modelAndView.getViewName(), Is.is("admin"));
-    }
-
-
-
 
 }
 
