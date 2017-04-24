@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.model.Keyword;
+import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
 
 /**

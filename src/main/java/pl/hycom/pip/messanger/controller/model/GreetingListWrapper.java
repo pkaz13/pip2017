@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package pl.hycom.pip.messanger.model;
+package pl.hycom.pip.messanger.controller.model;
 
 import java.util.ArrayList;
 import java.util.List;

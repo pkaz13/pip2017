@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import pl.hycom.pip.messanger.model.Keyword;
+import pl.hycom.pip.messanger.repository.model.Keyword;
 
 /**
  * Created by patry on 18/03/2017.

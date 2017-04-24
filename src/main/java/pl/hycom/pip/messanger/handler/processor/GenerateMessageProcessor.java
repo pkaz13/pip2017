@@ -30,7 +30,7 @@ import com.github.messenger4j.send.templates.Template;
 
 import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
-import pl.hycom.pip.messanger.model.Product;
+import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;

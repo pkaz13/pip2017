@@ -39,8 +39,8 @@ import com.github.messenger4j.exceptions.MessengerIOException;
 import com.github.messenger4j.profile.MessengerProfileClient;
 
 import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.model.Greeting;
-import pl.hycom.pip.messanger.model.GreetingListWrapper;
+import pl.hycom.pip.messanger.controller.model.Greeting;
+import pl.hycom.pip.messanger.controller.model.GreetingListWrapper;
 import pl.hycom.pip.messanger.service.GreetingService;
 
 /**

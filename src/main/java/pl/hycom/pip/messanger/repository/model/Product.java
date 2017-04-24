@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package pl.hycom.pip.messanger.model;
+package pl.hycom.pip.messanger.repository.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -47,12 +47,10 @@ public class Product implements Serializable {
 
     @NotNull
     @Column(length = 80)
-    @Size(min = 1, max = 80)
     private String name;
 
     @NotNull
     @Column(length = 80)
-    @Size(min = 1, max = 80)
     private String description;
 
     @NotNull
@@ -71,5 +69,15 @@ public class Product implements Serializable {
 
     public boolean addKeyword(Keyword keyword) {
         return keywords.add(keyword);
+    }
+
+    public Product(pl.hycom.pip.messanger.controller.model.Product product){
+        id=product.getId();
+        name=product.getName();
+        description=product.getDescription();
+        imageUrl=product.getImageUrl();
+        for(pl.hycom.pip.messanger.controller.model.Keyword keyword :  product.getKeywords()){
+            keywords.add(new Keyword(keyword));
+        }
     }
 }
