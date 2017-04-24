@@ -53,12 +53,12 @@ public class ProductController {
 
     @GetMapping("/admin/products")
     public String showProducts(Model model) {
-        prepareModel(model, new Product());
+        prepareModel(model, new pl.hycom.pip.messanger.controller.model.Product());
         return PRODUCTS_VIEW;
     }
 
     @PostMapping("/admin/products")
-    public String addOrUpdateProduct(@Valid Product product, BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String addOrUpdateProduct(@Valid pl.hycom.pip.messanger.controller.model.Product product, BindingResult bindingResult, Model model, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, product);
@@ -95,8 +95,8 @@ public class ProductController {
         return productService.findProductById(id).getKeywords().stream().map(Keyword::getWord).collect(Collectors.toList());
     }
 
-    private void prepareModel(Model model, Product product) {
-        List<Product> allProducts = productService.findAllProducts();
+    private void prepareModel(Model model, pl.hycom.pip.messanger.controller.model.Product product) {
+        List<pl.hycom.pip.messanger.controller.model.Product> allProducts = productService.findAllProducts();
         model.addAttribute("products", allProducts);
         model.addAttribute("productForm", product);
     }

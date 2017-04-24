@@ -142,10 +142,10 @@ public class KeywordServiceTest {
     public void findAllKeyWordsTest() {
 
         // preparation
-        List<Keyword> keywords = new ArrayList<>();
-        keywords.add(keyword1);
-        keywords.add(keyword2);
-        List<Keyword> keywordsFromRepository;
+        List<pl.hycom.pip.messanger.controller.model.Keyword> keywords = new ArrayList<>();
+        keywords.add(new pl.hycom.pip.messanger.controller.model.Keyword());
+        keywords.add(new pl.hycom.pip.messanger.controller.model.Keyword());
+        List<pl.hycom.pip.messanger.controller.model.Keyword> keywordsFromRepository;
 
         // act
         keywordsFromRepository = keywordService.findAllKeywords();

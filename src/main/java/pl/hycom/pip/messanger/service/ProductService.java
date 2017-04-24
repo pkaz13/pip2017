@@ -26,6 +26,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +47,9 @@ import pl.hycom.pip.messanger.repository.ProductRepository;
 @Log4j2
 public class ProductService {
 
+    @Autowired
+    private MapperFacade orikaMapper;
+
     private final ProductRepository productRepository;
     private final KeywordRepository keywordRepository;
 
@@ -59,11 +65,11 @@ public class ProductService {
         return productRepository.findOne(id);
     }
 
-    public List<Product> findAllProducts() {
+    public List<pl.hycom.pip.messanger.controller.model.Product> findAllProducts() {
         log.info("Searching all products");
+        return orikaMapper.mapAsList(StreamSupport.stream(productRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList()),pl.hycom.pip.messanger.controller.model.Product.class);
 
-        return StreamSupport.stream(productRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
     }
 
     public void deleteProduct(Integer id) {
@@ -83,7 +89,7 @@ public class ProductService {
         return productRepository.save(updatedProduct);
     }
 
-    public Product addOrUpdateProduct(Product product, String[] keywordsStr) {
+    public Product addOrUpdateProduct(pl.hycom.pip.messanger.controller.model.Product product, String[] keywordsStr) {
         final Set<Keyword> keywords = new HashSet<>();
 
         if (keywordsStr != null) {
@@ -98,10 +104,10 @@ public class ProductService {
                         keywords.add(keyword);
                     });
         }
+        Product entityProduct=orikaMapper.map(product,Product.class);
+        entityProduct.setKeywords(keywords);
 
-        product.setKeywords(keywords);
-
-        return addOrUpdateProduct(product);
+        return addOrUpdateProduct(entityProduct);
     }
 
     public Product addOrUpdateProduct(Product product) {
@@ -110,7 +116,6 @@ public class ProductService {
             log.info("Product updated !!!");
             return updatedProduct;
         }
-
         Product addedProduct = addProduct(product);
         log.info("Product added !!!");
         return addedProduct;
@@ -123,7 +128,8 @@ public class ProductService {
         log.info("Searching for [" + howManyProducts + "] random products from quantity[" + quantity + "]");
 
         if (quantity == 0 || howManyProducts > quantity) {
-            products.addAll(findAllProducts());
+            products.addAll(StreamSupport.stream(productRepository.findAll().spliterator(), false)
+                    .collect(Collectors.toList()));
 
             log.info("Returning all products");
             return products;

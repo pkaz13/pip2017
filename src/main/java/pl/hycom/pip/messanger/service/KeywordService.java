@@ -22,6 +22,8 @@ import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,9 @@ import pl.hycom.pip.messanger.repository.KeywordRepository;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
 public class KeywordService {
+    @Autowired
+    private MapperFacade orikaMapper;
+
     private final KeywordRepository keywordRepository;
 
     public Keyword addKeyword(Keyword keyword) {
@@ -54,10 +59,10 @@ public class KeywordService {
         return keywordRepository.findOne(id);
     }
 
-    public List<Keyword> findAllKeywords() {
+    public List<pl.hycom.pip.messanger.controller.model.Keyword> findAllKeywords() {
         log.info("findAllKeywords method from KeywordService class invoked");
-        return StreamSupport.stream(keywordRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+        return orikaMapper.mapAsList(StreamSupport.stream(keywordRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList()),pl.hycom.pip.messanger.controller.model.Keyword.class);
     }
 
     public void deleteKeyword(Integer id) {
@@ -103,11 +108,12 @@ public class KeywordService {
         return keywordRepository.findByWordIgnoreCase(word);
     }
 
-    public void addOrUpdateKeyword(Keyword keyword) {
+    public void addOrUpdateKeyword(pl.hycom.pip.messanger.controller.model.Keyword keyword) {
+        Keyword entityKeyword=orikaMapper.map(keyword,Keyword.class);
        if (keyword.getId() != null && keyword.getId() != 0) {
-            updateKeyword(keyword);
+            updateKeyword(entityKeyword);
        } else {
-            addKeyword(keyword);
+            addKeyword(entityKeyword);
        }
     }
 }
