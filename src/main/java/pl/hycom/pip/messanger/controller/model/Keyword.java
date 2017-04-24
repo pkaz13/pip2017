@@ -17,9 +17,4 @@ public class Keyword {
     @Size(min = 1, max = 100, message = "{keyword.word.size}")
     private String word;
 
-
-    public Keyword(pl.hycom.pip.messanger.repository.model.Keyword keyword) {
-        id=keyword.getId();
-        word=keyword.getWord();
-    }
 }

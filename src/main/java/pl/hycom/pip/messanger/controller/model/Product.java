@@ -26,13 +26,4 @@ public class Product {
 
     private Set<Keyword> keywords = new HashSet<>();
 
-    public Product(pl.hycom.pip.messanger.repository.model.Product product) {
-        id=product.getId();
-        name=product.getName();
-        description=product.getDescription();
-        imageUrl=product.getImageUrl();
-        for(pl.hycom.pip.messanger.repository.model.Keyword keyword :  product.getKeywords()){
-            keywords.add(new Keyword(keyword));
-        }
-    }
 }

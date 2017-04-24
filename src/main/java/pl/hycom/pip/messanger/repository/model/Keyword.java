@@ -47,8 +47,4 @@ public class Keyword implements Serializable {
         this.word = word;
     }
 
-    public Keyword(pl.hycom.pip.messanger.controller.model.Keyword keyword){
-        id=keyword.getId();
-        word=keyword.getWord();
-    }
 }

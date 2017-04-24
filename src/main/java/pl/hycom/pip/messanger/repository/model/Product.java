@@ -73,13 +73,4 @@ public class Product implements Serializable {
         return keywords.add(keyword);
     }
 
-    public Product(pl.hycom.pip.messanger.controller.model.Product product){
-        id=product.getId();
-        name=product.getName();
-        description=product.getDescription();
-        imageUrl=product.getImageUrl();
-        for(pl.hycom.pip.messanger.controller.model.Keyword keyword :  product.getKeywords()){
-            keywords.add(new Keyword(keyword));
-        }
-    }
 }
