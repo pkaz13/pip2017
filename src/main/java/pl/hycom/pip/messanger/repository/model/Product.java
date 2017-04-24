@@ -33,10 +33,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "PRODUCTS")
+@NoArgsConstructor
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 9211285852881742074L;
