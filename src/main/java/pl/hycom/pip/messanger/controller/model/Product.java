@@ -26,4 +26,6 @@ public class Product {
 
     private Set<Keyword> keywords = new HashSet<>();
 
+    private  String keywordsHolder;
+
 }

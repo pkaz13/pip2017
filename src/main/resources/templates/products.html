@@ -137,7 +137,7 @@
                                 <div class="form-group" th:classappend="${#fields.hasErrors('keywords')}? 'has-error'">
                                     <label class="col-sm-3 control-label" for="keywords_form">Słowa kluczowe</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control keywords" id="keywords_form" type="text" name="keywords-holder" placeholder="Dodaj"/>
+                                        <input class="form-control keywords" id="keywords_form" type="text" name="keywords-holder" placeholder="Dodaj" th:field="*{keywordsHolder}"/>
                                     </div>
                                 </div>
                                 <!--keywords-->

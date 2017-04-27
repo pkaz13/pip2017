@@ -58,18 +58,14 @@ public class ProductController {
     }
 
     @PostMapping("/admin/products")
-    public String addOrUpdateProduct(@Valid pl.hycom.pip.messanger.controller.model.Product product, BindingResult bindingResult, Model model, HttpServletRequest request) {
-
+    public String addOrUpdateProduct(@Valid pl.hycom.pip.messanger.controller.model.Product product, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             prepareModel(model, product);
             model.addAttribute("errors", bindingResult.getFieldErrors());
             log.info("Validation product error !!!");
-
             return PRODUCTS_VIEW;
         }
-
-        productService.addOrUpdateProduct(product, StringUtils.split(request.getParameter("keywords-holder"), ','));
-
+        productService.addOrUpdateProduct(product);
         return "redirect:/admin/products";
     }
 

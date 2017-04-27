@@ -89,9 +89,9 @@ public class ProductService {
         return productRepository.save(updatedProduct);
     }
 
-    public Product addOrUpdateProduct(pl.hycom.pip.messanger.controller.model.Product product, String[] keywordsStr) {
+    public Product addOrUpdateProduct(pl.hycom.pip.messanger.controller.model.Product product) {
+        String[] keywordsStr = StringUtils.split(product.getKeywordsHolder(),',');
         final Set<Keyword> keywords = new HashSet<>();
-
         if (keywordsStr != null) {
             Arrays.stream(keywordsStr)
                     .map(StringUtils::lowerCase)
