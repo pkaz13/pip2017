@@ -36,6 +36,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.controller.model.KeywordDTO;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
 import pl.hycom.pip.messanger.service.KeywordService;
@@ -49,7 +50,7 @@ import pl.hycom.pip.messanger.service.KeywordService;
 @ActiveProfiles({ "dev", "testdb" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
-public class KeywordServiceTest {
+public class KeywordDTOServiceTest {
 
     @Autowired
     private KeywordService keywordService;
@@ -85,7 +86,7 @@ public class KeywordServiceTest {
     /**
      * Adds unique keyword to repository
      * 
-     * @result Keyword will be added without any error,
+     * @result KeywordDTO will be added without any error,
      *         number of keywords in repository is expected to be 3
      */
     @Test
@@ -101,7 +102,7 @@ public class KeywordServiceTest {
     /**
      * Adds non-unique keyword to repository
      * 
-     * @result Keyword that has given word
+     * @result KeywordDTO that has given word
      */
     @Test
     public void addNonUniqueKeywordTest() {
@@ -142,10 +143,10 @@ public class KeywordServiceTest {
     public void findAllKeyWordsTest() {
 
         // preparation
-        List<pl.hycom.pip.messanger.controller.model.Keyword> keywords = new ArrayList<>();
-        keywords.add(new pl.hycom.pip.messanger.controller.model.Keyword());
-        keywords.add(new pl.hycom.pip.messanger.controller.model.Keyword());
-        List<pl.hycom.pip.messanger.controller.model.Keyword> keywordsFromRepository;
+        List<KeywordDTO> keywords = new ArrayList<>();
+        keywords.add(new KeywordDTO());
+        keywords.add(new KeywordDTO());
+        List<KeywordDTO> keywordsFromRepository;
 
         // act
         keywordsFromRepository = keywordService.findAllKeywords();
@@ -158,7 +159,7 @@ public class KeywordServiceTest {
     /**
      * Updates existing keyword in repository
      * 
-     * @result Keyword specified by id will be updated by "newWord"
+     * @result KeywordDTO specified by id will be updated by "newWord"
      */
     @Test
     public void updateKeywordTest() {
@@ -170,13 +171,13 @@ public class KeywordServiceTest {
         keywordService.updateKeyword(keyword1.getId(), newWord);
 
         // assert
-        assertEquals("Keyword specified by id will be updated by \"newWord\"", newWord, repository.findOne(keyword1.getId()).getWord());
+        assertEquals("KeywordDTO specified by id will be updated by \"newWord\"", newWord, repository.findOne(keyword1.getId()).getWord());
     }
 
     /**
      * Deletes keyword from repository
      * 
-     * @result Keyword added to repository will be deleted without error,
+     * @result KeywordDTO added to repository will be deleted without error,
      *         size of repository keywords before adding keyword will be equal to 2,
      *         size of repository keywords after adding keyword will be equal to 3,
      *         size of repository keywords after deleting will be equal to

@@ -20,10 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,8 +34,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.controller.model.ProductDTO;
 import pl.hycom.pip.messanger.repository.model.Keyword;
-import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
@@ -53,12 +51,12 @@ public class ProductController {
 
     @GetMapping("/admin/products")
     public String showProducts(Model model) {
-        prepareModel(model, new pl.hycom.pip.messanger.controller.model.Product());
+        prepareModel(model, new ProductDTO());
         return PRODUCTS_VIEW;
     }
 
     @PostMapping("/admin/products")
-    public String addOrUpdateProduct(@Valid pl.hycom.pip.messanger.controller.model.Product product, BindingResult bindingResult, Model model) {
+    public String addOrUpdateProduct(@Valid ProductDTO product, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             prepareModel(model, product);
             model.addAttribute("errors", bindingResult.getFieldErrors());
@@ -72,7 +70,7 @@ public class ProductController {
     @GetMapping("/admin/products/{productId}/delete")
     public ModelAndView deleteProduct(@PathVariable("productId") final Integer id) {
         productService.deleteProduct(id);
-        log.info("Product[" + id + "] deleted !!!");
+        log.info("ProductDTO[" + id + "] deleted !!!");
 
         return new ModelAndView("redirect:/admin/products");
     }
@@ -91,8 +89,8 @@ public class ProductController {
         return productService.findProductById(id).getKeywords().stream().map(Keyword::getWord).collect(Collectors.toList());
     }
 
-    private void prepareModel(Model model, pl.hycom.pip.messanger.controller.model.Product product) {
-        List<pl.hycom.pip.messanger.controller.model.Product> allProducts = productService.findAllProducts();
+    private void prepareModel(Model model, ProductDTO product) {
+        List<ProductDTO> allProducts = productService.findAllProducts();
         model.addAttribute("products", allProducts);
         model.addAttribute("productForm", product);
     }

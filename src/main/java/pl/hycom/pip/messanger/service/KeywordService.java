@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.controller.model.KeywordDTO;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
 
@@ -48,7 +49,7 @@ public class KeywordService {
         log.info("addKeyword method from KeywordService class invoked");
         Keyword keywordByWord = findKeywordByWord(keyword.getWord());
         if (keywordByWord != null) {
-            log.info("addKeyword: Keyword already exists !!");
+            log.info("addKeyword: KeywordDTO already exists !!");
             return keywordByWord;
         }
         return keywordRepository.save(keyword);
@@ -59,10 +60,10 @@ public class KeywordService {
         return keywordRepository.findOne(id);
     }
 
-    public List<pl.hycom.pip.messanger.controller.model.Keyword> findAllKeywords() {
+    public List<KeywordDTO> findAllKeywords() {
         log.info("findAllKeywords method from KeywordService class invoked");
         return orikaMapper.mapAsList(StreamSupport.stream(keywordRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList()),pl.hycom.pip.messanger.controller.model.Keyword.class);
+                .collect(Collectors.toList()),KeywordDTO.class);
     }
 
     public void deleteKeyword(Integer id) {
@@ -108,7 +109,7 @@ public class KeywordService {
         return keywordRepository.findByWordIgnoreCase(word);
     }
 
-    public void addOrUpdateKeyword(pl.hycom.pip.messanger.controller.model.Keyword keyword) {
+    public void addOrUpdateKeyword(KeywordDTO keyword) {
         Keyword entityKeyword=orikaMapper.map(keyword,Keyword.class);
        if (keyword.getId() != null && keyword.getId() != 0) {
             updateKeyword(entityKeyword);

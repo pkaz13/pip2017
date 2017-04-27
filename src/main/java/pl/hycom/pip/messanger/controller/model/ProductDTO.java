@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class Product {
+public class ProductDTO {
     private Integer id;
 
     @Size(min = 1, max = 80)
@@ -24,7 +24,7 @@ public class Product {
 
     private String imageUrl;
 
-    private Set<Keyword> keywords = new HashSet<>();
+    private Set<KeywordDTO> keywords = new HashSet<>();
 
     private  String keywordsHolder;
 

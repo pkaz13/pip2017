@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
  */
 @Data
 @NoArgsConstructor
-public class Keyword {
+public class KeywordDTO {
 
     private Integer id;
 

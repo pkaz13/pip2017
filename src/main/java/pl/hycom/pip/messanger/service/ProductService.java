@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.controller.model.ProductDTO;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
@@ -65,10 +66,10 @@ public class ProductService {
         return productRepository.findOne(id);
     }
 
-    public List<pl.hycom.pip.messanger.controller.model.Product> findAllProducts() {
+    public List<ProductDTO> findAllProducts() {
         log.info("Searching all products");
         return orikaMapper.mapAsList(StreamSupport.stream(productRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList()),pl.hycom.pip.messanger.controller.model.Product.class);
+                .collect(Collectors.toList()),ProductDTO.class);
 
     }
 
@@ -89,7 +90,7 @@ public class ProductService {
         return productRepository.save(updatedProduct);
     }
 
-    public Product addOrUpdateProduct(pl.hycom.pip.messanger.controller.model.Product product) {
+    public Product addOrUpdateProduct(ProductDTO product) {
         String[] keywordsStr = StringUtils.split(product.getKeywordsHolder(),',');
         final Set<Keyword> keywords = new HashSet<>();
         if (keywordsStr != null) {
@@ -113,11 +114,11 @@ public class ProductService {
     public Product addOrUpdateProduct(Product product) {
         if (product.getId() != null && product.getId() != 0) {
             Product updatedProduct = updateProduct(product);
-            log.info("Product updated !!!");
+            log.info("ProductDTO updated !!!");
             return updatedProduct;
         }
         Product addedProduct = addProduct(product);
-        log.info("Product added !!!");
+        log.info("ProductDTO added !!!");
         return addedProduct;
     }
 

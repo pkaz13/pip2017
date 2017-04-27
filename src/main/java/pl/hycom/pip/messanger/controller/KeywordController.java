@@ -26,6 +26,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.hycom.pip.messanger.controller.model.KeywordDTO;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
@@ -48,12 +49,12 @@ public class KeywordController {
 
     @GetMapping("/admin/keywords")
     public String showProducts(Model model) {
-        prepareModel(model, new pl.hycom.pip.messanger.controller.model.Keyword());
+        prepareModel(model, new KeywordDTO());
         return KEYWORDS_VIEW;
     }
 
     @PostMapping("/admin/keywords")
-    public String addOrUpdateKeyword(@Valid pl.hycom.pip.messanger.controller.model.Keyword keyword, BindingResult bindingResult, Model model) {
+    public String addOrUpdateKeyword(@Valid KeywordDTO keyword, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, keyword);
@@ -81,9 +82,9 @@ public class KeywordController {
         Keyword deletedKeyword = keywordService.findKeywordById(id);
         if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(deletedKeyword)).isEmpty()) {
             keywordService.deleteKeyword(id);
-            log.info("Keyword[" + id + "] deleted !!!");
+            log.info("KeywordDTO[" + id + "] deleted !!!");
         } else {
-            prepareModel(model, new pl.hycom.pip.messanger.controller.model.Keyword());
+            prepareModel(model, new KeywordDTO());
             ObjectError error = new ObjectError("keywordInUsage", "Słowo kluczowe jest przypisane do produktu.");
             model.addAttribute("error", error);
             log.info("cannot delete keyword = " + deletedKeyword);
@@ -93,8 +94,8 @@ public class KeywordController {
         return "redirect:/admin/keywords";
     }
 
-    private void prepareModel(Model model, pl.hycom.pip.messanger.controller.model.Keyword keyword) {
-        List<pl.hycom.pip.messanger.controller.model.Keyword> allKeywords = keywordService.findAllKeywords();
+    private void prepareModel(Model model, KeywordDTO keyword) {
+        List<KeywordDTO> allKeywords = keywordService.findAllKeywords();
         model.addAttribute("keywords", allKeywords);
         model.addAttribute("keywordForm", keyword);
     }

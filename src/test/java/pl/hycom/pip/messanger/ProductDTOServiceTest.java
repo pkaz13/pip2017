@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
 @ActiveProfiles({ "dev", "testdb" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
-public class ProductServiceTest {
+public class ProductDTOServiceTest {
 
     @Autowired
     private ProductService productService;
