@@ -26,6 +26,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
@@ -47,8 +48,11 @@ public class KeywordController {
     private MessageSource messageSource;
 
     @GetMapping("/admin/keywords")
-    public String showProducts(Model model) {
+    public String showKeywords(Model model, @RequestParam(required = false) boolean success) {
         prepareModel(model, new Keyword());
+        if (success) {
+            model.addAttribute("info", "Słowo kluczowe zostało usunięte.");
+        }
         return KEYWORDS_VIEW;
     }
 
@@ -78,6 +82,7 @@ public class KeywordController {
     @GetMapping("/admin/keywords/{keywordId}/delete")
     public String deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
 
+        boolean success = true;
         Keyword deletedKeyword = keywordService.findKeywordById(id);
         if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(deletedKeyword)).isEmpty()) {
             keywordService.deleteKeyword(id);
@@ -90,7 +95,7 @@ public class KeywordController {
             return KEYWORDS_VIEW;
         }
 
-        return "redirect:/admin/keywords";
+        return "redirect:/admin/keywords?success=" + success;
     }
 
     private void prepareModel(Model model, Keyword keyword) {

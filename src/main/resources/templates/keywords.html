@@ -32,16 +32,14 @@
             </h1>
         </div>
 
-        <div th:if="${errors != null}" class="row">
-            <div class="alert alert-danger fade in" th:each="error : ${errors}">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <!--<strong th:text="${error.field}"></strong> --> <span th:text="${error.defaultMessage}"></span>
-            </div>
-        </div>
-
         <div class="alert alert-danger fade in" th:if="${error != null}">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <span th:text="${error.defaultMessage}"></span>
+        </div>
+
+        <div class="alert alert-success fade in" th:if="${info != null}">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span th:text="${info}"></span>
         </div>
 
         <div class="row">
