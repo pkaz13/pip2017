@@ -24,14 +24,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
@@ -62,7 +59,6 @@ public class ProductController {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, product);
-            model.addAttribute("errors", bindingResult.getFieldErrors());
             log.info("Validation product error !!!");
 
             return PRODUCTS_VIEW;
@@ -73,7 +69,7 @@ public class ProductController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/admin/products/{productId}/delete")
+    @RequestMapping(method = {RequestMethod.DELETE, RequestMethod.GET}, value = "/admin/products/{productId}/delete")
     public ModelAndView deleteProduct(@PathVariable("productId") final Integer id) {
         productService.deleteProduct(id);
         log.info("Product[" + id + "] deleted !!!");
@@ -100,5 +96,4 @@ public class ProductController {
         model.addAttribute("products", allProducts);
         model.addAttribute("productForm", product);
     }
-
 }
