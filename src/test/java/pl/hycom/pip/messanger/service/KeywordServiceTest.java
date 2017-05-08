@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package pl.hycom.pip.messanger;
+package pl.hycom.pip.messanger.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.junit.After;
