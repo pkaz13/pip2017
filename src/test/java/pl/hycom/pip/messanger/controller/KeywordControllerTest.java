@@ -16,13 +16,13 @@ import pl.hycom.pip.messanger.MessengerRecommendationsApplication;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
@@ -43,6 +43,8 @@ public class KeywordControllerTest {
     @Autowired
     private KeywordService keywordService;
 
+    private List<Integer> list = new ArrayList<>();
+
     @Before
     public void setUp() {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -60,9 +62,12 @@ public class KeywordControllerTest {
         keyword2 = new Keyword();
         keyword2.setWord("test2");
 
-        keywordService.addKeyword(keyword);
+        /*keywordService.addKeyword(keyword);
         keywordService.addKeyword(keyword1);
-        keywordService.addKeyword(keyword2);
+        keywordService.addKeyword(keyword2);*/
+        list.add(keywordService.addKeyword(keyword).getId());
+        list.add(keywordService.addKeyword(keyword1).getId());
+        list.add(keywordService.addKeyword(keyword2).getId());
     }
 
     @Test
@@ -76,7 +81,7 @@ public class KeywordControllerTest {
     public void pageNotFoundTest() throws Exception {
 
         mockMvc.perform(get("/user/keywords"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -87,15 +92,15 @@ public class KeywordControllerTest {
                 .andExpect(view().name("keywords"))
                 .andExpect(model().attribute("keywords",hasSize(3)))
                 .andExpect(model().attribute("keywords",hasItem(allOf(
-                        hasProperty("id", Is.is(1)),
+                        hasProperty("id", Is.is(list.get(0))),
                         hasProperty("word", Is.is("test"))
                 ))))
                 .andExpect(model().attribute("keywords",hasItem(allOf(
-                        hasProperty("id", Is.is(2)),
+                        hasProperty("id", Is.is(list.get(1))),
                         hasProperty("word", Is.is("test1"))
                 ))))
                 .andExpect(model().attribute("keywords",hasItem(allOf(
-                        hasProperty("id", Is.is(3)),
+                        hasProperty("id", Is.is(list.get(2))),
                         hasProperty("word", Is.is("test2"))
                 ))));
     }
@@ -103,7 +108,8 @@ public class KeywordControllerTest {
     @Test
     public void deleteById() throws Exception {
 
-        mockMvc.perform(get("/admin/keywords/3/delete"))
+        int id = list.get(2);
+        mockMvc.perform(get("/admin/keywords/" + id + "/delete"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/admin/keywords"));
         //.andExpect(model().attribute("products", hasSize(1)));
@@ -117,8 +123,8 @@ public class KeywordControllerTest {
                 .andExpect(view().name("keywords"));
     }
 
-//    @Test
-//    public void cleanAll() {
-//        keywordService.deleteAllKeywords();
-//    }
+    @Test
+    public void cleanAll() {
+        keywordService.deleteAllKeywords();
+    }
 }
