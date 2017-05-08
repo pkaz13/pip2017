@@ -55,9 +55,9 @@ public class KeywordService {
         return keywordRepository.save(keyword);
     }
 
-    public Keyword findKeywordById(Integer id) {
+    public KeywordDTO findKeywordById(Integer id) {
         log.info("findKeywordById method from KeywordService class invoked");
-        return keywordRepository.findOne(id);
+        return orikaMapper.map(keywordRepository.findOne(id),KeywordDTO.class);
     }
 
     public List<KeywordDTO> findAllKeywords() {
@@ -66,9 +66,12 @@ public class KeywordService {
                 .collect(Collectors.toList()),KeywordDTO.class);
     }
 
-    public void deleteKeyword(Integer id) {
+    public boolean deleteKeyword(Integer id) {
         log.info("deleteKeyword method from KeywordService class invoked");
+        if(!keywordRepository.exists(id))
+            return false;
         keywordRepository.delete(id);
+        return true;
     }
 
     public void updateKeyword(Integer id, String newWord) {

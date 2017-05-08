@@ -17,6 +17,7 @@
 package pl.hycom.pip.messanger;
 
 import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -29,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import pl.hycom.pip.messanger.controller.model.KeywordDTO;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
@@ -46,6 +48,9 @@ import static org.junit.Assert.*;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class ProductDTOServiceTest {
+
+    @Autowired
+    private MapperFacade orikaMapper;
 
     @Autowired
     private ProductService productService;
@@ -227,7 +232,7 @@ public class ProductDTOServiceTest {
         long initialKeywordCount = product1.getKeywords().size();
         productService.addProduct(product1);
         keywordService.addKeyword(keyword);
-        keyword = keywordService.findKeywordById(keyword.getId());
+        keyword = orikaMapper.map(keywordService.findKeywordById(keyword.getId()),Keyword.class);
 
         // action
         product1 = productService.addKeywordsToProduct(product1.getId(), keyword);

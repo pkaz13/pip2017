@@ -79,8 +79,8 @@ public class KeywordController {
     @GetMapping("/admin/keywords/{keywordId}/delete")
     public String deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
 
-        Keyword keywordToDelete = keywordService.findKeywordById(id);
-        if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(keywordToDelete)).isEmpty()) {
+        KeywordDTO keywordToDelete = keywordService.findKeywordById(id);
+        if (productService.isAnyProductContainingAtLeastOneKeyword(Arrays.asList(keywordToDelete))) {
             keywordService.deleteKeyword(id);
             log.info("KeywordDTO[" + id + "] deleted !!!");
         } else {

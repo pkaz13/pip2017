@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.controller.model.KeywordDTO;
 import pl.hycom.pip.messanger.controller.model.ProductDTO;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.model.Product;
@@ -78,10 +79,12 @@ public class ProductService {
         return productRepository.findOne(id).getKeywords().stream().map(Keyword::getWord).collect(Collectors.toList());
     }
 
-    public void deleteProduct(Integer id) {
+    public boolean deleteProduct(Integer id) {
         log.info("Deleting product[" + id + "]");
-
+        if(!productRepository.exists(id))
+            return false;
         productRepository.delete(id);
+        return true;
     }
 
     public Product updateProduct(Product product) {
@@ -154,6 +157,16 @@ public class ProductService {
         return keywords.stream().filter(Objects::nonNull)
                 .flatMap(k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull)
                 .distinct().collect(Collectors.toList());
+    }
+
+    public boolean isAnyProductContainingAtLeastOneKeyword(List<KeywordDTO> keywords){
+        List<Keyword> keywordsList=orikaMapper.mapAsList(keywords,Keyword.class);
+        if(keywordsList.stream().filter(Objects::nonNull)
+                .flatMap(k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull)
+                .distinct().collect(Collectors.toList()).isEmpty())
+            return true;
+        else
+            return false;
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
