@@ -73,6 +73,11 @@ public class ProductService {
 
     }
 
+    public List<String> findProductKeywords(Integer id){
+        log.info("Searching keywords for product with id[" + id + "]");
+        return productRepository.findOne(id).getKeywords().stream().map(Keyword::getWord).collect(Collectors.toList());
+    }
+
     public void deleteProduct(Integer id) {
         log.info("Deleting product[" + id + "]");
 
@@ -90,7 +95,7 @@ public class ProductService {
         return productRepository.save(updatedProduct);
     }
 
-    public Product addOrUpdateProduct(ProductDTO product) {
+    public ProductDTO addOrUpdateProduct(ProductDTO product) {
         String[] keywordsStr = StringUtils.split(product.getKeywordsHolder(),',');
         final Set<Keyword> keywords = new HashSet<>();
         if (keywordsStr != null) {
@@ -108,7 +113,7 @@ public class ProductService {
         Product entityProduct=orikaMapper.map(product,Product.class);
         entityProduct.setKeywords(keywords);
 
-        return addOrUpdateProduct(entityProduct);
+        return orikaMapper.map(addOrUpdateProduct(entityProduct),ProductDTO.class);
     }
 
     public Product addOrUpdateProduct(Product product) {

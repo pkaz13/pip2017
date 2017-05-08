@@ -99,14 +99,22 @@ public class KeywordService {
         keywordRepository.deleteAll();
     }
 
-    public List<Keyword> findKeywordsBySearchTerm(String searchTerm) {
+    public List<String> findKeywordsBySearchTerm(String searchTerm) {
         log.info("findKeywordsBySearchTerm method from KeywordService invoked");
-        return keywordRepository.findByWordIgnoreCaseStartingWith(searchTerm);
+        return keywordRepository.findByWordIgnoreCaseStartingWith(searchTerm).stream().map(Keyword::getWord).collect(Collectors.toList());
     }
 
     public Keyword findKeywordByWord(String word) {
         log.info("findKeywordsByWord method from KeywordService invoked");
         return keywordRepository.findByWordIgnoreCase(word);
+    }
+
+    public boolean isAnyKeywordWithSpecificWord(String word){
+        log.info("isAnyKeywordWithSpecificWord method from KeywordService invoked");
+        if(keywordRepository.findByWordIgnoreCase(word)== null)
+            return false;
+        else
+            return true;
     }
 
     public void addOrUpdateKeyword(KeywordDTO keyword) {

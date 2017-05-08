@@ -64,7 +64,7 @@ public class KeywordController {
             return KEYWORDS_VIEW;
         }
 
-        if (keywordService.findKeywordByWord(keyword.getWord()) != null) {
+        if (keywordService.isAnyKeywordWithSpecificWord(keyword.getWord())) {
             prepareModel(model, keyword);
             model.addAttribute("error", new ObjectError("keywordExists", "Słowo kluczowe już istnieje."));
 
@@ -79,15 +79,15 @@ public class KeywordController {
     @GetMapping("/admin/keywords/{keywordId}/delete")
     public String deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
 
-        Keyword deletedKeyword = keywordService.findKeywordById(id);
-        if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(deletedKeyword)).isEmpty()) {
+        Keyword keywordToDelete = keywordService.findKeywordById(id);
+        if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(keywordToDelete)).isEmpty()) {
             keywordService.deleteKeyword(id);
             log.info("KeywordDTO[" + id + "] deleted !!!");
         } else {
             prepareModel(model, new KeywordDTO());
             ObjectError error = new ObjectError("keywordInUsage", "Słowo kluczowe jest przypisane do produktu.");
             model.addAttribute("error", error);
-            log.info("cannot delete keyword = " + deletedKeyword);
+            log.info("cannot delete keyword = " + keywordToDelete);
             return KEYWORDS_VIEW;
         }
 

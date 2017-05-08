@@ -78,7 +78,7 @@ public class ProductController {
     @ResponseBody
     @GetMapping("/admin/product/keyword/suggestions")
     public List<String> getKeywordsSuggestions(@RequestParam("searchTerm") String searchTerm) {
-        return keywordService.findKeywordsBySearchTerm(searchTerm).stream().map(Keyword::getWord).collect(Collectors.toList());
+        return keywordService.findKeywordsBySearchTerm(searchTerm);
     }
 
     @ResponseBody
@@ -86,7 +86,7 @@ public class ProductController {
     public List<String> getProductKeywords(@PathVariable("productId") final Integer id) {
         log.info("Searching for product's [" + id + "] keywords");
 
-        return productService.findProductById(id).getKeywords().stream().map(Keyword::getWord).collect(Collectors.toList());
+        return productService.findProductKeywords(id);
     }
 
     private void prepareModel(Model model, ProductDTO product) {
