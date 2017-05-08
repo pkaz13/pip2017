@@ -14,7 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import pl.hycom.pip.messanger.MessengerRecommendationsApplication;
 import pl.hycom.pip.messanger.model.Product;
+import pl.hycom.pip.messanger.repository.ProductRepository;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
@@ -43,6 +47,11 @@ public class ProductControllerTest {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    private List<Integer> list = new ArrayList<>();
+
     @Before
     public void setUp() {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -60,10 +69,13 @@ public class ProductControllerTest {
         product2.setDescription("desc2");
         product2.setImageUrl("url2");
 
-        productService.addProduct(product1);
-        productService.addProduct(product2);
+        //productService.addProduct(product1);
+        //productService.addProduct(product2);
+        list.add(productService.addProduct(product1).getId());
+        list.add(productService.addProduct(product2).getId());
         //productRepository.save(product1);
         //productRepository.save(product2);
+        log.error("Before");
 
     }
 
@@ -91,13 +103,13 @@ public class ProductControllerTest {
                 .andExpect(view().name("products"))
                 .andExpect(model().attribute("products",hasSize(2)))
                 .andExpect(model().attribute("products",hasItem(allOf(
-                        hasProperty("id", is(1)),
+                        hasProperty("id", is(list.get(0))),
                         hasProperty("name", is("name1")),
                         hasProperty("description", is("desc1")),
                         hasProperty("imageUrl", is("url1"))
                 ))))
                 .andExpect(model().attribute("products",hasItem(allOf(
-                hasProperty("id", is(2)),
+                        hasProperty("id", is(list.get(1))),
                 hasProperty("name", is("name2")),
                 hasProperty("description", is("desc2")),
                 hasProperty("imageUrl", is("url2"))
@@ -107,24 +119,25 @@ public class ProductControllerTest {
     @Test
     public void deleteById() throws Exception {
 
-        mockMvc.perform(get("/admin/products/2/delete"))
+        int id = list.get(0);
+        mockMvc.perform(get("/admin/products/" + id + "/delete"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/admin/products"));
                 //.andExpect(model().attribute("products", hasSize(1)));
     }
 
-//    @Test
-//    public void addOrUpdateTest() throws Exception {
-//
-//        mockMvc.perform(post("/admin/products"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("products"));
-//    }
+    @Test
+    public void addOrUpdateTest() throws Exception {
 
-//    @After
-//    public void cleanAll() {
-//        productService.deleteAllProducts();
-//    }
+        mockMvc.perform(post("/admin/products"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("products"));
+    }
+
+    @After
+    public void cleanAll() {
+        productService.deleteAllProducts();
+    }
 
 
 

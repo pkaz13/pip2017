@@ -1,16 +1,14 @@
 package pl.hycom.pip.messanger.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.github.messenger4j.MessengerPlatformWrapper;
 import com.github.messenger4j.profile.MessengerProfileClient;
 import com.github.messenger4j.receive.MessengerReceiveClient;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.setup.MessengerSetupClient;
 import com.github.messenger4j.user.UserProfileClient;
-
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 import pl.hycom.pip.messanger.pipeline.PipelineManager;
 

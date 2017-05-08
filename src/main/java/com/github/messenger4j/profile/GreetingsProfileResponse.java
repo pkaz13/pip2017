@@ -1,17 +1,16 @@
 package com.github.messenger4j.profile;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Rafal Lebioda on 18.03.2017.

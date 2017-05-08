@@ -1,10 +1,10 @@
 package pl.hycom.pip.messanger.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by marcinus on 25.03.17.

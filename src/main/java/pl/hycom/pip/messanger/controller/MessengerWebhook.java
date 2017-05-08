@@ -1,24 +1,18 @@
 package pl.hycom.pip.messanger.controller;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
-import javax.ws.rs.core.MediaType;
-
+import com.github.messenger4j.exceptions.MessengerVerificationException;
+import com.github.messenger4j.receive.MessengerReceiveClient;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.github.messenger4j.exceptions.MessengerVerificationException;
-import com.github.messenger4j.receive.MessengerReceiveClient;
+import javax.ws.rs.core.MediaType;
 
-import lombok.extern.log4j.Log4j2;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * Created by Rafal Lebioda on 02.03.2017.
