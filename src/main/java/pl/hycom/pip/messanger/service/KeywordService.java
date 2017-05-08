@@ -68,10 +68,11 @@ public class KeywordService {
 
     public boolean deleteKeyword(Integer id) {
         log.info("deleteKeyword method from KeywordService class invoked");
-        if(!keywordRepository.exists(id))
-            return false;
+        if(!keywordRepository.exists(id)){
+            return Boolean.FALSE;
+        }
         keywordRepository.delete(id);
-        return true;
+        return Boolean.TRUE;
     }
 
     public void updateKeyword(Integer id, String newWord) {
@@ -112,12 +113,9 @@ public class KeywordService {
         return keywordRepository.findByWordIgnoreCase(word);
     }
 
-    public boolean isAnyKeywordWithSpecificWord(String word){
+    public boolean isAnyKeywordWithWord(String word){
         log.info("isAnyKeywordWithSpecificWord method from KeywordService invoked");
-        if(keywordRepository.findByWordIgnoreCase(word)== null)
-            return false;
-        else
-            return true;
+        return keywordRepository.findByWordIgnoreCase(word)!= null;
     }
 
     public void addOrUpdateKeyword(KeywordDTO keyword) {

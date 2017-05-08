@@ -81,10 +81,11 @@ public class ProductService {
 
     public boolean deleteProduct(Integer id) {
         log.info("Deleting product[" + id + "]");
-        if(!productRepository.exists(id))
-            return false;
+        if(!productRepository.exists(id)){
+            return Boolean.FALSE;
+        }
         productRepository.delete(id);
-        return true;
+        return Boolean.TRUE;
     }
 
     public Product updateProduct(Product product) {
@@ -161,12 +162,12 @@ public class ProductService {
 
     public boolean isAnyProductContainingAtLeastOneKeyword(List<KeywordDTO> keywords){
         List<Keyword> keywordsList=orikaMapper.mapAsList(keywords,Keyword.class);
-        if(keywordsList.stream().filter(Objects::nonNull)
-                .flatMap(k -> productRepository.findProductsWithKeyword(k).stream()).filter(Objects::nonNull)
-                .distinct().collect(Collectors.toList()).isEmpty())
-            return true;
-        else
-            return false;
+        if(findAllProductsContainingAtLeastOneKeyword(keywordsList).isEmpty()) {
+            return Boolean.FALSE;
+        }
+        else{
+            return Boolean.TRUE;
+        }
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {

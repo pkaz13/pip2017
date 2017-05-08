@@ -64,7 +64,7 @@ public class KeywordController {
             return KEYWORDS_VIEW;
         }
 
-        if (keywordService.isAnyKeywordWithSpecificWord(keyword.getWord())) {
+        if (keywordService.isAnyKeywordWithWord(keyword.getWord())) {
             prepareModel(model, keyword);
             model.addAttribute("error", new ObjectError("keywordExists", "Słowo kluczowe już istnieje."));
 
@@ -80,7 +80,7 @@ public class KeywordController {
     public String deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
 
         KeywordDTO keywordToDelete = keywordService.findKeywordById(id);
-        if (productService.isAnyProductContainingAtLeastOneKeyword(Arrays.asList(keywordToDelete))) {
+        if (!productService.isAnyProductContainingAtLeastOneKeyword(Arrays.asList(keywordToDelete))) {
             keywordService.deleteKeyword(id);
             log.info("KeywordDTO[" + id + "] deleted !!!");
         } else {
