@@ -48,11 +48,8 @@ public class KeywordController {
     private MessageSource messageSource;
 
     @GetMapping("/admin/keywords")
-    public String showKeywords(Model model, @RequestParam(required = false) boolean success) {
+    public String showKeywords(Model model) {
         prepareModel(model, new Keyword());
-        if (success) {
-            model.addAttribute("info", "Słowo kluczowe zostało usunięte.");
-        }
         return KEYWORDS_VIEW;
     }
 
