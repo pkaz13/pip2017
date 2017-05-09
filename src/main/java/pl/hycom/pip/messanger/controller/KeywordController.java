@@ -85,11 +85,8 @@ public class KeywordController {
             keywordService.deleteKeyword(id);
             log.info("Keyword[" + id + "] deleted !!!");
         } else {
-            prepareModel(model, new Keyword());
-            ObjectError error = new ObjectError("keywordInUsage", "Słowo kluczowe jest przypisane do produktu.");
-            model.addAttribute("error", error);
+            success = false;
             log.info("cannot delete keyword = " + deletedKeyword);
-            return KEYWORDS_VIEW;
         }
 
         return "redirect:/admin/keywords?success=" + success;
