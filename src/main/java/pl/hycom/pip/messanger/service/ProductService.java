@@ -162,12 +162,7 @@ public class ProductService {
 
     public boolean isAnyProductContainingAtLeastOneKeyword(List<KeywordDTO> keywords){
         List<Keyword> keywordsList=orikaMapper.mapAsList(keywords,Keyword.class);
-        if(findAllProductsContainingAtLeastOneKeyword(keywordsList).isEmpty()) {
-            return Boolean.FALSE;
-        }
-        else{
-            return Boolean.TRUE;
-        }
+        return !findAllProductsContainingAtLeastOneKeyword(keywordsList).isEmpty();
     }
 
     public Product addKeywordsToProduct(Integer id, Keyword... keywords) {
