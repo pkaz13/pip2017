@@ -69,12 +69,10 @@ public class ProductController {
         return "redirect:/admin/products";
     }
 
-    @RequestMapping(method = {RequestMethod.DELETE, RequestMethod.GET}, value = "/admin/products/{productId}/delete")
-    public ModelAndView deleteProduct(@PathVariable("productId") final Integer id) {
+    @DeleteMapping("/admin/products/{productId}/delete")
+    public @ResponseBody void deleteProduct(@PathVariable("productId") final Integer id) {
         productService.deleteProduct(id);
         log.info("Product[" + id + "] deleted !!!");
-
-        return new ModelAndView("redirect:/admin/products");
     }
 
     @ResponseBody
