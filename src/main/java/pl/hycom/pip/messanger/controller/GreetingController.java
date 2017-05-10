@@ -48,7 +48,7 @@ import java.util.List;
 @Controller
 public class GreetingController {
 
-    private static final String VIEW_GREETINGS = "greetings";
+    protected static final String VIEW_GREETINGS = "greetings";
     private static final String ADMIN_GREETINGS = "/admin/greetings";
     private static final String REDIRECT_ADMIN_GREETINGS = "redirect:" + ADMIN_GREETINGS;
 
