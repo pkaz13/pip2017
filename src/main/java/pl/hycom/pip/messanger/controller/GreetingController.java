@@ -115,7 +115,7 @@ public class GreetingController {
     }
 
     // Jest get, bo nie wiedziałem jak odwołać sie do posta/deleta z linka z front-endu
-    @GetMapping("/admin/deleteGreeting/{locale}")
+    @PostMapping("/admin/deleteGreeting/{locale}")
     public String removeGreeting(@PathVariable String locale, Model model) {
         if (StringUtils.equals(locale, DEFAULT_LOCALE)) {
             prepareModel(model);
