@@ -13,17 +13,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DirectFieldBindingResult;
+import org.springframework.web.context.WebApplicationContext;
 import pl.hycom.pip.messanger.model.GreetingListWrapper;
 import pl.hycom.pip.messanger.service.GreetingService;
 
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-
 /**
  * @author Augustyn on 2017-05-09, HYCOM S.A.
  */
@@ -70,5 +74,51 @@ public class GreetingControllerTest {
         //locale list should be:
         final Map<String, String> availableLocale = (Map<String, String>) map.get("availableLocale");
         assertThat(availableLocale.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void addGreetingsTest() throws MessengerApiException, MessengerIOException {
+        List<Greeting> greetingsList = new ArrayList<>();
+        greetingsList.add(greeting);
+        Greeting[] greetingsArray = new Greeting[greetingsList.size()];
+        GreetingsProfileResponse resp = new GreetingsProfileResponse("result", greetingsList.toArray(greetingsArray));
+        when(profileClient.getWelcomeMessage()).thenReturn(resp);
+        final GreetingListWrapper wrapper = new GreetingListWrapper(greetingsList);
+        String viewResult = controller.addGreetings(wrapper, null,null);
+        assertThat(viewResult).isEqualTo("redirect:/admin/greetings");
+        assertThat(wrapper.getGreetings().size()).isEqualTo(1);
+        assertThat(wrapper.getGreetings().contains(new pl.hycom.pip.messanger.model.Greeting(greeting)));
+    }
+
+    @Test
+    public void addGreetingTestWithValidLocale() throws MessengerApiException, MessengerIOException {
+        GreetingsProfileResponse resp = new GreetingsProfileResponse("result", new Greeting[]{greeting});
+        when(profileClient.getWelcomeMessage()).thenReturn(resp);
+        when(greetingService.isValidLocale("pl_PL")).thenReturn(true);
+
+        Greeting testGreet = new Greeting("test", "pl_PL");
+        pl.hycom.pip.messanger.model.Greeting greet = new pl.hycom.pip.messanger.model.Greeting(testGreet);
+        BindingResult bindingResult = new DirectFieldBindingResult(greet, "adddedGreeting");
+
+        String ViewResult = controller.addGreeting(greet, bindingResult, model);
+        assertThat(ViewResult).isEqualTo("redirect:/admin/greetings");
+    }
+
+    @Test
+    public void addGreetingTestWithInValidLocale() throws MessengerApiException, MessengerIOException {
+        GreetingsProfileResponse resp = new GreetingsProfileResponse("result", new Greeting[]{greeting});
+        when(profileClient.getWelcomeMessage()).thenReturn(resp);
+        when(greetingService.isValidLocale("pl_PL")).thenReturn(false);
+
+        Greeting testGreet = new Greeting("test", "pl_PL");
+        pl.hycom.pip.messanger.model.Greeting greet = new pl.hycom.pip.messanger.model.Greeting(testGreet);
+        BindingResult bindingResult = new DirectFieldBindingResult(greet, "adddedGreeting");
+
+        String ViewResult = controller.addGreeting(greet, bindingResult, model);
+        final Map<String, Object> map = model.asMap();
+        assertThat(ViewResult).isEqualTo("greetings");
+        final pl.hycom.pip.messanger.model.Greeting resultGreet = (pl.hycom.pip.messanger.model.Greeting) map.get("greeting");
+        assertThat(resultGreet.getText()).isEqualTo("test");
+        assertThat(resultGreet.getLocale()).isEqualTo("pl_PL");
     }
 }
