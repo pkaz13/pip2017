@@ -16,6 +16,7 @@
 
 package pl.hycom.pip.messanger;
 
+import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -25,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Greeting;
 import pl.hycom.pip.messanger.service.GreetingService;
 
@@ -35,7 +34,7 @@ import pl.hycom.pip.messanger.service.GreetingService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest()
-@ActiveProfiles({ "dev", "testdb" })
+@ActiveProfiles({"dev", "testdb"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class GreetingServiceTest {

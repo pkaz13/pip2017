@@ -42,17 +42,17 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@ActiveProfiles({ "dev", "testdb" })
+@ActiveProfiles({"dev", "testdb"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class ProductServiceTest {
 
+    @Value("${messenger.recommendation.products-amount}")
+    Integer expectedNumberOfProducts;
     @Autowired
     private ProductService productService;
-
     @Autowired
     private KeywordService keywordService;
-
     private Product product1;
     private Product product2;
     private Product product3;
@@ -64,9 +64,6 @@ public class ProductServiceTest {
     private Keyword keyword2;
     private Keyword keyword3;
     private Keyword keyword4;
-
-    @Value("${messenger.recommendation.products-amount}")
-    Integer expectedNumberOfProducts;
 
     @Before
     public void setUp() {

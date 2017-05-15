@@ -16,13 +16,13 @@
 
 package pl.hycom.pip.messanger.handler.processor;
 
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Set;
 
 /**
  * Created by szale_000 on 2017-04-06.

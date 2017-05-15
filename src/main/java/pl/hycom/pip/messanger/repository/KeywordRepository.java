@@ -16,11 +16,10 @@
 
 package pl.hycom.pip.messanger.repository;
 
-import java.util.List;
-
 import org.springframework.data.repository.CrudRepository;
-
 import pl.hycom.pip.messanger.model.Keyword;
+
+import java.util.List;
 
 /**
  * Created by patry on 18/03/2017.
