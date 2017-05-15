@@ -19,14 +19,13 @@ package pl.hycom.pip.messanger.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
@@ -76,20 +75,19 @@ public class KeywordController {
         return "redirect:/admin/keywords";
     }
 
-    @GetMapping("/admin/keywords/{keywordId}/delete")
-    public String deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
+    @DeleteMapping("/admin/keywords/{keywordId}/delete")
+    public ResponseEntity<Void> deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
 
-        boolean success = true;
         Keyword deletedKeyword = keywordService.findKeywordById(id);
         if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(deletedKeyword)).isEmpty()) {
             keywordService.deleteKeyword(id);
             log.info("Keyword[" + id + "] deleted !!!");
         } else {
-            success = false;
             log.info("cannot delete keyword = " + deletedKeyword);
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }
 
-        return "redirect:/admin/keywords?success=" + success;
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private void prepareModel(Model model, Keyword keyword) {
