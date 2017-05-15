@@ -35,7 +35,7 @@
 	        <div th:each="greeting, stat: *{greetings}" class="form-group">
                 <input type="hidden" th:field="*{greetings[__${stat.index}__].locale}"/>
                 <label th:text="'Wiadomość dla: ' + *{greetings[__${stat.index}__].locale}"></label>
-                <a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}" class="btn btn-danger btn-xs button-delete pull-right" data-toggle="tooltip" data-placement="top" title="Usuń">
+                <a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}" class="btn btn-danger btn-xs button-delete pull-right" data-toggle="tooltip" data-placement="top" title="Usuń"   methods="POST">
                 	<span class="glyphicon glyphicon-trash"></span>
                 </a>
                 <textarea class="form-control message-item" name="message" th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
