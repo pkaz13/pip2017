@@ -35,18 +35,19 @@
 	        <div th:each="greeting, stat: *{greetings}" class="form-group">
                 <input type="hidden" th:field="*{greetings[__${stat.index}__].locale}"/>
                 <label th:text="'Wiadomość dla: ' + *{greetings[__${stat.index}__].locale}"></label>
-                <!--<a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}" class="btn btn-danger btn-xs button-delete pull-right" data-toggle="tooltip" data-placement="top" title="Usuń"   methods="POST">-->
-                	<!--<span class="glyphicon glyphicon-trash"></span>-->
-                <!--</a>-->
-                <button class="btn btn-danger btn-xs button-delete center-block"  data-toggle="modal" data-target="#confirm-delete-modal">
+
+
+                <textarea class="form-control message-item" name="message" th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
+                <button class="btn btn-danger btn-xs  "  data-toggle="modal" data-target="#confirm-delete-modal" >
                     <span class="glyphicon glyphicon-trash"></span>
                 </button>
-                <textarea class="form-control message-item" name="message" th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
 	        </div>
 	        <div class="pull-right">
 	            <a th:href="@{/admin/greeting}" class="btn btn-default">Przeładuj</a>
 	            <button type="reset" class="btn btn-default">Resetuj</button>
 	            <button type="submit" class="btn btn-primary">Zapisz</button>
+
+
 	        </div>
 	    </form>
 	</div>

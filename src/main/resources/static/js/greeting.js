@@ -30,8 +30,22 @@ function addText(el, text) {
     return false;
 }
 
+function removeGreeting() {
 
-$("#confirm-delete-modal").on('show.bs.modal', function(event){
+}
+    
+}
 
-    $(this).find('.button-delete').attr('onclick', 'location.href="./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})"');
-});
+$("#confirm-delete-modal").on('shown.bs.modal', function(event){
+
+
+    $("#confirm-delete-modal").find('.button-delete').on("click", 'location.href="./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})"')
+
+    } )
+
+
+
+
+
+
+);
