@@ -31,3 +31,7 @@ function addText(el, text) {
 }
 
 
+$("#confirm-delete-modal").on('show.bs.modal', function(event){
+
+    $(this).find('.button-delete').attr('onclick', 'location.href="./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})"');
+});

@@ -35,9 +35,12 @@
 	        <div th:each="greeting, stat: *{greetings}" class="form-group">
                 <input type="hidden" th:field="*{greetings[__${stat.index}__].locale}"/>
                 <label th:text="'Wiadomość dla: ' + *{greetings[__${stat.index}__].locale}"></label>
-                <a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}" class="btn btn-danger btn-xs button-delete pull-right" data-toggle="tooltip" data-placement="top" title="Usuń"   methods="POST">
-                	<span class="glyphicon glyphicon-trash"></span>
-                </a>
+                <!--<a th:href="@{./deleteGreeting/{locale}(locale=*{greetings[__${stat.index}__].locale})}" class="btn btn-danger btn-xs button-delete pull-right" data-toggle="tooltip" data-placement="top" title="Usuń"   methods="POST">-->
+                	<!--<span class="glyphicon glyphicon-trash"></span>-->
+                <!--</a>-->
+                <button class="btn btn-danger btn-xs button-delete center-block"  data-toggle="modal" data-target="#confirm-delete-modal">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
                 <textarea class="form-control message-item" name="message" th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
 	        </div>
 	        <div class="pull-right">
@@ -100,6 +103,34 @@
             </ul>
         </div>
     </div>
+
+    <div class="modal fade" id="confirm-delete-modal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    <h4 class="modal-title custom_align" id="Heading">Potwierdź usunięcie produktu</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <span class="glyphicon glyphicon-warning-sign"></span> Czy na pewno chcesz usunąć produkt &quot;<span class="name-placeholder"></span>&quot;?
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-success button-delete">
+                        <span class="glyphicon glyphicon-ok-sign"></span> Tak
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Nie
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     
 </div>
 </body>
