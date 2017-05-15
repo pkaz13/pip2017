@@ -80,8 +80,10 @@ $(document).ready(function() {
 
         var columns = $("#product-"+productId).find('td');
         $(this).find('.name-placeholder').text(columns.eq(1).text());
-        $(this).find('.button-delete').on("click", deleteProduct(productId));
+        $(this).find('.button-delete').data("product-id",productId);
     });
+
+    $("#confirm-delete-modal").find('.button-delete').on("click", function(e){deleteProduct($(e.currentTarget).data("product-id"))});
 
     var keywords = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.whitespace,
