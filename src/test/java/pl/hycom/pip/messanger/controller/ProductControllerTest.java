@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -120,10 +121,8 @@ public class ProductControllerTest {
     public void deleteById() throws Exception {
 
         int id = list.get(0);
-        mockMvc.perform(get("/admin/products/" + id + "/delete"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/admin/products"));
-                //.andExpect(model().attribute("products", hasSize(1)));
+        mockMvc.perform(delete("/admin/products/" + id + "/delete"))
+                .andExpect(status().isOk());
     }
 
     @Test

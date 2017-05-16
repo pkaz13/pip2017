@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -109,10 +110,8 @@ public class KeywordControllerTest {
     public void deleteById() throws Exception {
 
         int id = list.get(2);
-        mockMvc.perform(get("/admin/keywords/" + id + "/delete"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/admin/keywords"));
-        //.andExpect(model().attribute("products", hasSize(1)));
+        mockMvc.perform(delete("/admin/keywords/" + id + "/delete"))
+                .andExpect(status().isOk());
     }
 
     @Test
