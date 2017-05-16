@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -117,12 +119,12 @@ public class GreetingController {
 
     // Jest get, bo nie wiedziałem jak odwołać sie do posta/deleta z linka z front-endu
     @DeleteMapping("/admin/deleteGreeting/{locale}")
-    public String removeGreeting(@PathVariable String locale, Model model) {
+    public ResponseEntity<Void> removeGreeting(@PathVariable String locale, Model model) {
         if (StringUtils.equals(locale, DEFAULT_LOCALE)) {
             prepareModel(model);
             String message = getMessage("greetings.invalidOperation");
             model.addAttribute("errors", Collections.singletonList(message));
-            return VIEW_GREETINGS;
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }
         try {
             List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale();
@@ -133,7 +135,7 @@ public class GreetingController {
         } catch (MessengerApiException | MessengerIOException e) {
             log.info("Deleting greeting failed", e);
         }
-        return REDIRECT_ADMIN_GREETINGS;
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     private void prepareModel(Model model, Greeting greeting, GreetingListWrapper greetingListWrapper, List<com.github.messenger4j.profile.Greeting> greetings) {
