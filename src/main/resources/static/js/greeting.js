@@ -23,6 +23,16 @@ jQuery(function ($) {
     $(".message-item").on('blur', function () {
         lastSelected = $(this);
     })
+
+    $("#confirm-delete-modal").on('shown.bs.modal', function(event){
+
+        var greetingLocale = $(event.relatedTarget).data('greeting-locale');
+        $(this).find('.button-delete').data("greeting-locale" ,greetingLocale)
+    });
+
+    $("#confirm-delete-modal").find('.button-delete').on("click", function (e) {removeGreeting($(e.currentTarget).data("greeting-locale"))
+
+    })
 });
 
 function addText(el, text) {
@@ -38,7 +48,7 @@ function removeGreeting(locale) {
         xhr.setRequestHeader(header, token);
     });
     $.ajax({
-        url: '/admin/greetings/deleteGreeting/'+locale,
+        url: '/admin/deleteGreeting/' + locale,
         type: 'DELETE',
         data: {CSRFToken: token, CSRF: header},
         success: function (xhr, status, error) {
@@ -51,16 +61,8 @@ function removeGreeting(locale) {
 }
 
 
-$("#confirm-delete-modal").on('shown.bs.modal', function(event){
 
-    var greetingLocale = $(event.relatedTarget).data('greeting-locale');
-    $(this).find('.button-delete').data("greeting-locale" ,greetingLocale)
 
-    } );
-
-$("#confirm-delete-modal").find('.button-delete').on("click", function (e) {removeGreeting($(e.currentTarget).data("greeting-locale"))
-
-});
 
 
 
