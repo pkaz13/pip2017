@@ -19,6 +19,7 @@ package pl.hycom.pip.messanger.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,7 +57,6 @@ public class ProductController {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, product);
-            model.addAttribute("errors", bindingResult.getFieldErrors());
             log.info("Validation product error !!!");
 
             return PRODUCTS_VIEW;
@@ -67,12 +67,10 @@ public class ProductController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/admin/products/{productId}/delete")
-    public ModelAndView deleteProduct(@PathVariable("productId") final Integer id) {
+    @DeleteMapping("/admin/products/{productId}/delete")
+    public @ResponseBody void deleteProduct(@PathVariable("productId") final Integer id) {
         productService.deleteProduct(id);
         log.info("Product[" + id + "] deleted !!!");
-
-        return new ModelAndView("redirect:/admin/products");
     }
 
     @ResponseBody
@@ -94,5 +92,4 @@ public class ProductController {
         model.addAttribute("products", allProducts);
         model.addAttribute("productForm", product);
     }
-
 }

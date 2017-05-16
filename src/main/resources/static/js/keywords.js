@@ -20,6 +20,25 @@
 
 $(document).ready(function () {
 
+    function deleteKeyword(id) {
+        var token = $("input[name='_csrf']").val();
+        var header = "X-CSRF-TOKEN";
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+        $.ajax({
+            url: '/admin/keywords/' + id + '/delete',
+            type: 'DELETE',
+            data: {CSRFToken: token, CSRF: header},
+            success: function(xhr, status, error) {
+                window.location = "/admin/keywords?success=true"
+            },
+            error: function(xhr, status, error) {
+                window.location = "/admin/keywords?success=false"
+            }
+        });
+    }
+
     $('#keyword-form-modal').on('show.bs.modal', function (event) {
         var keywordId = $(event.relatedTarget).data('keyword-id');
 
@@ -44,12 +63,16 @@ $(document).ready(function () {
         }
     });
 
-    $("#confirm-delete-modal").on('show.bs.modal', function (event) {
+    $("#confirm-delete-modal").on('shown.bs.modal', function (event) {
         var keywordId = $(event.relatedTarget).data('keyword-id');
 
         var columns = $("#keyword-" + keywordId).find('td');
-        $(this).find('.word-placeholder').text(columns.eq(1).text());
-        $(this).find('.button-delete').attr('onclick', 'location.href="/admin/keywords/' + keywordId + '/delete"');
+        $(this).find('.name-placeholder').text(columns.eq(1).text());
+        $(this).find('.button-delete').data("keyword-id", keywordId);
+    });
+
+    $("#confirm-delete-modal").find('.button-delete').on("click", function (e) {
+        deleteKeyword($(e.currentTarget).data("keyword-id"))
     });
 
 

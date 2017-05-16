@@ -15,10 +15,27 @@
  */
 
 /**
-    * Created by Rafal Lebioda on 26.03.2017.
-    */
+ * Created by Rafal Lebioda on 26.03.2017.
+ */
 
-$(document).ready(function () {
+$(document).ready(function() {
+
+    function deleteProduct(id) {
+        var token = $("input[name='_csrf']").val();
+        var header = "X-CSRF-TOKEN";
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+        $.ajax({
+            url: '/admin/products/' + id + '/delete',
+            type: 'DELETE',
+            success: function(result) {
+                window.location = "/admin/products"
+            },
+            error: function (result) {
+            }
+        });
+    }
 
     $('#product-form-modal').on('show.bs.modal', function (event) {
         var productId = $(event.relatedTarget).data('product-id');
@@ -30,15 +47,15 @@ $(document).ready(function () {
             $("#id_form_div").show();
 
             $.ajax({
-                url: "/admin/products/" + productId + "/keywords",
-                success: function (data) {
-                    $.each(data, function (index, item) {
+                url: "/admin/products/"+productId+"/keywords",
+                success: function(data) {
+                    $.each(data, function(index, item) {
                         $("#keywords_form").tagsinput('add', item);
                     })
                 }
             });
 
-            var columns = $("#product-" + productId).find('td');
+            var columns = $("#product-"+productId).find('td');
             $("#id_form").val(columns.eq(0).text());
             $("#id_form_static").text(columns.eq(0).text());
             $("#name_form").val(columns.eq(1).text());
@@ -58,13 +75,15 @@ $(document).ready(function () {
         }
     });
 
-    $("#confirm-delete-modal").on('show.bs.modal', function (event) {
+    $("#confirm-delete-modal").on('shown.bs.modal', function(event){
         var productId = $(event.relatedTarget).data('product-id');
 
-        var columns = $("#product-" + productId).find('td');
+        var columns = $("#product-"+productId).find('td');
         $(this).find('.name-placeholder').text(columns.eq(1).text());
-        $(this).find('.button-delete').attr('onclick', 'location.href="/admin/products/' + productId + '/delete"');
+        $(this).find('.button-delete').data("product-id",productId);
     });
+
+    $("#confirm-delete-modal").find('.button-delete').on("click", function(e){deleteProduct($(e.currentTarget).data("product-id"))});
 
     var keywords = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.whitespace,
