@@ -51,15 +51,6 @@ function removeGreeting(locale) {
 }
 
 
-
-
-
-
-
-
-
-
-
 $("#confirm-delete-modal").on('shown.bs.modal', function(event){
 
     var greetingLocale = $(event.relatedTarget).data('greeting-locale');
