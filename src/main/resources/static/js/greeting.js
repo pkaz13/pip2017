@@ -38,7 +38,7 @@ function removeGreeting(locale) {
         xhr.setRequestHeader(header, token);
     });
     $.ajax({
-        url: '/admin/greetings/delete{locale}',
+        url: '/admin/greetings/deleteGreeting/{locale}',
         type: 'DELETE',
         data: {CSRFToken: token, CSRF: header},
         success: function (xhr, status, error) {
