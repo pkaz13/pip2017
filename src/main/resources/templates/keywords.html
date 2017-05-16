@@ -1,4 +1,20 @@
 <!DOCTYPE html>
+<!--
+  ~   Copyright 2012-2014 the original author or authors.
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout">
@@ -16,16 +32,19 @@
             </h1>
         </div>
 
-        <div th:if="${errors != null}" class="row">
-            <div class="alert alert-danger fade in" th:each="error : ${errors}">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <!--<strong th:text="${error.field}"></strong> --> <span th:text="${error.defaultMessage}"></span>
-            </div>
-        </div>
-
         <div class="alert alert-danger fade in" th:if="${error != null}">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <span th:text="${error.defaultMessage}"></span>
+        </div>
+
+        <div class="alert alert-success fade in" th:if="${(param.success != null) and (param.success[0] == 'true') }">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span>Udało się usunąć słowo kluczowe</span>
+        </div>
+
+        <div class="alert alert-danger fade in" th:if="${(param.success != null) and (param.success[0] == 'false') }">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <span>Nie udało się usunąć słowa kluczowego</span>
         </div>
 
         <div class="row">
@@ -50,7 +69,7 @@
                         </td>
                         <td class="align-middle">
                             <div data-placement="top" data-toggle="tooltip" title="Usuń">
-                                <button class="btn btn-danger btn-xs button-delete center-block" th:attr="data-keyword-id=${keyword.id}" data-toggle="modal" data-target="#confirm-delete-modal">
+                                <button class="btn btn-danger btn-xs center-block" th:attr="data-keyword-id=${keyword.id}" data-toggle="modal" data-target="#confirm-delete-modal">
                                     <span class="glyphicon glyphicon-trash" />
                                 </button>
                             </div>
