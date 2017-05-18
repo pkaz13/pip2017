@@ -85,7 +85,7 @@ public class GreetingControllerTest {
         String viewResult = controller.addGreetings(wrapper, null,null);
         assertThat(viewResult).isEqualTo(GreetingController.REDIRECT_ADMIN_GREETINGS);
         assertThat(wrapper.getGreetings().size()).isEqualTo(1);
-        assertThat(wrapper.getGreetings().contains(new pl.hycom.pip.messanger.model.Greeting(greeting)));
+        assertThat(wrapper.getGreetings()).contains(new pl.hycom.pip.messanger.model.Greeting(greeting));
     }
 
     @Test
