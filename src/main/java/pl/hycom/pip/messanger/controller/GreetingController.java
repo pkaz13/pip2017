@@ -50,7 +50,7 @@ public class GreetingController {
 
     protected static final String VIEW_GREETINGS = "greetings";
     private static final String ADMIN_GREETINGS = "/admin/greetings";
-    private static final String REDIRECT_ADMIN_GREETINGS = "redirect:" + ADMIN_GREETINGS;
+    protected static final String REDIRECT_ADMIN_GREETINGS = "redirect:" + ADMIN_GREETINGS;
 
     private static final String DEFAULT_LOCALE = "default";
 
