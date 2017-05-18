@@ -16,29 +16,23 @@
 
 package pl.hycom.pip.messanger.pipeline;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stream.StreamSource;
-
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+import pl.hycom.pip.messanger.pipeline.model.*;
 
-import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.pipeline.model.Pipeline;
-import pl.hycom.pip.messanger.pipeline.model.PipelineChain;
-import pl.hycom.pip.messanger.pipeline.model.PipelineLink;
-import pl.hycom.pip.messanger.pipeline.model.Processor;
-import pl.hycom.pip.messanger.pipeline.model.Transition;
+import javax.xml.bind.JAXBContext;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service

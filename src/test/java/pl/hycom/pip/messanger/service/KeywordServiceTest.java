@@ -14,16 +14,9 @@
  *   limitations under the License.
  */
 
-package pl.hycom.pip.messanger;
+package pl.hycom.pip.messanger.service;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import lombok.extern.log4j.Log4j2;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -32,14 +25,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
 import pl.hycom.pip.messanger.service.KeywordService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
 
 /**
  * Created by Piotr on 20.03.2017.
@@ -47,7 +43,7 @@ import pl.hycom.pip.messanger.service.KeywordService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest()
-@ActiveProfiles({ "dev", "testdb" })
+@ActiveProfiles({"dev", "testdb"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class KeywordServiceTest {
@@ -101,7 +97,7 @@ public class KeywordServiceTest {
 
     /**
      * Adds non-unique keyword to repository
-     * 
+     *
      * @result Keyword that has given word
      */
     @Test
