@@ -218,6 +218,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @Transactional
     public void addKeywordToProductTest() {
         // preparation
         addKeywordsToProduct1();
