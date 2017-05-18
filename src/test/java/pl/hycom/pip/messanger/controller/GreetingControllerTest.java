@@ -78,14 +78,12 @@ public class GreetingControllerTest {
 
     @Test
     public void addGreetingsTest() throws MessengerApiException, MessengerIOException {
-        List<Greeting> greetingsList = new ArrayList<>();
-        greetingsList.add(greeting);
-        Greeting[] greetingsArray = new Greeting[greetingsList.size()];
-        GreetingsProfileResponse resp = new GreetingsProfileResponse("result", greetingsList.toArray(greetingsArray));
+        GreetingsProfileResponse resp = new GreetingsProfileResponse("result",new Greeting[] {greeting});
         when(profileClient.getWelcomeMessage()).thenReturn(resp);
-        final GreetingListWrapper wrapper = new GreetingListWrapper(greetingsList);
+
+        final GreetingListWrapper wrapper = new GreetingListWrapper(Collections.singletonList(greeting));
         String viewResult = controller.addGreetings(wrapper, null,null);
-        assertThat(viewResult).isEqualTo("redirect:/admin/greetings");
+        assertThat(viewResult).isEqualTo(GreetingController.REDIRECT_ADMIN_GREETINGS);
         assertThat(wrapper.getGreetings().size()).isEqualTo(1);
         assertThat(wrapper.getGreetings().contains(new pl.hycom.pip.messanger.model.Greeting(greeting)));
     }
