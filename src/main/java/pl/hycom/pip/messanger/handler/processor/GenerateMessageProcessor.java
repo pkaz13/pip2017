@@ -46,7 +46,7 @@ public class GenerateMessageProcessor implements PipelineProcessor {
         log.info("Started process of GenerateMessageProcessor");
 
         @SuppressWarnings("unchecked")
-        List<Product> products = ctx.get(LoadBestMatchingProductsProcessor.PRODUCTS, List.class);
+        List<Product> products = ctx.get(PipelineMessageHandler.PRODUCTS, List.class);
         String senderId = ctx.get(PipelineMessageHandler.SENDER_ID, String.class);
 
         if (CollectionUtils.isEmpty(products)) {

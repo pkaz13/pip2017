@@ -33,6 +33,10 @@ public class PipelineMessageHandler implements TextMessageEventHandler {
 
     public static final String SENDER_ID = "senderId";
     public static final String MESSAGE = "message";
+    public static final String PRODUCTS = "products";
+    public static final String KEYWORDS = "keywords";
+    public static final String KEYWORDS_FOUND = "keywordsFound";
+    public static final String KEYWORD_TO_BE_ASKED = "keywordToBeAsked";
     private static final String PIPELINECHAIN_NAME = "processMessage";
     private final PipelineManager pipelineManager;
 

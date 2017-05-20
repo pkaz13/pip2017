@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 @Log4j2
 public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
 
-    public static final String KEYWORDS = "keywords";
     private static final String CHARS_TO_REMOVE_REGEX = "[{}\\[\\]()!@#$%^&*~'?\".,/+]";
 
     @Override
@@ -47,7 +46,7 @@ public class ExtractKeywordsFromMessageProcessor implements PipelineProcessor {
         Set<String> keywords = extractKeywords(message);
         log.info("Keywords extracted from message [{}]: {}", message, keywords);
 
-        ctx.put(KEYWORDS, keywords);
+        ctx.put(PipelineMessageHandler.KEYWORDS, keywords);
         return 1;
     }
 

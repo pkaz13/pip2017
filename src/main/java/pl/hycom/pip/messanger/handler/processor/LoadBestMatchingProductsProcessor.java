@@ -20,6 +20,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
@@ -36,9 +37,6 @@ import java.util.stream.IntStream;
 @Log4j2
 public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
 
-    public static final String PRODUCTS = "products";
-    public static final String KEYWORDS_FOUND = "keywordsFound";
-
     @Autowired
     private ProductService productService;
 
@@ -53,15 +51,15 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
         log.info("Started process of LoadBestMatchingProductsProcessor");
 
         @SuppressWarnings("unchecked")
-        Set<String> keywordsStr = ctx.get(ExtractKeywordsFromMessageProcessor.KEYWORDS, Set.class);
+        Set<String> keywordsStr = ctx.get(PipelineMessageHandler.KEYWORDS, Set.class);
 
         List<Keyword> keywords = convertStringsToKeywords(keywordsStr);
 
         List<Product> products = findBestMatchingProducts(numberOfProducts, keywords);
-        ctx.put(PRODUCTS, products);
+        ctx.put(PipelineMessageHandler.PRODUCTS, products);
 
         List<Keyword> keywordsToBeSaved = getKeywordsThatWereInAnyProduct(products, keywords);
-        ctx.put(KEYWORDS_FOUND, keywordsToBeSaved);
+        ctx.put(PipelineMessageHandler.KEYWORDS_FOUND, keywordsToBeSaved);
 
         return 1;
     }
