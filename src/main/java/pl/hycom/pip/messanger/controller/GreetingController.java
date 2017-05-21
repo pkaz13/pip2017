@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.hycom.pip.messanger.model.Greeting;
 import pl.hycom.pip.messanger.model.GreetingListWrapper;
 import pl.hycom.pip.messanger.service.GreetingService;
@@ -65,11 +66,13 @@ public class GreetingController {
 
 
     @PostMapping("/admin/greeting")
-    public String addGreeting(@Valid Greeting greeting, BindingResult bindingResult, Model model) {
+    public String addGreeting(@Valid Greeting greeting, BindingResult bindingResult, Model model, RedirectAttributes rd) {
+        boolean flag = true;
 
         if (!greetingService.isValidLocale(greeting.getLocale())) {
             log.error("Not supported locale[" + greeting.getLocale() + "]");
             addError(bindingResult, "greeting.locale.empty");
+
         }
 
         if (bindingResult.hasErrors()) {
@@ -81,6 +84,7 @@ public class GreetingController {
         try {
             greetingService.addGreeting(greeting);
         } catch (MessengerApiException | MessengerIOException e) {
+            flag = false;
             e.printStackTrace();
             log.error("Error during changing greeting message", e);
             addError(bindingResult, "unexpectedError");
@@ -89,8 +93,13 @@ public class GreetingController {
             return VIEW_GREETINGS;
 
         }
+        if (flag == false) {
+            rd.addAttribute("success", "unsucessfull");
+            return "redirect:" + ADMIN_GREETINGS;
+        }
 
-        return REDIRECT_ADMIN_GREETINGS;
+        rd.addAttribute("success", "succesfull");
+        return  "redirect:" + ADMIN_GREETINGS;
     }
 
 
