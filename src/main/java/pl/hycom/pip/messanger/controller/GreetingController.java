@@ -72,7 +72,6 @@ public class GreetingController {
         if (!greetingService.isValidLocale(greeting.getLocale())) {
             log.error("Not supported locale[" + greeting.getLocale() + "]");
             addError(bindingResult, "greeting.locale.empty");
-
         }
 
         if (bindingResult.hasErrors()) {
@@ -83,24 +82,17 @@ public class GreetingController {
         }
         try {
             greetingService.addGreeting(greeting);
+            return "redirect:" + ADMIN_GREETINGS + "?success=" + flag;
         } catch (MessengerApiException | MessengerIOException e) {
-            flag = false;
-            e.printStackTrace();
             log.error("Error during changing greeting message", e);
             addError(bindingResult, "unexpectedError");
             prepareModel(model, greeting);
             model.addAttribute("errors", bindingResult.getFieldErrors());
-            return VIEW_GREETINGS;
+            return "redirect:" + ADMIN_GREETINGS + "?success=" + flag;
 
         }
-        if (flag == false) {
-            rd.addAttribute("success", "unsucessfull");
-            return "redirect:" + ADMIN_GREETINGS;
-        }
-
-        rd.addAttribute("success", "succesfull");
-        return  "redirect:" + ADMIN_GREETINGS;
     }
+
 
 
     @DeleteMapping("/admin/deleteGreeting/{locale}")
