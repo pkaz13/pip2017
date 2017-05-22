@@ -26,7 +26,7 @@ spring:
       port: 587
       username: messenger.recommendations2017@gmail.com
       password: Admin_2017
-      properties:
-        smtp.auth: true
-        smtp.starttls.enable: true
-        smtp.starttls.required: true
+      properties.mail.smtp:
+            auth: true
+            starttls.enable: true
+            starttls.required: true

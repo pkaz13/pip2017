@@ -34,6 +34,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/db-admin/console/**").permitAll()
                 .antMatchers("/admin/**").hasRole(ROLE_ADMIN)
+                .antMatchers("/reset/forgetPassword").permitAll()
+                .antMatchers("/send").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
@@ -57,6 +59,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) {
-        webSecurity.ignoring().antMatchers("/css/**", "/js/**", "/webhook", "/reset/forgetPassword");
+        webSecurity.ignoring().antMatchers("/css/**", "/js/**", "/webhook");
     }
 }
