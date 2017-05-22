@@ -18,11 +18,10 @@ package pl.hycom.pip.messanger.handler.processor;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -31,7 +30,6 @@ import java.util.List;
 /**
  * Created by szale_000 on 2017-04-06.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 public class ExtraKeywordProcessorTest {
 
     ExtraKeywordProcessor sut = new ExtraKeywordProcessor();
@@ -85,6 +83,26 @@ public class ExtraKeywordProcessorTest {
         Keyword foundKeyword = sut.findKeyKeyword(products);
         // then
         Assertions.assertThat(foundKeyword).isEqualTo(keywords.get(3));
+    }
+
+    @Test
+    public void throwsExceptionWhenEmptyList() throws Exception {
+        //given
+        List<Product> products = new ArrayList<>();
+        //when
+        Throwable thrown = Assertions.catchThrowable(() -> sut.findKeyKeyword(products));
+        //then
+        Assertions.assertThat(thrown).isInstanceOf(InvalidParameterException.class);
+    }
+
+    @Test
+    public void throwsExceptionWhenNullList() throws Exception {
+        //given
+        List<Product> products = null;
+        //when
+        Throwable thrown = Assertions.catchThrowable(() -> sut.findKeyKeyword(products));
+        //then
+        Assertions.assertThat(thrown).isInstanceOf(InvalidParameterException.class);
     }
 
 }

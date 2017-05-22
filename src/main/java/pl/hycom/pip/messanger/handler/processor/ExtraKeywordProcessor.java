@@ -25,10 +25,11 @@ import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 
+import java.security.InvalidParameterException;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,14 +54,22 @@ public class ExtraKeywordProcessor implements PipelineProcessor {
     }
 
     Keyword findKeyKeyword(List<Product> products) {
+        if (products == null || products.isEmpty()) {
+            throw new InvalidParameterException("Prodcuts cannot be null or empty");
+        }
         int desiredCount = products.size() / 2;
-        Map<Keyword, Long> keywordsMap = products.parallelStream().flatMap(product -> product.getKeywords().stream())
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        List<Map.Entry<Keyword, Long>> keywordsList = new LinkedList<>(keywordsMap.entrySet());
-        keywordsList.forEach(keywordLongEntry -> keywordLongEntry.setValue(Math.abs(keywordLongEntry.getValue() - desiredCount)));
-        keywordsList.sort(Comparator.comparingLong(Map.Entry::getValue));
-        return keywordsList.get(0).getKey();
-    }
+        Optional<Map.Entry<Keyword, Long>> keywordCountEntry = products.parallelStream()
+                .flatMap(product -> product.getKeywords().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .map(keywordLongEntry -> {
+                    keywordLongEntry.setValue(Math.abs(keywordLongEntry.getValue() - desiredCount));
+                    return keywordLongEntry;
+                })
+                .sorted(Comparator.comparingLong(Map.Entry::getValue))
+                .findFirst();
 
+        return keywordCountEntry.get().getKey();
+    }
 
 }
