@@ -25,8 +25,6 @@ import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 import pl.hycom.pip.messanger.service.ProductService;
 
-import static pl.hycom.pip.messanger.handler.PipelineMessageHandler.PRODUCTS;
-
 @Component
 @Log4j2
 public class LoadRandomProductsProcessor implements PipelineProcessor {

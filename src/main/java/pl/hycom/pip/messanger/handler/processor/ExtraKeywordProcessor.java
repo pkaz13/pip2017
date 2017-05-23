@@ -18,7 +18,6 @@ package pl.hycom.pip.messanger.handler.processor;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
@@ -26,10 +25,7 @@ import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 
 import java.security.InvalidParameterException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,20 +41,17 @@ public class ExtraKeywordProcessor implements PipelineProcessor {
         log.info("Started finding keyword used in half of Products");
 
         @SuppressWarnings("unchecked")
-        List<Product> products = ctx.get(PipelineMessageHandler.PRODUCTS, List.class);
+        List<Product> products = ctx.get(PRODUCTS, List.class);
 
         Keyword keywordToBeAsked = findKeyKeyword(products);
-        ctx.put(PipelineMessageHandler.KEYWORD_TO_BE_ASKED, keywordToBeAsked);
+        ctx.put(KEYWORD_TO_BE_ASKED, keywordToBeAsked);
         log.info("Added keywordToBeAsked: " + keywordToBeAsked.getWord());
         return 1;
     }
 
     Keyword findKeyKeyword(List<Product> products) {
-        if (products == null || products.isEmpty()) {
-            throw new InvalidParameterException("Prodcuts cannot be null or empty");
-        }
-        int desiredCount = products.size() / 2;
-        Optional<Map.Entry<Keyword, Long>> keywordCountEntry = products.parallelStream()
+        int desiredCount = products == null ? 0 : products.size() / 2;
+        Map.Entry<Keyword, Long> keywordCountEntry = Optional.ofNullable(products).orElse(Collections.emptyList()).parallelStream()
                 .flatMap(product -> product.getKeywords().stream())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet().stream()
@@ -67,9 +60,9 @@ public class ExtraKeywordProcessor implements PipelineProcessor {
                     return keywordLongEntry;
                 })
                 .sorted(Comparator.comparingLong(Map.Entry::getValue))
-                .findFirst();
+                .findFirst().orElseThrow(() -> new InvalidParameterException("Prodcuts cannot be null or empty"));
 
-        return keywordCountEntry.get().getKey();
+        return keywordCountEntry.getKey();
     }
 
 }
