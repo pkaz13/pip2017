@@ -17,6 +17,7 @@
 package pl.hycom.pip.messanger.handler.processor;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
@@ -32,14 +33,17 @@ import java.util.List;
  */
 public class ExtraKeywordProcessorTest {
 
-    ExtraKeywordProcessor sut = new ExtraKeywordProcessor();
+    private ExtraKeywordProcessor sut = new ExtraKeywordProcessor();
 
-    private List<Keyword> initKeywords() {
-        return Arrays.asList(new Keyword("K1"), new Keyword("K2"), new Keyword("K3"), new Keyword("K4"), new Keyword("K5"));
+    private List<Keyword> keywords;
+
+    @Before
+    public void initKeywords() {
+        keywords = Arrays.asList(new Keyword("K1"), new Keyword("K2"), new Keyword("K3"), new Keyword("K4"), new Keyword("K5"));
     }
 
     private Product createProduct(List<Keyword> keywords) {
-        Product product = new Product();
+        final Product product = new Product();
         product.setId(1);
         product.setName("Foo");
         product.setDescription("Foo");
@@ -51,8 +55,7 @@ public class ExtraKeywordProcessorTest {
     @Test
     public void findsExactlyInTheMiddle() throws Exception {
         // given
-        List<Keyword> keywords = initKeywords();
-        List<Product> products = new ArrayList<>();
+        final List<Product> products = new ArrayList<>();
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(4))));
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(3), keywords.get(4))));
@@ -68,8 +71,7 @@ public class ExtraKeywordProcessorTest {
     @Test
     public void findsClosestToMiddle() throws Exception {
         // given
-        List<Keyword> keywords = initKeywords();
-        List<Product> products = new ArrayList<>();
+        final List<Product> products = new ArrayList<>();
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
