@@ -67,7 +67,7 @@ $(document).ready(function () {
         var keywordId = $(event.relatedTarget).data('keyword-id');
 
         var columns = $("#keyword-" + keywordId).find('td');
-        $(this).find('.name-placeholder').text(columns.eq(1).text());
+        $(this).find('.word-placeholder').text(columns.eq(1).text());
         $(this).find('.button-delete').data("keyword-id", keywordId);
     });
 

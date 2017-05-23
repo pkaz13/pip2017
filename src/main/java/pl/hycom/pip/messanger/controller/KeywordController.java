@@ -33,7 +33,9 @@ import pl.hycom.pip.messanger.service.ProductService;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -79,12 +81,14 @@ public class KeywordController {
     public ResponseEntity<Void> deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
 
         Keyword deletedKeyword = keywordService.findKeywordById(id);
-        if (productService.findAllProductsContainingAtLeastOneKeyword(Arrays.asList(deletedKeyword)).isEmpty()) {
+        if (deletedKeyword == null) {
+            log.info("keyword have already been deleted");
+        } else if (productService.findAllProductsContainingAtLeastOneKeyword(Collections.singletonList(deletedKeyword)).isEmpty()) {
             keywordService.deleteKeyword(id);
             log.info("Keyword[" + id + "] deleted !!!");
         } else {
             log.info("cannot delete keyword = " + deletedKeyword);
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
 
         return ResponseEntity.status(HttpStatus.OK).build();
