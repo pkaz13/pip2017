@@ -26,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.transaction.annotation.Transactional;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
@@ -62,7 +61,6 @@ public class LoadBestMatchingProductsProcessorTest {
     }
 
     @Test
-    @Transactional
     public void findBestFittingProductsTest() {
         //given
         List<Product> givenProducts = Arrays.asList(
@@ -88,7 +86,6 @@ public class LoadBestMatchingProductsProcessorTest {
     }
 
     @Test
-    @Transactional
     public void findBestFittingProductsTestNoKeywords() {
         List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, Collections.emptyList());
 
