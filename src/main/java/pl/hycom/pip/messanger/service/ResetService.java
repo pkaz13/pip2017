@@ -8,7 +8,6 @@ import java.util.UUID;
 public class ResetService {
 
     public String generateToken() {
-        String token = UUID.randomUUID().toString();
-        return token;
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }
