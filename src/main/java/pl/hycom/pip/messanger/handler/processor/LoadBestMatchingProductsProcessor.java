@@ -36,9 +36,6 @@ import java.util.stream.IntStream;
 @Log4j2
 public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
 
-    public static final String PRODUCTS = "products";
-    public static final String KEYWORDS_FOUND = "keywordsFound";
-
     @Autowired
     private ProductService productService;
 
@@ -53,7 +50,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
         log.info("Started process of LoadBestMatchingProductsProcessor");
 
         @SuppressWarnings("unchecked")
-        Set<String> keywordsStr = ctx.get(ExtractKeywordsFromMessageProcessor.KEYWORDS, Set.class);
+        Set<String> keywordsStr = ctx.get(KEYWORDS, Set.class);
 
         List<Keyword> keywords = convertStringsToKeywords(keywordsStr);
 
