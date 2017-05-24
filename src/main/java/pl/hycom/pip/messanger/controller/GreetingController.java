@@ -31,8 +31,14 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.hycom.pip.messanger.model.Greeting;
-import pl.hycom.pip.messanger.model.GreetingListWrapper;
+
+import com.github.messenger4j.exceptions.MessengerApiException;
+import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.profile.MessengerProfileClient;
+
+import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.controller.model.Greeting;
+import pl.hycom.pip.messanger.controller.model.GreetingListWrapper;
 import pl.hycom.pip.messanger.service.GreetingService;
 
 import javax.validation.Valid;
