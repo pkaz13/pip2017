@@ -24,14 +24,14 @@
 </head>
 <body>
     <div layout:fragment="content">
-        
+
         <div class="row">
     	    <h1 class="page-header">
         	   	Zarządzanie produktami
 				<button class="btn btn-primary pull-right" data-toggle="modal" data-target="#product-form-modal">Dodaj nowy produkt</button>
            	</h1>
         </div>
-        
+
         <div th:if="${errors != null}" class="row">
 	         <div class="alert alert-danger fade in" th:each="error : ${errors}">
     	         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -90,7 +90,6 @@
                 </ul>-->
             </div>
         </div>
-        
 
 
         <div class="modal fade" id="product-form-modal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
@@ -174,7 +173,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </body>
 </html>

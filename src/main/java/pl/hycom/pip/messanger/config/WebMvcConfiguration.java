@@ -30,15 +30,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
-    @Configuration
-    @ConditionalOnClass(name = { "nz.net.ultraq.thymeleaf.LayoutDialect" })
-    protected static class ThymeleafWebLayoutConfiguration {
-        @Bean
-        public LayoutDialect layoutDialect() {
-            return new LayoutDialect(new GroupingStrategy());
-        }
-    }
-
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
@@ -51,5 +42,14 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
         validator.setValidationMessageSource(messageSource());
         return validator;
+    }
+
+    @Configuration
+    @ConditionalOnClass(name = {"nz.net.ultraq.thymeleaf.LayoutDialect"})
+    protected static class ThymeleafWebLayoutConfiguration {
+        @Bean
+        public LayoutDialect layoutDialect() {
+            return new LayoutDialect(new GroupingStrategy());
+        }
     }
 }

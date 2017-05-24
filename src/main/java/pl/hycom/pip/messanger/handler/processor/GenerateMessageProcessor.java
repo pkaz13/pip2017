@@ -16,24 +16,21 @@
 
 package pl.hycom.pip.messanger.handler.processor;
 
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.github.messenger4j.exceptions.MessengerApiException;
 import com.github.messenger4j.exceptions.MessengerIOException;
 import com.github.messenger4j.send.MessengerSendClient;
 import com.github.messenger4j.send.templates.GenericTemplate;
 import com.github.messenger4j.send.templates.Template;
-
 import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.handler.PipelineMessageHandler;
-import pl.hycom.pip.messanger.repository.model.Product;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
+import pl.hycom.pip.messanger.repository.model.Product;
+
+import java.util.List;
 
 @Component
 @Log4j2
@@ -48,8 +45,8 @@ public class GenerateMessageProcessor implements PipelineProcessor {
         log.info("Started process of GenerateMessageProcessor");
 
         @SuppressWarnings("unchecked")
-        List<Product> products = ctx.get(LoadBestMatchingProductsProcessor.PRODUCTS, List.class);
-        String senderId = ctx.get(PipelineMessageHandler.SENDER_ID, String.class);
+        List<Product> products = ctx.get(PRODUCTS, List.class);
+        String senderId = ctx.get(SENDER_ID, String.class);
 
         if (CollectionUtils.isEmpty(products)) {
             sendTextMessage(senderId, "No products found.");

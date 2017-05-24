@@ -39,6 +39,10 @@ import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @Component
 @Log4j2
 public class LoadBestMatchingProductsProcessor implements PipelineProcessor {

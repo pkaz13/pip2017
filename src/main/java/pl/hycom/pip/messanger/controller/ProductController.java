@@ -16,28 +16,20 @@
 
 package pl.hycom.pip.messanger.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.*;
 import pl.hycom.pip.messanger.controller.model.ProductDTO;
-import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -66,13 +58,11 @@ public class ProductController {
         productService.addOrUpdateProduct(product);
         return "redirect:/admin/products";
     }
-
-    @GetMapping("/admin/products/{productId}/delete")
-    public ModelAndView deleteProduct(@PathVariable("productId") final Integer id) {
+    @ResponseBody
+    @DeleteMapping("/admin/products/{productId}/delete")
+    public void deleteProduct(@PathVariable("productId") final Integer id) {
         productService.deleteProduct(id);
         log.info("ProductDTO[" + id + "] deleted !!!");
-
-        return new ModelAndView("redirect:/admin/products");
     }
 
     @ResponseBody
@@ -94,5 +84,4 @@ public class ProductController {
         model.addAttribute("products", allProducts);
         model.addAttribute("productForm", product);
     }
-
 }

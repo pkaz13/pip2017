@@ -16,9 +16,9 @@
 
 package com.github.messenger4j.profile;
 
-import java.util.List;
-
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Created by Rafal Lebioda on 18.03.2017.
@@ -26,15 +26,15 @@ import lombok.Data;
 @Data
 final class ProfilePayload {
 
+    private final String[] fields = new String[]{"greeting"}; // This is needed for deleting greetings. Do not remove unless u handle greetings
     private Greeting[] greeting;
-    private final String[] fields = new String[] { "greeting" }; // This is needed for deleting greetings. Do not remove unless u handle greetings
 
     private ProfilePayload(ProfilePayload.Builder builder) {
-        greeting = new Greeting[] { builder.greeting };
+        greeting = new Greeting[]{builder.greeting};
     }
 
     public ProfilePayload(List<Greeting> greetings) {
-        this.greeting = greetings.toArray(new Greeting[] {});
+        this.greeting = greetings.toArray(new Greeting[]{});
     }
 
     static ProfilePayload.Builder newBuilder() {

@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@ActiveProfiles({ "dev", "testdb" })
+@ActiveProfiles({"dev", "testdb"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class ProductDTOServiceTest {
@@ -52,9 +52,10 @@ public class ProductDTOServiceTest {
     @Autowired
     private MapperFacade orikaMapper;
 
+    @Value("${messenger.recommendation.products-amount}")
+    Integer expectedNumberOfProducts;
     @Autowired
     private ProductService productService;
-
     @Autowired
     private KeywordService keywordService;
 
@@ -69,9 +70,6 @@ public class ProductDTOServiceTest {
     private Keyword keyword2;
     private Keyword keyword3;
     private Keyword keyword4;
-
-    @Value("${messenger.recommendation.products-amount}")
-    Integer expectedNumberOfProducts;
 
     @Before
     public void setUp() {
@@ -226,6 +224,7 @@ public class ProductDTOServiceTest {
     }
 
     @Test
+    @Transactional
     public void addKeywordToProductTest() {
         // preparation
         addKeywordsToProduct1();

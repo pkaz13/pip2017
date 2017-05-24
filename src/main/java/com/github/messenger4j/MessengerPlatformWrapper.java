@@ -30,7 +30,8 @@ import com.github.messenger4j.user.UserProfileClientBuilder;
  */
 public class MessengerPlatformWrapper {
 
-    private MessengerPlatformWrapper() {}
+    private MessengerPlatformWrapper() {
+    }
 
     public static MessengerReceiveClientBuilder newReceiveClientBuilder(String appSecret, String verifyToken) {
         return MessengerPlatform.newReceiveClientBuilder(appSecret, verifyToken);

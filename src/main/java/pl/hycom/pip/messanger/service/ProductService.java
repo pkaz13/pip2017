@@ -44,6 +44,11 @@ import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.repository.KeywordRepository;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2

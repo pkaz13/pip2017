@@ -16,12 +16,10 @@
 
 package pl.hycom.pip.messanger.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.validation.Valid;
-
+import com.github.messenger4j.exceptions.MessengerApiException;
+import com.github.messenger4j.exceptions.MessengerIOException;
+import com.github.messenger4j.profile.MessengerProfileClient;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -43,18 +41,22 @@ import pl.hycom.pip.messanger.controller.model.Greeting;
 import pl.hycom.pip.messanger.controller.model.GreetingListWrapper;
 import pl.hycom.pip.messanger.service.GreetingService;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by piotr on 12.03.2017.
- *
  */
 
 @Log4j2
 @Controller
 public class GreetingController {
 
-    private static final String VIEW_GREETINGS = "greetings";
+    protected static final String VIEW_GREETINGS = "greetings";
     private static final String ADMIN_GREETINGS = "/admin/greetings";
-    private static final String REDIRECT_ADMIN_GREETINGS = "redirect:" + ADMIN_GREETINGS;
+    protected static final String REDIRECT_ADMIN_GREETINGS = "redirect:" + ADMIN_GREETINGS;
 
     private static final String DEFAULT_LOCALE = "default";
 

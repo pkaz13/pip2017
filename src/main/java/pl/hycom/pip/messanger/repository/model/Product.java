@@ -49,10 +49,12 @@ public class Product implements Serializable {
 
     @NotNull
     @Column(length = 80)
+    @Size(min = 1, max = 80)
     private String name;
 
     @NotNull
     @Column(length = 80)
+    @Size(min = 1, max = 80)
     private String description;
 
     @NotNull

@@ -16,6 +16,7 @@
 
 package pl.hycom.pip.messanger;
 
+import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import pl.hycom.pip.messanger.service.GreetingService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest()
-@ActiveProfiles({ "dev", "testdb" })
+@ActiveProfiles({"dev", "testdb"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Log4j2
 public class GreetingServiceTest {

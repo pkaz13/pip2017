@@ -18,9 +18,28 @@
  * Created by Piotr on 08.04.2017.
  */
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-    $('#keyword-form-modal').on('show.bs.modal', function(event) {
+    function deleteKeyword(id) {
+        var token = $("input[name='_csrf']").val();
+        var header = "X-CSRF-TOKEN";
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+        $.ajax({
+            url: '/admin/keywords/' + id + '/delete',
+            type: 'DELETE',
+            data: {CSRFToken: token, CSRF: header},
+            success: function(xhr, status, error) {
+                window.location = "/admin/keywords?success=true"
+            },
+            error: function(xhr, status, error) {
+                window.location = "/admin/keywords?success=false"
+            }
+        });
+    }
+
+    $('#keyword-form-modal').on('show.bs.modal', function (event) {
         var keywordId = $(event.relatedTarget).data('keyword-id');
 
         if (keywordId) {
@@ -28,7 +47,7 @@ $(document).ready(function() {
             $(this).find('.button-submit').text("Aktualizuj");
             $("#id_form_div").show();
 
-            var columns = $("#keyword-"+keywordId).find('td');
+            var columns = $("#keyword-" + keywordId).find('td');
             $("#id_form").val(columns.eq(0).text());
             $("#id_form_static").text(columns.eq(0).text());
             $("#word_form").val(columns.eq(1).text());
@@ -44,12 +63,16 @@ $(document).ready(function() {
         }
     });
 
-    $("#confirm-delete-modal").on('show.bs.modal', function (event) {
+    $("#confirm-delete-modal").on('shown.bs.modal', function (event) {
         var keywordId = $(event.relatedTarget).data('keyword-id');
 
-        var columns = $("#keyword-"+keywordId).find('td');
+        var columns = $("#keyword-" + keywordId).find('td');
         $(this).find('.word-placeholder').text(columns.eq(1).text());
-        $(this).find('.button-delete').attr('onclick', 'location.href="/admin/keywords/'+keywordId+'/delete"');
+        $(this).find('.button-delete').data("keyword-id", keywordId);
+    });
+
+    $("#confirm-delete-modal").find('.button-delete').on("click", function (e) {
+        deleteKeyword($(e.currentTarget).data("keyword-id"))
     });
 
 
