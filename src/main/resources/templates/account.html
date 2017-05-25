@@ -6,25 +6,32 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div th:if="${errors != null}" class="row">
+        <br/>
+        <div class="alert alert-danger fade in" th:each="error : ${errors}">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong th:text="${error.field}"></strong>: <span th:text="${error.defaultMessage}"></span>
+        </div>
+    </div>
     <div class="account-panel">
+        <form id="account-form" class="form-horizontal" th:action="@{/admin/account}" method="post" th:object="${user}" >
         <div id="image-container">
-            <img id="profile-image" src="https://s-media-cache-ak0.pinimg.com/236x/61/2a/76/612a76240b86a3085ef5dd0624e0d172.jpg" />
+            <img id="profile-image" src="https://s-media-cache-ak0.pinimg.com/236x/61/2a/76/612a76240b86a3085ef5dd0624e0d172.jpg" th:src="${user.profileImageUrl != null} ? ${user.profileImageUrl} : 'https://s-media-cache-ak0.pinimg.com/236x/61/2a/76/612a76240b86a3085ef5dd0624e0d172.jpg'" />
         </div>
         <div id="inputs-container">
-            <form class="form-horizontal">
                 <fieldset>
                     <!-- Imie-->
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="nameInput">Imię :</label>
                         <div class="col-md-5">
-                            <input id="nameInput" name="nameInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true"/>
+                            <input id="nameInput" name="nameInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" th:field="*{firstname}"/>
                         </div>
                     </div>
                     <!-- Nazwisko-->
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="surnameInput">Nazwisko :</label>
                         <div class="col-md-5">
-                            <input id="surnameInput" name="surnameInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" />
+                            <input id="surnameInput" name="surnameInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" th:field="*{lastname}" />
                         </div>
                     </div>
 
@@ -32,7 +39,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="emailInput">E-mail :</label>
                         <div class="col-md-5">
-                            <input id="emailInput" name="emailInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" />
+                            <input id="emailInput" name="emailInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" th:field="*{email}" />
                         </div>
                     </div>
 
@@ -56,16 +63,15 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="input">Jakaś dana :</label>
                         <div class="col-md-5">
-                            <input id="input" name="input" type="text" placeholder="" class="form-control input-md" required="" disabled="true" />
+                            <input id="input" name="input" type="text" placeholder="" class="form-control input-md"  disabled="true" />
                         </div>
                     </div>
                 </fieldset>
-            </form>
-
         </div>
+        </form>
     </div>
     <div class="buttons-account ">
-        <button id="button-save" class="btn btn-success btn-block">Zapisz zmiany</button>
+        <button id="button-save" class="btn btn-success btn-block" type="submit" form="account-form">Zapisz zmiany</button>
         <button id="button-edit" class="btn btn-info btn-block" onclick="editButtonOnClick()">Edytuj dane</button>
     </div>
     <br/>
