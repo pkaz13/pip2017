@@ -54,3 +54,10 @@ VALUES
 (3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123'),
 (4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123'),
 (5, 'Ewa', 'Kowalska', 'kowalskaEwa@example.com', 'haslo123');
+
+insert into ROLES (id, role) VALUES
+  (1, 'ADMIN'),
+  (2, 'USER');
+
+INSERT INTO USERS_ROLES (USER_ID, ROLES_ID)
+    VALUES (1,1), (2,2), (3,2), (4,2), (5,2);
