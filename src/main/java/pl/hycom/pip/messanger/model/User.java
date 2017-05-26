@@ -68,4 +68,6 @@ public class User implements Serializable, UserDetails {
     public String getUsername() {
         return email;
     }
+    private String profileImageUrl;
+
 }
