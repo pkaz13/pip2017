@@ -28,13 +28,17 @@ import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
+import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 @Log4j2
 public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
+
+    private static final int SHOW_PRODUCTS = 1;
+    private static final int FIND_KEYWORD_TO_ASK = 2;
 
     @Autowired
     private ProductService productService;
@@ -51,10 +55,13 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
 
         @SuppressWarnings("unchecked")
         Set<String> keywordsStr = ctx.get(KEYWORDS, Set.class);
+        @SuppressWarnings("unchecked")
+        Set<String> excludedKeywordsStr = ctx.get(KEYWORDS_EXCLUDED, Set.class);
 
         List<Keyword> keywords = convertStringsToKeywords(keywordsStr);
+        List<Keyword> excludedKeywords = convertStringsToKeywords(excludedKeywordsStr);
 
-        List<Product> products = findBestMatchingProducts(numberOfProducts, keywords);
+        List<Product> products = tryFindBestMatchingProducts(keywords, excludedKeywords);
         ctx.put(PRODUCTS, products);
 
         List<Keyword> keywordsToBeSaved = getKeywordsThatWereInAnyProduct(products, keywords);
@@ -75,30 +82,49 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
                 .collect(Collectors.toList());
     }
 
-    public List<Product> findBestMatchingProducts(int numberOfProducts, List<Keyword> keywordsList) {
+    List<Product> tryFindBestMatchingProducts(List<Keyword> keywordsList, List<Keyword> excludedKeywords) {
         if (keywordsList == null || keywordsList.isEmpty()) {
             return Collections.emptyList();
         }
+        if (excludedKeywords == null) {
+            excludedKeywords = Collections.emptyList();
+        }
+        List<Keyword> commonKeywords = new ArrayList<>(keywordsList);
+        commonKeywords.retainAll(excludedKeywords);
+        if (!commonKeywords.isEmpty()) {
+            throw new InvalidParameterException("Excluded keyword cant be keyword to find");
+        }
+        return findBestMatchingProducts(keywordsList, excludedKeywords);
+    }
 
-        List<Product> productsWithKeywords = productService.findAllProductsContainingAtLeastOneKeyword(keywordsList);
-
-        // This is priority queue, works like a stack, you can only access top element, but always has highest
-        // element on top. The priority of elements is decided by comparator passed in constructor
-        PriorityQueue<Map.Entry<Product, Long>> productsQueue = new PriorityQueue<>((o1, o2) -> Math.toIntExact(o2.getValue() - o1.getValue()));
-
-        // This stream maps each product into an entry to priorityQueue with product as a key and number of keywords
-        // it has from list as value
-        productsWithKeywords.stream()
-                .filter(Objects::nonNull)
-                .map(product -> new HashMap.SimpleEntry<>(product, keywordsList.stream().filter(Objects::nonNull).distinct().filter(product::containsKeyword).count()))
-                .forEach(productsQueue::add);
-
-        // This stream takes x first products from queue end puts them into list
-        return IntStream.iterate(0, i -> i + 1).limit(numberOfProducts)
-                .filter(i -> !productsQueue.isEmpty())
-                .mapToObj(i -> productsQueue.poll().getKey())
-                .filter(Objects::nonNull)
+    /**
+     * Call only from wrapper method
+     *
+     * @see #tryFindBestMatchingProducts
+     */
+    private List<Product> findBestMatchingProducts(List<Keyword> keywordsList, List<Keyword> excludedKeywords) {
+        List<Map.Entry<Product, Integer>> productsWithKeywords = productService
+                .findAllProductsContainingAtLeastOneKeyword(keywordsList)
+                .stream()
+                .filter(product -> product.getKeywords().stream().noneMatch(excludedKeywords::contains))
+                .collect(Collectors.toMap(Function.identity(), product -> {
+                    List<Keyword> commonKeywords = new ArrayList<>(product.getKeywords());
+                    commonKeywords.retainAll(keywordsList);
+                    return commonKeywords.size();
+                }))
+                .entrySet().stream()
+                .sorted(Comparator.comparingInt(entry -> ((Map.Entry<Product, Integer>) entry).getValue()).reversed())
                 .collect(Collectors.toList());
+
+        if (productsWithKeywords.size() > 0) {
+            int maxMatchingKeywords = productsWithKeywords.get(0).getValue();
+            return productsWithKeywords.stream()
+                    .filter(entry -> entry.getValue().equals(maxMatchingKeywords))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private List<Keyword> getKeywordsThatWereInAnyProduct(List<Product> products, List<Keyword> keywords) {

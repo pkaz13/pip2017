@@ -26,6 +26,7 @@ import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @Log4j2
@@ -42,6 +43,7 @@ public class PipelineMessageHandler implements TextMessageEventHandler {
 
         params.put(PipelineProcessor.SENDER_ID, msg.getSender().getId());
         params.put(PipelineProcessor.MESSAGE, msg.getText());
+        params.put(PipelineProcessor.KEYWORDS_EXCLUDED, new HashSet<>());
 
         try {
             pipelineManager.runProcess(PIPELINECHAIN_NAME, params);

@@ -18,6 +18,7 @@ package pl.hycom.pip.messanger.handler.processor;
 
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +32,8 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.security.InvalidParameterException;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -74,20 +73,120 @@ public class LoadBestMatchingProductsProcessorTest {
         Mockito.when(productService.findAllProductsContainingAtLeastOneKeyword(any()))
                 .thenReturn(givenProducts);
 
+        List<Keyword> excludedKeywords = Collections.emptyList();
         List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3));
-        int numberOfMatchingProducts = 3;
 
         //when
-        List<Product> bestFittingProducts = processor.findBestMatchingProducts(numberOfMatchingProducts, keywordsFromRequest);
+        List<Product> bestFittingProducts = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
 
         // then
-        Assertions.assertThat(bestFittingProducts).hasSize(numberOfMatchingProducts)
+        Assertions.assertThat(bestFittingProducts).hasSize(3)
                 .containsOnly(givenProducts.get(1), givenProducts.get(2), givenProducts.get(4));
     }
 
     @Test
+    public void findBestFittingProductsTestWithAllExcluded() {
+        //given
+        List<Product> givenProducts = Arrays.asList(
+                createProduct(1, Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))),
+                createProduct(2, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3)))
+        );
+        Mockito.when(productService.findAllProductsContainingAtLeastOneKeyword(any()))
+                .thenReturn(givenProducts);
+
+        List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(0));
+        List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(2), keywords.get(3));
+
+        //when
+        List<Product> bestFittingProducts = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
+
+        // then
+        Assertions.assertThat(bestFittingProducts).isEmpty();
+    }
+
+    @Test
+    public void findBestFittingProductsTestWithExcludedKeywords() {
+        //given
+        List<Product> givenProducts = Arrays.asList(
+                createProduct(1, Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))),
+                createProduct(2, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3))),
+                createProduct(3, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3), keywords.get(4))),
+                createProduct(4, Arrays.asList(keywords.get(0), keywords.get(5), keywords.get(4))),
+                createProduct(5, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3), keywords.get(5))),
+                createProduct(6, Arrays.asList(keywords.get(0), keywords.get(1)))
+        );
+        Mockito.when(productService.findAllProductsContainingAtLeastOneKeyword(any()))
+                .thenReturn(givenProducts);
+
+        List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(4));
+        List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3));
+
+        //when
+        List<Product> bestFittingProducts = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
+
+        // then
+        Assertions.assertThat(bestFittingProducts).hasSize(2)
+                .containsOnly(givenProducts.get(1), givenProducts.get(4));
+    }
+
+    @Test
+    public void findBestFittingProductsTestWithKeywordThatIsAlsoExcluded() {
+        //given
+        List<Product> givenProducts = Arrays.asList(
+                createProduct(1, Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))),
+                createProduct(2, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3))),
+                createProduct(3, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3), keywords.get(4))),
+                createProduct(4, Arrays.asList(keywords.get(0), keywords.get(5), keywords.get(4))),
+                createProduct(5, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3), keywords.get(5))),
+                createProduct(6, Arrays.asList(keywords.get(0), keywords.get(1)))
+        );
+        Mockito.when(productService.findAllProductsContainingAtLeastOneKeyword(any()))
+                .thenReturn(givenProducts);
+
+        List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(0));
+        List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3));
+
+        //when
+        Throwable thrown = Assertions.catchThrowable(() -> processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords));
+
+        // then
+        Assertions.assertThat(thrown).isInstanceOf(InvalidParameterException.class);
+    }
+
+    @Test
+    public void findBestFittingProductsTestWithHundredProducts() {
+        //given
+        List<Product> givenProducts = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            Product product = createProduct(i, Collections.singletonList(keywords.get(0)));
+            if (i % 2 == 0) {
+                product.addKeyword(keywords.get(1));
+            }
+            givenProducts.add(product);
+        }
+        Mockito.when(productService.findAllProductsContainingAtLeastOneKeyword(any()))
+                .thenReturn(givenProducts);
+
+        List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(1));
+        List<Keyword> keywordsFromRequest = Collections.singletonList(keywords.get(0));
+
+        //when
+        List<Product> products = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
+
+        // then
+        Assertions.assertThat(products).hasSize(50)
+                .are(new Condition<Product>() {
+                    @Override
+                    public boolean matches(Product product) {
+                        return product.getKeywords().contains(keywords.get(0))
+                                && !product.getKeywords().contains(keywords.get(1));
+                    }
+                });
+    }
+
+    @Test
     public void findBestFittingProductsTestNoKeywords() {
-        List<Product> bestFittingProducts = processor.findBestMatchingProducts(3, Collections.emptyList());
+        List<Product> bestFittingProducts = processor.tryFindBestMatchingProducts(Collections.emptyList(), Collections.emptyList());
 
         // assertion
         assertEquals("List should contain no products", 0, bestFittingProducts.size());
