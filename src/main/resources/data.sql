@@ -47,10 +47,10 @@ values
 (10,14),
 (5,15);
 
-insert into Users (id, firstname, lastname, email, password)
+insert into Users (id, firstname, lastname, email, password, phone_number)
 VALUES
-(1, 'Adam', 'Adamski', 'adamski@example.com', 'haslo123'),
-(2, 'Anna', 'Adamska', 'adamska@example.com', 'haslo123'),
-(3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123'),
-(4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123'),
-(5, 'Ewa', 'Kowalska', 'kowalskaEwa@example.com', 'haslo123');
+(1, 'Adam', 'Adamski', 'adamski@example.com', 'haslo123', '+48789987789'),
+(2, 'Anna', 'Adamska', 'adamska@example.com', 'haslo123', '+48789987789'),
+(3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123', '+48789987789'),
+(4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123', '+48789987789'),
+(5, 'Ewa', 'Kowalska', 'kowalskaEwa@example.com', 'haslo123', '+48789987789');

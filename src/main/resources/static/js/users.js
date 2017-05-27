@@ -57,6 +57,7 @@ $(document).ready(function() {
             $("#email_form").val(columns.eq(1).text());
             $("#firstname_form").val(columns.eq(2).text());
             $("#lastname_form").val(columns.eq(3).text());
+            $("#phoneNumber_form").val(columns.eq(4).text());
         } else {
             $(this).find('.modal-title').text("Dodaj nowego użytkownika");
             $(this).find('.button-submit').text("Dodaj");
@@ -68,6 +69,7 @@ $(document).ready(function() {
             $("#description_form").val("");
             $("#firstname_form").val("");
             $("#lastname_form").val("");
+            $("#phoneNumber_form").val("");
         }
     });
 });

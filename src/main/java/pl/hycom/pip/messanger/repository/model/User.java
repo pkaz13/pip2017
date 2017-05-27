@@ -1,6 +1,7 @@
-package pl.hycom.pip.messanger.model;
+package pl.hycom.pip.messanger.repository.model;
 
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,15 +24,17 @@ public class User implements Serializable {
     @NotNull
     @Column(length = 40)
     @Size(min = 3, max = 40)
+    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
     private String firstname;
 
     @NotNull
     @Column(length = 40)
     @Size(min = 3, max = 40)
+    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
     private String lastname;
 
     @NotNull
-    @Column(length = 40)
+    @Column(length = 40, unique = true)
     @Size(min = 6, max = 40)
     @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
@@ -40,6 +43,11 @@ public class User implements Serializable {
     @Size(min = 8, max = 64)
     private String password;
 
-    private String profileImageUrl;
+    @NotNull
+    @Column
+    @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$")
+    private String phoneNumber;
 
+    @Column
+    private String profileImageUrl;
 }

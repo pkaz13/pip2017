@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import pl.hycom.pip.messanger.model.User;
+import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.service.UserService;
 
 import javax.inject.Inject;
@@ -26,16 +26,16 @@ public class UserController {
 
     @GetMapping("/admin/users")
     public String showUsers(Model model) {
-        prepareModel(model, new User());
+        prepareModel(model, new UserDTO());
         return USERS_VIEW;
     }
 
     @PostMapping("/admin/users")
-    public String addOrUpdateUser(@Valid User user, BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String addOrUpdateUser(@Valid UserDTO user, BindingResult bindingResult, Model model, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, user);
-            log.info("Validation user error!");
+            log.info("Validation user error!" + bindingResult.getAllErrors());
 
             return USERS_VIEW;
         }
@@ -59,8 +59,8 @@ public class UserController {
         log.info("User[" + id + "] deleted!");
     }
 
-    private void prepareModel(Model model, User user) {
-        List<User> allUsers = userService.findAllUsers();
+    private void prepareModel(Model model, UserDTO user) {
+        List<UserDTO> allUsers = userService.findAllUsers();
         model.addAttribute("users", allUsers);
         model.addAttribute("userForm", user);
     }

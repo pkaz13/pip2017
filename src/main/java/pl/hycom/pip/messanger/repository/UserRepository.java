@@ -3,9 +3,7 @@ package pl.hycom.pip.messanger.repository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import pl.hycom.pip.messanger.model.User;
-
-import java.util.List;
+import pl.hycom.pip.messanger.repository.model.User;
 
 /**
  * Created by Monia on 2017-05-20.

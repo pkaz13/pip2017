@@ -8,7 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.hycom.pip.messanger.model.User;
+import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.UserService;
 
 import javax.validation.Valid;
@@ -28,7 +29,7 @@ public class AccountController {
     @GetMapping("/admin/account")
     public String showAccount(Model model, @AuthenticationPrincipal User caller) {
         //TO DO : zrobic pobieranie aktualnego uzytkownika !!!
-        User user=userService.findAllUsers().get(0);
+        UserDTO user = userService.findAllUsers().get(0);
         model.addAttribute("user", user);
         return ACCOUNT_VIEW;
     }

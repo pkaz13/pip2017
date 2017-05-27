@@ -2,8 +2,12 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.model.User;
+import pl.hycom.pip.messanger.controller.model.ProductDTO;
+import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 
 import javax.inject.Inject;
@@ -18,20 +22,25 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
 public class UserService {
+
+    @Autowired
+    private MapperFacade orikaMapper;
+
     private final UserRepository userRepository;
 
-    public List<User> findAllUsers() {
+    public List<UserDTO> findAllUsers() {
         log.info("Searching all users");
 
-        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+        return orikaMapper.mapAsList(StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList()), UserDTO.class);
     }
 
-    public void addOrUpdateUser(User user) {
+    public UserDTO addOrUpdateUser(UserDTO user) {
+        User userToUpdateOrAdd = orikaMapper.map(user, User.class);
         if (user.getId() != null && user.getId() != 0) {
-            updateUser(user);
+            return orikaMapper.map(updateUser(userToUpdateOrAdd), UserDTO.class);
         } else {
-            addUser(user);
+            return orikaMapper.map(addUser(userToUpdateOrAdd), UserDTO.class);
         }
     }
 
@@ -49,6 +58,7 @@ public class UserService {
             userToUpdate.setFirstname(user.getFirstname());
             userToUpdate.setLastname(user.getLastname());
             userToUpdate.setEmail(user.getEmail());
+            userToUpdate.setPhoneNumber(user.getPhoneNumber());
             return userRepository.save(userToUpdate);
         } else {
             log.info("User with email: " + user.getEmail() + " exists");
