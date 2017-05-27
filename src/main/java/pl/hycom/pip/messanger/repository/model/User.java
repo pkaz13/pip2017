@@ -1,6 +1,8 @@
 package pl.hycom.pip.messanger.repository.model;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import lombok.NonNull;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by Monia on 2017-05-20.
@@ -15,7 +19,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "USERS")
-public class User implements Serializable {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,13 +29,13 @@ public class User implements Serializable {
     @Column(length = 40)
     @Size(min = 3, max = 40)
     @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
-    private String firstname;
+    private String firstName;
 
     @NotNull
     @Column(length = 40)
     @Size(min = 3, max = 40)
     @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
-    private String lastname;
+    private String lastName;
 
     @NotNull
     @Column(length = 40, unique = true)
@@ -42,6 +46,31 @@ public class User implements Serializable {
     @Column(length = 64)
     @Size(min = 8, max = 64)
     private String password;
+
+    @Column
+    private boolean credentialsNonExpired = true;
+
+    @Column
+    private boolean accountNonExpired = true;
+
+    @Column
+    private boolean accountNonLocked = true;
+
+    @Column
+    private boolean enabled = true;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
     @NotNull
     @Column

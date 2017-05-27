@@ -2,8 +2,9 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ma.glasnost.orika.MapperFacade;
-import org.h2.jdbc.JdbcSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 
 import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -24,7 +25,7 @@ import java.util.stream.StreamSupport;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private MapperFacade orikaMapper;
@@ -78,8 +79,10 @@ public class UserService {
         userRepository.delete(id);
     }
 
-    public User findUserByEmail(String email) {
-        log.info("findUserByEmail method from UserService invoked");
-        return userRepository.findByEmail(email);
+    @Override
+    public User loadUserByUsername(String email) {
+        log.info("loadUserByUsername method from UserService invoked");
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User with email=%s was not found", email)));
     }
 }
