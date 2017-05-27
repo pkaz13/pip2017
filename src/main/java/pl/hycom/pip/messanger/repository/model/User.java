@@ -36,7 +36,7 @@ public class User implements Serializable {
     @NotNull
     @Column(length = 40, unique = true)
     @Size(min = 6, max = 40)
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+    @Pattern(regexp = "^[a-z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-z0-9.-]+$")
     private String email;
 
     @Column(length = 64)

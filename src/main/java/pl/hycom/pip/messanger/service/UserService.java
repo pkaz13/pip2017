@@ -47,9 +47,9 @@ public class UserService {
         }
     }
 
-    public User addUser(User user) throws EmailNotUniqueException{
+    public User addUser(User user) throws EmailNotUniqueException {
         log.info("Adding user: " + user);
-
+        user.setEmail(user.getEmail().toLowerCase());
         return trySaveUser(user);
     }
 
@@ -59,7 +59,7 @@ public class UserService {
         userToUpdate.setFirstname(user.getFirstname());
         userToUpdate.setLastname(user.getLastname());
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
-        userToUpdate.setEmail(user.getEmail());
+        userToUpdate.setEmail(user.getEmail().toLowerCase());
         return trySaveUser(userToUpdate);
     }
 

@@ -53,4 +53,4 @@ VALUES
 (2, 'Anna', 'Adamska', 'adamska@example.com', 'haslo123', '+48789987789'),
 (3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123', '+48789987789'),
 (4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123', '+48789987789'),
-(5, 'Ewa', 'Kowalska', 'kowalskaEwa@example.com', 'haslo123', '+48789987789');
+(5, 'Ewa', 'Kowalska', 'kowalskaewa@example.com', 'haslo123', '+48789987789');
