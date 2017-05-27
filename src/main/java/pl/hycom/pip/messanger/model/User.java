@@ -18,7 +18,7 @@ import java.util.Collection;
 @Data
 @Entity
 @Table(name = "USERS")
-public class User implements Serializable, UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,12 +27,12 @@ public class User implements Serializable, UserDetails {
     @NotNull
     @Column(length = 40)
     @Size(min = 3, max = 40)
-    private String firstname;
+    private String firstName;
 
     @NotNull
     @Column(length = 40)
     @Size(min = 3, max = 40)
-    private String lastname;
+    private String lastName;
 
     @NotNull
     @Column(length = 40)
@@ -45,29 +45,30 @@ public class User implements Serializable, UserDetails {
     private String password;
 
     @Column
-    private boolean credentialsNonExpired;
+    private boolean credentialsNonExpired = true;
 
     @Column
-    private boolean accountNonExpired;
+    private boolean accountNonExpired = true;
 
     @Column
-    private boolean accountNonLocked;
+    private boolean accountNonLocked = true;
 
     @Column
-    private boolean enabled;
+    private boolean enabled = true;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return roles;
     }
 
     @Override
     public String getUsername() {
         return email;
     }
+
     private String profileImageUrl;
 
 }

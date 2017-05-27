@@ -2,12 +2,15 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -17,7 +20,7 @@ import java.util.stream.StreamSupport;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     public List<User> findAllUsers() {
@@ -44,14 +47,14 @@ public class UserService {
     public User updateUser(User user) {
         log.info("Updating user: " + user);
         User userToUpdate = userRepository.findOne(user.getId());
-        User userByEmail = userRepository.findByEmail(user.getEmail());
-        if(userByEmail == null) {
-            userToUpdate.setFirstname(user.getFirstname());
-            userToUpdate.setLastname(user.getLastname());
+        Optional<User> userByEmail = userRepository.findByEmail(user.getEmail());
+        if (userByEmail.isPresent()) {
+            log.info("User with email: " + user.getEmail() + " exists");
+        } else {
+            userToUpdate.setFirstName(user.getFirstName());
+            userToUpdate.setLastName(user.getLastName());
             userToUpdate.setEmail(user.getEmail());
             return userRepository.save(userToUpdate);
-        } else {
-            log.info("User with email: " + user.getEmail() + " exists");
         }
         return userToUpdate;
     }
@@ -62,8 +65,10 @@ public class UserService {
         userRepository.delete(id);
     }
 
-    public User findUserByEmail(String email) {
-        log.info("findUserByEmail method from UserService invoked");
-        return userRepository.findByEmail(email);
+    @Override
+    public User loadUserByUsername(String email) {
+        log.info("loadUserByUsername method from UserService invoked");
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User with email=%s was not found", email)));
     }
 }

@@ -1,6 +1,7 @@
 package pl.hycom.pip.messanger.model;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "ROLES")
-public class Role implements Serializable {
+public class Role implements GrantedAuthority {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +23,6 @@ public class Role implements Serializable {
     private long id;
 
     @Column
-    private String role;
-
+    private String authority;
 
 }

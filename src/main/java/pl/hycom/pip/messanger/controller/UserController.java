@@ -40,7 +40,7 @@ public class UserController {
             return USERS_VIEW;
         }
 
-        if (userService.findUserByEmail(user.getEmail()) != null) {
+        if (userService.loadUserByUsername(user.getEmail()) != null) {
             prepareModel(model, user);
             model.addAttribute("error", new ObjectError("userExists", "Użytkownik z takim adresem email już istnieje."));
 

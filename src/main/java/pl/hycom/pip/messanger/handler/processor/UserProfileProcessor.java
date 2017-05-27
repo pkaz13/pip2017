@@ -33,8 +33,8 @@ public class UserProfileProcessor implements PipelineProcessor {
 
     public static final String LOCALE = "user.locale";
     public static final String GENDER = "user.gender";
-    public static final String FIRST_NAME = "user.firstname";
-    public static final String LAST_NAME = "user.lastname";
+    public static final String FIRST_NAME = "user.firstName";
+    public static final String LAST_NAME = "user.lastName";
 
     @Autowired
     private UserProfileClient userProfileClient;
