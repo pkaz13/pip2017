@@ -3,10 +3,7 @@ package pl.hycom.pip.messanger.repository.model;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -20,9 +17,14 @@ public class Role implements GrantedAuthority {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column
     private String authority;
+
+    public Role() {}
+
+    public Role(String roleName) { authority = roleName; }
 
 }
