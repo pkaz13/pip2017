@@ -29,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import lombok.extern.log4j.Log4j2;
 import pl.hycom.pip.messanger.controller.model.Greeting;
+import pl.hycom.pip.messanger.model.Greeting;
 import pl.hycom.pip.messanger.service.GreetingService;
 
 /**
@@ -113,5 +114,18 @@ public class GreetingServiceTest {
 
         Assertions.assertThat(valid).isFalse();
     }
+
+//    @Test
+//    public void removeDefaultLocale() throws Exception {
+//        Greeting greeting = new Greeting();
+//        greeting.setLocale("default");
+//        GreetingService gs  = new GreetingService();
+//
+//        gs.removeGreeting(greeting.getLocale(), {
+//        });
+//        Assertions.assertThat(greeting.getLocale().isEmpty()==true);
+//
+//
+//    }
 
 }
