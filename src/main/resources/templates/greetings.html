@@ -27,7 +27,7 @@
         <h1 class="page-header">Wiadomość powitalna na mesengerze</h1>
     </div>
 	<div class="row">
-    <!--/*@thymesVar id="greetingListWrapper" type="pl.hycom.pip.messanger.model.GreetingListWrapper"*/-->
+        <!--/*@thymesVar id="greetingListWrapper" type="pl.hycom.pip.messanger.controller.model.GreetingListWrapper"*/-->
 		<form action="#" th:action="@{/admin/greetings}" th:object="${greetingListWrapper}" method="post" class="clearfix">
             <div class="alert alert-danger" th:if="${errors}">
                 <p th:each="err : ${errors}" th:text="${err}">...</p>
@@ -51,7 +51,7 @@
 
     <div class="row" th:unless="${#lists.isEmpty(availableLocale)}">
 		<hr />
-	    <!--/*@thymesVar id="greeting" type="pl.hycom.pip.messanger.model.Greeting"*/-->
+        <!--/*@thymesVar id="greeting" type="pl.hycom.pip.messanger.controller.model.Greeting"*/-->
 	    <form action="#" th:action="@{/admin/greeting}" th:object="${greeting}" method="post">
             <div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}">
                 <p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>

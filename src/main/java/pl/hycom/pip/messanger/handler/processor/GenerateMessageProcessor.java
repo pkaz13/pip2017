@@ -25,10 +25,10 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
+import pl.hycom.pip.messanger.repository.model.Product;
 
 import java.util.List;
 

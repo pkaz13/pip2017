@@ -3,10 +3,7 @@ package pl.hycom.pip.messanger.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.model.Keyword;
-import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.model.User;
-import pl.hycom.pip.messanger.repository.ProductRepository;
 import pl.hycom.pip.messanger.repository.UserRepository;
 
 import javax.inject.Inject;

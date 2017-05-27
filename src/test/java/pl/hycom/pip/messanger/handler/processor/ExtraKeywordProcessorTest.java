@@ -19,8 +19,8 @@ package pl.hycom.pip.messanger.handler.processor;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import pl.hycom.pip.messanger.model.Keyword;
-import pl.hycom.pip.messanger.model.Product;
+import pl.hycom.pip.messanger.repository.model.Keyword;
+import pl.hycom.pip.messanger.repository.model.Product;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
