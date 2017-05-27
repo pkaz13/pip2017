@@ -81,12 +81,12 @@ public class GreetingController {
             addError(bindingResult, "greeting.locale.empty");
         }
 
-//        if (bindingResult.hasErrors()) {
-//            prepareModel(model, greeting);
-//            log.error("Greeting validation errors: " + bindingResult.getAllErrors());
-//            return VIEW_GREETINGS;
-//
-//        }
+        if (bindingResult.hasErrors()) {
+            prepareModel(model, greeting);
+            log.error("Greeting validation errors: " + bindingResult.getAllErrors());
+            return VIEW_GREETINGS;
+
+        }
         try {
             greetingService.addGreeting(greeting);
             return "redirect:" + ADMIN_GREETINGS + "?success=" + flag;
