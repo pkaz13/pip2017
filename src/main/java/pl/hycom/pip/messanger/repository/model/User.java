@@ -1,8 +1,9 @@
-package pl.hycom.pip.messanger.model;
+package pl.hycom.pip.messanger.repository.model;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,15 +28,17 @@ public class User implements UserDetails {
     @NotNull
     @Column(length = 40)
     @Size(min = 3, max = 40)
+    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
     private String firstName;
 
     @NotNull
     @Column(length = 40)
     @Size(min = 3, max = 40)
+    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
     private String lastName;
 
     @NotNull
-    @Column(length = 40)
+    @Column(length = 40, unique = true)
     @Size(min = 6, max = 40)
     @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String email;
@@ -69,6 +72,11 @@ public class User implements UserDetails {
         return email;
     }
 
-    private String profileImageUrl;
+    @NotNull
+    @Column
+    @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$")
+    private String phoneNumber;
 
+    @Column
+    private String profileImageUrl;
 }

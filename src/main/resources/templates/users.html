@@ -56,6 +56,7 @@
                 <th>Email</th>
                 <th>Imię</th>
                 <th>Nazwisko</th>
+                <th>Numer telefonu</th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
                 </thead>
@@ -65,6 +66,7 @@
                     <td class="align-middle" th:text="${user.email}">Email</td>
                     <td class="align-middle" th:text="${user.firstName}">Firstname</td>
                     <td class="align-middle" th:text="${user.lastName}">Lastname</td>
+                    <td class="align-middle" th:text="${user.phoneNumber}">Numer telefonu</td>
                     <td class="align-middle">
                         <div data-placement="top" data-toggle="tooltip" title="Edytuj">
                             <button class="btn btn-primary btn-xs button-edit center-block"
@@ -136,6 +138,16 @@
                                                th:field="*{lastName}"/>
                                     </div>
                                     <p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Lastname
+                                        Error</p>
+                                </div>
+                                <div class="form-group"
+                                     th:classappend="${#fields.hasErrors('phoneNumber')}? 'has-error'">
+                                    <label class="col-sm-3 control-label" for="phoneNumber_form">Numer telefonu</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control" id="phoneNumber_form"
+                                               th:field="*{phoneNumber}"/>
+                                    </div>
+                                    <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Phone number
                                         Error</p>
                                 </div>
                             </div>

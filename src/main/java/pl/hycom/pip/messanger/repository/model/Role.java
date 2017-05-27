@@ -1,4 +1,4 @@
-package pl.hycom.pip.messanger.model;
+package pl.hycom.pip.messanger.repository.model;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
