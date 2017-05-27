@@ -47,14 +47,14 @@ values
 (10,14),
 (5,15);
 
-insert into Users (id, first_name, last_name, email, password, credentials_non_expired, account_non_expired, account_non_locked, enabled)
+insert into Users (id, first_name, last_name, email, password, phone_number, credentials_non_expired, account_non_expired, account_non_locked, enabled)
 VALUES
-(1, 'Admin', 'Adminski', 'admin', 'admin', true, true, true, true),
-(2, 'Anna', 'Adamska', 'adamska@example.com', 'haslo123', true, true, true, true),
-(3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123', true, true, true, true),
-(4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123', true, true, true, true),
-(5, 'Ewa', 'Kowalska', 'kowalskaEwa@example.com', 'haslo123', true, true, true, true),
-(6, 'Adam', 'Adamski', 'adamski@example.com', 'haslo123', true, true, true, true);
+(1, 'Admin', 'Adminski', 'admin', 'admin', '+48789987789', true, true, true, true),
+(2, 'Anna', 'Adamska', 'adamska@example.com', 'haslo123', '+48789987789', true, true, true, true),
+(3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123', '+48789987789', true, true, true, true),
+(4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123', '+48789987789', true, true, true, true),
+(5, 'Ewa', 'Kowalska', 'kowalskaEwa@example.com', 'haslo123', '+48789987789', true, true, true, true),
+(6, 'Adam', 'Adamski', 'adamski@example.com', 'haslo123', '+48789987789', true, true, true, true);
 
 insert into ROLES (id, authority) VALUES
   (1, 'ROLE_ADMIN'),

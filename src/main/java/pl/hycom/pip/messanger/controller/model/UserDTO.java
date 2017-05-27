@@ -16,11 +16,11 @@ public class UserDTO {
 
     @Size(min = 3, max = 40)
     @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
-    private String firstname;
+    private String firstName;
 
     @Size(min = 3, max = 40)
     @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
-    private String lastname;
+    private String lastName;
 
     @Size(min = 6, max = 40)
     @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
