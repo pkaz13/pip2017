@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.UserService;
 
@@ -35,7 +36,7 @@ public class AccountController {
     }
 
     @PostMapping("/admin/account")
-    public String updateAccount(@Valid User user, BindingResult bindingResult, Model model) {
+    public String updateAccount (@Valid User user, BindingResult bindingResult, Model model) throws EmailNotUniqueException{
         if(bindingResult.hasErrors()) {
             model.addAttribute("user", user);
             model.addAttribute("errors", bindingResult.getFieldErrors());

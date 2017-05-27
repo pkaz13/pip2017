@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.service.UserService;
 
 import javax.inject.Inject;
@@ -40,16 +41,14 @@ public class UserController {
             return USERS_VIEW;
         }
 
-        if (userService.findUserByEmail(user.getEmail()) != null) {
+        try {
+            userService.addOrUpdateUser(user);
+            return "redirect:/admin/users";
+        } catch (EmailNotUniqueException e) {
             prepareModel(model, user);
             model.addAttribute("error", new ObjectError("userExists", "Użytkownik z takim adresem email już istnieje."));
-
             return USERS_VIEW;
         }
-
-        userService.addOrUpdateUser(user);
-
-        return "redirect:/admin/users";
     }
 
     @DeleteMapping("/admin/users/{userId}/delete")
