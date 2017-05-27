@@ -28,8 +28,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import pl.hycom.pip.messanger.model.Greeting;
-import pl.hycom.pip.messanger.model.GreetingListWrapper;
+import pl.hycom.pip.messanger.controller.model.Greeting;
+import pl.hycom.pip.messanger.controller.model.GreetingListWrapper;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
