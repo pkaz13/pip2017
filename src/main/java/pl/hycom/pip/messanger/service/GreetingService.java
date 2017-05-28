@@ -45,6 +45,7 @@ public class GreetingService implements InitializingBean {
 
 
     private static final String DEFAULT_LOCALE = "default";
+    private static  final String DEFAULT_GREETING = "{{user_full_name}}";
 
     @Autowired
     private MessengerProfileClient profileClient;
@@ -122,6 +123,9 @@ public class GreetingService implements InitializingBean {
     public void addGreeting(@Valid Greeting greeting) throws MessengerApiException, MessengerIOException {
 
         List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale();
+        if (greetings.isEmpty() && !greeting.getLocale().equals(DEFAULT_LOCALE) ) {
+            greetings.add(new com.github.messenger4j.profile.Greeting(DEFAULT_GREETING ,DEFAULT_LOCALE));
+        }
         com.github.messenger4j.profile.Greeting profileGreeting = new com.github.messenger4j.profile.Greeting(greeting.getText(), greeting.getLocale());
         greetings.add(profileGreeting);
         profileClient.setupWelcomeMessages(greetings);
@@ -130,7 +134,6 @@ public class GreetingService implements InitializingBean {
 
 
     public void removeGreeting(@PathVariable String locale) throws MessengerIOException, MessengerApiException {
-
         List<com.github.messenger4j.profile.Greeting> greetings = getGreetingsWithDefaultLocale();
         greetings.removeIf(g -> StringUtils.equals(g.getLocale(), locale));
         profileClient.removeWelcomeMessage();

@@ -38,17 +38,17 @@
 
 
                 <textarea class="form-control message-item" name="message" th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
-                <button type="button" class="btn btn-danger btn-xs" th:attr="data-greeting-locale=*{greetings[__${stat.index}__].locale}"  data-toggle="modal" data-target="#confirm-delete-modal" >
-                    <span class="glyphicon glyphicon-trash"></span>
-                </button>
-	        </div>
-	        <div class="pull-right">
-	            <a th:href="@{/admin/greeting}" class="btn btn-default">Przeładuj</a>
-	            <button type="reset" class="btn btn-default">Resetuj</button>
-	            <button type="submit" class="btn btn-primary">Zapisz</button>
 
-
+                <div class="pull-right">
+                    <a th:href="@{/admin/greetings}" class="btn btn-default">Przeładuj</a>
+                    <button type="reset" class="btn btn-default">Resetuj</button>
+                    <button type="submit" class="btn btn-primary">Zapisz</button>
+                    <button type="button" class="btn btn-danger btn-xs" th:attr="data-greeting-locale=*{greetings[__${stat.index}__].locale}"  data-toggle="modal" data-target="#confirm-delete-modal" >
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </div>
 	        </div>
+
 	    </form>
 	</div>
 
