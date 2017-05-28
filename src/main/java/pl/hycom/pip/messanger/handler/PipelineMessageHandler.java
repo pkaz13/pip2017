@@ -20,13 +20,14 @@ import com.github.messenger4j.receive.events.TextMessageEvent;
 import com.github.messenger4j.receive.handlers.TextMessageEventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineManager;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 
 @Log4j2
@@ -43,7 +44,7 @@ public class PipelineMessageHandler implements TextMessageEventHandler {
 
         params.put(PipelineProcessor.SENDER_ID, msg.getSender().getId());
         params.put(PipelineProcessor.MESSAGE, msg.getText());
-        params.put(PipelineProcessor.KEYWORDS_EXCLUDED, new HashSet<>());
+        params.put(PipelineProcessor.KEYWORDS_EXCLUDED, new LinkedList<Keyword>());
 
         try {
             pipelineManager.runProcess(PIPELINECHAIN_NAME, params);

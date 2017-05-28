@@ -41,7 +41,7 @@ public class GenerateMessageProcessor implements PipelineProcessor {
     @Autowired
     private MessengerSendClient sendClient;
 
-    @Value("${messenger.recommendation.products-amount}")
+    @Value("${messenger.recommendation.products-amount:3}")
     private Integer numberOfProducts;
 
     @Override
@@ -81,7 +81,7 @@ public class GenerateMessageProcessor implements PipelineProcessor {
     private GenericTemplate getStructuredMessage(List<Product> products) {
         GenericTemplate.Element.ListBuilder listBuilder = GenericTemplate.newBuilder().addElements();
         Collections.shuffle(products);
-        for (Product product : products.subList(0, numberOfProducts)) {
+        for (Product product : products.subList(0, Math.min(products.size(), numberOfProducts))) {
             listBuilder
                     .addElement(product.getName())
                     .subtitle(product.getDescription())

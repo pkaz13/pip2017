@@ -69,7 +69,7 @@ public class FindKeywordToAskProcessor implements PipelineProcessor {
      */
     Keyword findKeywordToAsk(List<Product> products, List<Keyword> wantedKeywords) {
         if (CollectionUtils.isEmpty(products)) {
-            throw new InvalidParameterException("Prodcuts cannot be null or empty");
+            throw new InvalidParameterException("Products cannot be null or empty");
         }
 
         int desiredCount = products.size() / 2;

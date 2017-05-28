@@ -47,7 +47,7 @@ import static org.junit.Assert.*;
 @Log4j2
 public class ProductServiceTest {
 
-    @Value("${messenger.recommendation.products-amount}")
+    @Value("${messenger.recommendation.products-amount:3}")
     Integer expectedNumberOfProducts;
     @Autowired
     private ProductService productService;

@@ -43,7 +43,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
     @Autowired
     private ProductService productService;
 
-    @Value("${messenger.recommendation.products-amount}")
+    @Value("${messenger.recommendation.products-amount:3}")
     private Integer numberOfProducts;
 
     @Override
