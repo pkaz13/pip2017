@@ -20,10 +20,10 @@ import com.github.messenger4j.receive.events.TextMessageEvent;
 import com.github.messenger4j.receive.handlers.TextMessageEventHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineManager;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
+import pl.hycom.pip.messanger.repository.model.Keyword;
 
 import javax.inject.Inject;
 import java.util.HashMap;

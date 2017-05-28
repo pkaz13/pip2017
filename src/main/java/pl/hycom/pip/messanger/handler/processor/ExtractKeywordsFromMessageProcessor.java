@@ -22,10 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.hycom.pip.messanger.handler.StringToKeywordConverter;
-import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
+import pl.hycom.pip.messanger.repository.model.Keyword;
 
 import java.util.Arrays;
 import java.util.List;
