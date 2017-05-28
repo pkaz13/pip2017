@@ -23,17 +23,14 @@ import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.model.Product;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by szale_000 on 2017-04-06.
  */
-public class ExtraKeywordProcessorTest {
+public class FindKeywordToAskProcessorTest {
 
-    private ExtraKeywordProcessor sut = new ExtraKeywordProcessor();
+    private FindKeywordToAskProcessor sut = new FindKeywordToAskProcessor();
 
     private List<Keyword> keywords;
 
@@ -62,8 +59,10 @@ public class ExtraKeywordProcessorTest {
         products.add(createProduct(Arrays.asList(keywords.get(1), keywords.get(2), keywords.get(3))));
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(4))));
+
+        List<Keyword> keywordsWanted = Collections.emptyList();
         // when
-        Keyword foundKeyword = sut.findKeyKeyword(products);
+        Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
         // then
         Assertions.assertThat(foundKeyword).isEqualTo(keywords.get(4));
     }
@@ -81,18 +80,60 @@ public class ExtraKeywordProcessorTest {
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(3), keywords.get(2))));
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(3))));
 
+        List<Keyword> keywordsWanted = Collections.emptyList();
         // when
-        Keyword foundKeyword = sut.findKeyKeyword(products);
+        Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
         // then
         Assertions.assertThat(foundKeyword).isEqualTo(keywords.get(3));
+    }
+
+    @Test
+    public void findsClosestToMiddleBesidesWantedKeyword() throws Exception {
+        // given
+        final List<Product> products = new ArrayList<>();
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(4), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(3), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(3), keywords.get(4), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(3), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(3))));
+
+        List<Keyword> keywordsWanted = Collections.singletonList(keywords.get(3));
+        // when
+        Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
+        // then
+        Assertions.assertThat(foundKeyword).isEqualTo(keywords.get(1));
+    }
+
+    @Test
+    public void findsNullIfAllKeywordsAreWanted() throws Exception {
+        // given
+        final List<Product> products = new ArrayList<>();
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(3), keywords.get(1), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(3), keywords.get(2))));
+        products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(3))));
+
+        List<Keyword> keywordsWanted = keywords;
+        // when
+        Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
+        // then
+        Assertions.assertThat(foundKeyword).isNull();
     }
 
     @Test
     public void throwsExceptionWhenEmptyList() throws Exception {
         //given
         List<Product> products = new ArrayList<>();
+        List<Keyword> keywordsWanted = Collections.emptyList();
         //when
-        Throwable thrown = Assertions.catchThrowable(() -> sut.findKeyKeyword(products));
+        Throwable thrown = Assertions.catchThrowable(() -> sut.findKeywordToAsk(products, keywordsWanted));
         //then
         Assertions.assertThat(thrown).isInstanceOf(InvalidParameterException.class);
     }
@@ -101,8 +142,9 @@ public class ExtraKeywordProcessorTest {
     public void throwsExceptionWhenNullList() throws Exception {
         //given
         List<Product> products = null;
+        List<Keyword> keywordsWanted = Collections.emptyList();
         //when
-        Throwable thrown = Assertions.catchThrowable(() -> sut.findKeyKeyword(products));
+        Throwable thrown = Assertions.catchThrowable(() -> sut.findKeywordToAsk(products, keywordsWanted));
         //then
         Assertions.assertThat(thrown).isInstanceOf(InvalidParameterException.class);
     }
