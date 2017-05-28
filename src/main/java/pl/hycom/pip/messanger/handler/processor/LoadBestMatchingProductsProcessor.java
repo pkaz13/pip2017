@@ -17,6 +17,7 @@
 package pl.hycom.pip.messanger.handler.processor;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,6 @@ import pl.hycom.pip.messanger.model.Product;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
-import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import java.security.InvalidParameterException;
@@ -43,9 +43,6 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private KeywordService keywordService;
-
     @Value("${messenger.recommendation.products-amount}")
     private Integer numberOfProducts;
 
@@ -54,12 +51,9 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
         log.info("Started process of LoadBestMatchingProductsProcessor");
 
         @SuppressWarnings("unchecked")
-        Set<String> keywordsStr = ctx.get(KEYWORDS, Set.class);
+        List<Keyword> keywords = ctx.get(KEYWORDS, List.class);
         @SuppressWarnings("unchecked")
-        Set<String> excludedKeywordsStr = ctx.get(KEYWORDS_EXCLUDED, Set.class);
-
-        List<Keyword> keywords = convertStringsToKeywords(keywordsStr);
-        List<Keyword> excludedKeywords = convertStringsToKeywords(excludedKeywordsStr);
+        List<Keyword> excludedKeywords = ctx.get(KEYWORDS_EXCLUDED, List.class);
 
         List<Product> products = tryFindBestMatchingProducts(keywords, excludedKeywords);
         ctx.put(PRODUCTS, products);
@@ -67,23 +61,15 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
         List<Keyword> keywordsToBeSaved = getKeywordsThatWereInAnyProduct(products, keywords);
         ctx.put(KEYWORDS_FOUND, keywordsToBeSaved);
 
-        return 1;
-    }
-
-    public List<Keyword> convertStringsToKeywords(Set<String> keywords) {
-        if (keywords == null || keywords.isEmpty()) {
-            return Collections.emptyList();
+        if (products.size() > numberOfProducts) {
+            return FIND_KEYWORD_TO_ASK;
+        } else {
+            return SHOW_PRODUCTS;
         }
-
-        // This stream maps Array of strings into list of keywords
-        return keywords.stream()
-                .map(s -> keywordService.findKeywordByWord(s))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
     }
 
     List<Product> tryFindBestMatchingProducts(List<Keyword> keywordsList, List<Keyword> excludedKeywords) {
-        if (keywordsList == null || keywordsList.isEmpty()) {
+        if (CollectionUtils.isEmpty(keywordsList)) {
             return Collections.emptyList();
         }
         if (excludedKeywords == null) {

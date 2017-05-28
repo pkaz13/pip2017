@@ -29,7 +29,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import pl.hycom.pip.messanger.model.Keyword;
 import pl.hycom.pip.messanger.model.Product;
-import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import java.security.InvalidParameterException;
@@ -44,9 +43,6 @@ public class LoadBestMatchingProductsProcessorTest {
 
     @Mock
     private ProductService productService;
-
-    @Mock
-    private KeywordService keywordService;
 
     @InjectMocks
     private LoadBestMatchingProductsProcessor processor;
