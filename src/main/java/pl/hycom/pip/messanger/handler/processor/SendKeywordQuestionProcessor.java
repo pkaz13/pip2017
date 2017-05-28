@@ -26,10 +26,12 @@ public class SendKeywordQuestionProcessor implements PipelineProcessor {
     @Override
     public int runProcess(PipelineContext ctx) throws PipelineException {
         log.info("Started process of SendKeywordQuestionProcessor");
+        StringBuilder messageBuilder = new StringBuilder();
 
         List<QuickReply> quickReplies = getQuickReplies();
         String id = ctx.get(SENDER_ID, String.class);
-        String message = "Keyword: test";
+        String keywordToBeAsked = ctx.get(KEYWORD_TO_BE_ASKED, String.class);
+        String message = messageBuilder.append("Keyword: ").append(keywordToBeAsked).toString();
 
         sendQuickReply(id, message, quickReplies);
 
