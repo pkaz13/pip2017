@@ -59,7 +59,7 @@ public class User implements UserDetails {
     @Column
     private boolean enabled = true;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
     @Override

@@ -42,7 +42,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     private void initializeAdminUser() {
         log.info("initializeAdminUser method invoked");
 
-        User user = new User("admin", "admin", "admin@admin.com", "admin", "+48923456783");
+        User user = new User("admin", "admin", "admin@example.com", "admin", "+48923456783");
         Optional<Role> role = roleService.findRoleByName("ROLE_ADMIN");
         role.ifPresent(r -> {
             user.setRoles(Collections.singletonList(r));

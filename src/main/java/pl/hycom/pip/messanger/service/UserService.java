@@ -2,17 +2,19 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.controller.model.ProductDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.repository.RoleRepository;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ public class UserService implements UserDetailsService {
     private MapperFacade orikaMapper;
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public List<UserDTO> findAllUsers() {
         log.info("Searching all users");
@@ -49,8 +52,16 @@ public class UserService implements UserDetailsService {
 
     public User addUser(User user) {
         log.info("Adding user: " + user);
-
+        setUserRoleIfNoneGranted(user);
         return userRepository.save(user);
+    }
+
+    private void setUserRoleIfNoneGranted(User user) {
+        log.info("setUserRoleIfNoneGranted method invoked for user: " + user);
+        if (CollectionUtils.isEmpty(user.getAuthorities())) {
+            roleRepository.findByAuthorityIgnoreCase("ROLE_USER")
+                    .ifPresent(role -> user.setRoles(Collections.singletonList(role)));
+        }
     }
 
     public User updateUser(User user) {
