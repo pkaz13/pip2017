@@ -2,6 +2,7 @@ package pl.hycom.pip.messanger.controller.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -14,22 +15,23 @@ import javax.validation.constraints.Size;
 public class UserDTO {
     private Integer id;
 
-    @Size(min = 3, max = 40)
-    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
+    @Size(min = 2, max = 40, message = "{validation.error.firstname.size}")
+    @Pattern(regexp = "^\\p{L}{2,40}$")
     private String firstName;
 
-    @Size(min = 3, max = 40)
-    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
+    @Size(min = 2, max = 40, message = "{validation.error.lastname.size}")
+    @Pattern(regexp = "^\\p{L}{2,40}$")
     private String lastName;
 
+    @NonNull
     @Size(min = 6, max = 40)
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", message = "{validation.error.email.format}")
     private String email;
 
     @Size(min = 8, max = 64)
     private String password;
 
-    @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$")
+    @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$", message = "{validation.error.phonenumber.format}")
     private String phoneNumber;
 
     private String profileImageUrl;

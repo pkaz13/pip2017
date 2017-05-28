@@ -57,8 +57,8 @@ public class UserService implements UserDetailsService {
     public User updateUser(User user) throws EmailNotUniqueException{
         log.info("Updating user: " + user);
         User userToUpdate = userRepository.findOne(user.getId());
-        userToUpdate.setFirstname(user.getFirstname());
-        userToUpdate.setLastname(user.getLastname());
+        userToUpdate.setFirstName(user.getFirstName());
+        userToUpdate.setFirstName(user.getLastName());
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
         userToUpdate.setEmail(user.getEmail().toLowerCase());
         return trySaveUser(userToUpdate);

@@ -27,16 +27,17 @@ public class User implements UserDetails {
 
     @NotNull
     @Column(length = 40)
-    @Size(min = 3, max = 40)
-    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
+    @Size(min = 2, max = 40)
+    @Pattern(regexp = "^\\p{L}{2,40}$")
     private String firstName;
 
     @NotNull
     @Column(length = 40)
-    @Size(min = 3, max = 40)
-    @Pattern(regexp = "^[a-zA-ZĘÓĄŚŁŹŻŃĆęóąśźżćńł]{3,40}$")
+    @Size(min = 2, max = 40)
+    @Pattern(regexp = "^\\p{L}{2,40}$")
     private String lastName;
 
+    @NonNull
     @NotNull
     @Column(length = 40, unique = true)
     @Size(min = 6, max = 40)
@@ -46,6 +47,14 @@ public class User implements UserDetails {
     @Column(length = 64)
     @Size(min = 8, max = 64)
     private String password;
+
+    @NotNull
+    @Column
+    @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$")
+    private String phoneNumber;
+
+    @Column
+    private String profileImageUrl;
 
     @Column
     private boolean credentialsNonExpired = true;
@@ -62,6 +71,8 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
+    public User() {}
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
@@ -71,12 +82,4 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
-
-    @NotNull
-    @Column
-    @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$")
-    private String phoneNumber;
-
-    @Column
-    private String profileImageUrl;
 }
