@@ -16,20 +16,8 @@
 
 package pl.hycom.pip.messanger.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;

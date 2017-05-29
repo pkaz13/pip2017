@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.controller.model.ProductDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
