@@ -35,7 +35,7 @@ public class SendKeywordQuestionProcessor implements PipelineProcessor {
         String id = ctx.get(SENDER_ID, String.class);
         Keyword keywordToBeAsked = ctx.get(KEYWORD_TO_BE_ASKED, Keyword.class);
         List<Keyword> keywords = ctx.get(KEYWORDS, List.class);
-        List<Keyword> excludedKeywords = ctx.get(KEYWORDS, List.class);
+        List<Keyword> excludedKeywords = ctx.get(KEYWORDS_EXCLUDED, List.class);
         String message = messageBuilder.append("Keyword: ").append(keywordToBeAsked.getWord()).toString();
         String payload = getPayload(keywords, excludedKeywords);
         List<QuickReply> quickReplies = getQuickReplies(payload);
