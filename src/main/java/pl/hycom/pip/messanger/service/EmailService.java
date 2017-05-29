@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.mail.EmailSender;
+import pl.hycom.pip.messanger.model.User;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -31,7 +32,7 @@ public class EmailService implements EmailSender {
         javaMailSender.send(message);
     }
 
-    public MimeMessage constructEmail(String to, String subject, String content) {
+    private MimeMessage constructEmail(String to, String subject, String content) {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -45,6 +46,11 @@ public class EmailService implements EmailSender {
             e.printStackTrace();
         }
         return message;
+    }
+
+    public MimeMessage constructResetTokenEmail(String contextPath, User user, String token) {
+        String url = contextPath + "/changePassword/token/" + token;
+        return constructEmail(user.getEmail(), "Reset password", url);
     }
 
 }

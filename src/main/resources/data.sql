@@ -49,7 +49,7 @@ values
 
 insert into Users (id, firstname, lastname, email, password)
 VALUES
-(1, 'Adam', 'Adamski', 'adamski@example.com', 'haslo123'),
+(1, 'Adam', 'Adamski', 'messenger.recommendations2017@gmail.com', 'haslo123'),
 (2, 'Anna', 'Adamska', 'adamska@example.com', 'haslo123'),
 (3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123'),
 (4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123'),
