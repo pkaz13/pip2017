@@ -17,16 +17,17 @@
 package pl.hycom.pip.messanger.repository.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created by maciek on 23.05.17.
  */
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "ROLES")
 public class Role implements GrantedAuthority {
 
@@ -39,8 +40,10 @@ public class Role implements GrantedAuthority {
     @Column
     private String authority;
 
-    public Role() {}
-
     public Role(String roleName) { authority = roleName; }
+
+    public enum RoleName {
+        ROLE_ADMIN, ROLE_USER
+    }
 
 }

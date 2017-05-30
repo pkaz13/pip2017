@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.repository.RoleRepository;
+import pl.hycom.pip.messanger.repository.model.Role;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 
@@ -59,8 +60,8 @@ public class UserService implements UserDetailsService {
     private void setUserRoleIfNoneGranted(User user) {
         log.info("setUserRoleIfNoneGranted method invoked for user: " + user);
         if (CollectionUtils.isEmpty(user.getAuthorities())) {
-            roleRepository.findByAuthorityIgnoreCase("ROLE_USER")
-                    .ifPresent(role -> user.setRoles(Collections.singletonList(role)));
+            roleRepository.findByAuthorityIgnoreCase(Role.RoleName.ROLE_USER.name())
+                    .ifPresent(role -> user.setRoles(Collections.singleton(role)));
         }
     }
 

@@ -42,13 +42,15 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Autowired
     private RoleService roleService;
 
-    // todo zmienic hardocodowanie rol
+    private final String ROLE_ADMIN = Role.RoleName.ROLE_ADMIN.name();
+    private final String ROLE_USER = Role.RoleName.ROLE_USER.name();
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         log.info("onApplicationEvent method invoked");
 
-        initializeRole("ROLE_ADMIN");
-        initializeRole("ROLE_USER");
+        initializeRole(ROLE_ADMIN);
+        initializeRole(ROLE_USER);
 
         if (userService.findAllUsers().isEmpty()) {
             initializeAdminUser();
@@ -59,9 +61,9 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         log.info("initializeAdminUser method invoked");
 
         User user = new User("admin", "admin", "admin@example.com", "admin", "+48923456783");
-        Optional<Role> role = roleService.findRoleByName("ROLE_ADMIN");
+        Optional<Role> role = roleService.findRoleByName(ROLE_ADMIN);
         if (role.isPresent()) {
-            user.setRoles(Collections.singletonList(role.get()));
+            user.setRoles(Collections.singleton(role.get()));
             userService.addUser(user);
         } else {
             log.warn("ApplicationStartup.initializeAdminUser() - Initializing admin failed!!");

@@ -61,6 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .withUser("admin").password("admin").roles(ROLE_ADMIN)
 //                .and()
 //                .withUser("test").password("test").roles(ROLE_ACTUATOR);
+        // todo dodac metode passwordEncoder
         authManagerBuilder.userDetailsService(userService);
     }
 
