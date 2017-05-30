@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
-import pl.hycom.pip.messanger.model.User;
+import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.EmailService;
 import pl.hycom.pip.messanger.service.UserService;
 
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by Piotr on 21.05.2017.
@@ -70,11 +72,7 @@ public class ResetController {
         String userMail = request.getParameter("email");
         String newPassword = request.getParameter("newPassword");
 
-        User user = userService.findUserByEmail(userMail);
-        userService.changePassword(user, newPassword);
-        /*if(user.getEmail() == "messenger.recommendations2017@gmail.com") {
-            userService.changePassword(user, newPassword);
-        }*/
+
         return "redirect:/reset/forgetPassword";
     }
 
@@ -83,6 +81,12 @@ public class ResetController {
         URL requestURL = new URL(request.getRequestURL().toString());
         String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
         return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
+    }
+
+    private void prepareModel(Model model, UserDTO user) {
+        List<UserDTO> allUsers = userService.findAllUsers();
+        model.addAttribute("users", allUsers);
+        model.addAttribute("userForm", user);
     }
 
 }

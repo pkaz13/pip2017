@@ -62,22 +62,10 @@ public class User implements UserDetails {
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
     @NotNull
     @Column
     @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$")
     private String phoneNumber;
-
     @Column
     private String profileImageUrl;
 
@@ -87,5 +75,15 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 }

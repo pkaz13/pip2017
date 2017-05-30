@@ -36,14 +36,12 @@ import java.util.Optional;
 @Slf4j
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private RoleService roleService;
-
     private final String ROLE_ADMIN = Role.RoleName.ROLE_ADMIN.name();
     private final String ROLE_USER = Role.RoleName.ROLE_USER.name();
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {

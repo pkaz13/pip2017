@@ -65,7 +65,6 @@ public class GreetingController {
     private MessageSource bundleMessageSource;
 
 
-
     @PostMapping("/admin/greetings")
     public String addGreetings(@Valid GreetingListWrapper greetingListWrapper) {
         greetingService.addGreetings(greetingListWrapper);
@@ -91,7 +90,7 @@ public class GreetingController {
             greetingService.addGreeting(greeting);
             return "redirect:" + ADMIN_GREETINGS + "?success=" + flag;
         } catch (MessengerApiException | MessengerIOException e) {
-            flag=false;
+            flag = false;
             log.error("Error during changing greeting message", e);
             addError(bindingResult, "unexpectedError");
             prepareModel(model, greeting);
@@ -100,7 +99,6 @@ public class GreetingController {
         }
 
     }
-
 
 
     @DeleteMapping("/admin/deleteGreeting/{locale}")
@@ -120,7 +118,6 @@ public class GreetingController {
 
         return VIEW_GREETINGS;
     }
-
 
 
     private void addError(BindingResult bindingResult, String messageCode, Object... args) {
@@ -161,7 +158,6 @@ public class GreetingController {
     private void addError(BindingResult bindingResult, String objectName, String messageCode, Object... args) {
         bindingResult.addError(new ObjectError(objectName, getMessage(messageCode, args)));
     }
-
 
 
     private List<com.github.messenger4j.profile.Greeting> getGreetingsWithDefaultLocale() {

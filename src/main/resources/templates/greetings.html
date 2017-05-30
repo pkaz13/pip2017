@@ -27,8 +27,8 @@
         <h1 class="page-header">Wiadomość powitalna na mesengerze</h1>
     </div>
 	<div class="row">
-    <!--/*@thymesVar id="greetingListWrapper" type="pl.hycom.pip.messanger.model.GreetingListWrapper"*/-->
-		<form action="#" th:action="@{/admin/greetings}" th:object="${greetingListWrapper}" class="clearfix">
+        <!--/*@thymesVar id="greetingListWrapper" type="pl.hycom.pip.messanger.model.GreetingListWrapper"*/-->
+        <form action="#" th:action="@{/admin/greetings}" th:object="${greetingListWrapper}" class="clearfix">
             <div class="alert alert-danger" th:if="${errors}">
                 <p th:each="err : ${errors}" th:text="${err}">...</p>
             </div>
@@ -38,7 +38,9 @@
 
 
                 <textarea class="form-control message-item" name="message" th:field="*{greetings[__${stat.index}__].text}" th:maxlength="160"></textarea>
-                <button type="button" class="btn btn-danger btn-xs" th:attr="data-greeting-locale=*{greetings[__${stat.index}__].locale}"  data-toggle="modal" data-target="#confirm-delete-modal" >
+                <button type="button" class="btn btn-danger btn-xs"
+                        th:attr="data-greeting-locale=*{greetings[__${stat.index}__].locale}" data-toggle="modal"
+                        data-target="#confirm-delete-modal">
                     <span class="glyphicon glyphicon-trash"></span>
                 </button>
 	        </div>
@@ -48,7 +50,7 @@
 	            <button type="submit" class="btn btn-primary">Zapisz</button>
 
 
-	        </div>
+            </div>
 	    </form>
 	</div>
 
@@ -105,11 +107,13 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirm-delete-modal" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal fade" id="confirm-delete-modal" tabindex="-1" role="dialog" aria-labelledby="edit"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
                     <h4 class="modal-title custom_align" id="Heading">Potwierdź usunięcie produktu</h4>
                 </div>
                 <div class="modal-body">
@@ -130,9 +134,6 @@
     </div>
 
 
-
-
-    
 </div>
 </body>
 </html>

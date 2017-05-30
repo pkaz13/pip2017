@@ -16,16 +16,12 @@
 
 package pl.hycom.pip.messanger.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by maciek on 06.03.17.

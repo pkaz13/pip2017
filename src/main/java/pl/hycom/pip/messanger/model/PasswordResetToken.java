@@ -1,9 +1,9 @@
 package pl.hycom.pip.messanger.model;
 
 import lombok.Data;
+import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**

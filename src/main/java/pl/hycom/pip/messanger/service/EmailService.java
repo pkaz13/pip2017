@@ -7,7 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.mail.EmailSender;
-import pl.hycom.pip.messanger.model.User;
+import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;

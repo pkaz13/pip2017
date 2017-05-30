@@ -54,7 +54,8 @@ VALUES
 (3, 'Jan', 'Kowalski', 'kowalski@example.com', 'haslo123', '+48789987789', true, true, true, true),
 (4, 'Zofia', 'Kowalska', 'kowalska@example.com', 'haslo123', '+48789987789', true, true, true, true),
 (5, 'Ewa', 'Kowalska', 'kowalskaEwa@example.com', 'haslo123', '+48789987789', true, true, true, true),
-(6, 'Adam', 'Adamski', 'adamski@example.com', 'haslo123', '+48789987789', true, true, true, true);
+(6, 'Adam', 'Adamski', 'adamski@example.com', 'haslo123', '+48789987789', true, true, true, true),
+(7, 'Jan', 'Nowak', 'messenger.recommendations2017@gmail.com', 'haslo123', '+48789987789', true, true, true, true);
 
 insert into ROLES (id, authority) VALUES
   (1, 'ROLE_ADMIN'),
