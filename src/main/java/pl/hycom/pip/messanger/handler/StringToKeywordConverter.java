@@ -28,7 +28,7 @@ public class StringToKeywordConverter {
             return Collections.emptyList();
         }
 
-        // This stream maps Array of strings into list of keywords
+        // This stream maps set of strings into list of keywords
         return keywords.stream()
                 .map(s -> keywordService.findKeywordByWord(s))
                 .filter(Objects::nonNull)
