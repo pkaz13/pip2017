@@ -115,11 +115,15 @@ public class UserService implements UserDetailsService {
         tokenRepository.save(resetToken);
     }
 
-    public boolean validatePasswordResetToken(String token) {
+    public boolean validatePasswordResetToken(String token, String email) {
         log.info("validatePasswordResetToken method invoke");
         PasswordResetToken resetToken = tokenRepository.findByToken(token);
-
+        User user = resetToken.getUser();
         if (resetToken == null) {
+            return false;
+        }
+
+        if (!user.getEmail().equals(email)) {
             return false;
         }
 

@@ -46,7 +46,7 @@ public class EmailService implements EmailSender {
     }
 
     public MimeMessage constructResetTokenEmail(String contextPath, User user, String token) {
-        String url = contextPath + "/changePassword/token/" + token;
+        String url = contextPath + "/change/password/token/" + token;
         return constructEmail(user.getEmail(), "Reset password", url);
     }
 

@@ -5,6 +5,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import pl.hycom.pip.messanger.service.UserService;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -37,43 +40,66 @@ public class ResetController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/reset/forgetPassword")
+    @GetMapping("/reset/forget/password")
     public String getForgetPasswordView() {
         return FORGET_VIEW;
     }
 
-    @RequestMapping("/send")
-    public String sendEmail(HttpServletRequest request) throws MalformedURLException {
+    @PostMapping("/send")
+    public String sendEmail(HttpServletRequest request, Model model) throws MalformedURLException {
         String mail = request.getParameter("email");
 
+        if (mail == null) {
+            model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email, dumbass."));
+            return "redirect:/reset/forget/password";
+        }
         User user = userService.findUserByEmail(mail);
 
         if(user == null) {
-            return "redirect:/reset/forgetPassword";
+            model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
+            return "redirect:/reset/forget/password";
         }
 
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
         emailService.sendEmail(emailService.constructResetTokenEmail(getURLBase(request), user, token));
+        model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
         return "redirect:/login";
     }
 
-    @GetMapping("/changePassword/token/{token}")
+    @GetMapping("/change/password/token/{token}")
     public String getChangePasswordView(@PathVariable("token") final String token, Model model) {
-        PasswordResetToken resetToken = userService.getTokenByToken(token);
-        model.addAttribute("resetToken", resetToken);
-
+        model.addAttribute("resetToken", userService.getTokenByToken(token));
         return "changePassword";
     }
 
-    @PostMapping(value = "/savePassword")
-    public String changePassword(HttpServletRequest request) {
+    @PostMapping(value = "/change/password")
+    public String changePassword(@Valid PasswordResetToken token, BindingResult bindingResult, Model model,  HttpServletRequest request) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("token", token);
+            log.info("Reset token validation error." + bindingResult.getAllErrors());
+            return "changePassword";
+        }
 
         String userMail = request.getParameter("email");
         String newPassword = request.getParameter("newPassword");
 
+        User user = userService.findUserByEmail(userMail);
+        PasswordResetToken resetToken = userService.getTokenByToken(token.getToken());
 
-        return "redirect:/reset/forgetPassword";
+        if (token == null) {
+            log.info("token is null");
+            return "redirect:/reset/forget/password";
+        }
+
+        if (userService.validatePasswordResetToken(token.getToken(), userMail)) {
+                userService.changePassword(user, newPassword);
+                log.info("User's password changed");
+                return "redirect:/login";
+        }
+        log.info("Failed to change user's password");
+        return "redirect:/reset/forget/password";
     }
 
     private String getURLBase(HttpServletRequest request) throws MalformedURLException {
@@ -82,11 +108,4 @@ public class ResetController {
         String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
         return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
     }
-
-    private void prepareModel(Model model, UserDTO user) {
-        List<UserDTO> allUsers = userService.findAllUsers();
-        model.addAttribute("users", allUsers);
-        model.addAttribute("userForm", user);
-    }
-
 }
