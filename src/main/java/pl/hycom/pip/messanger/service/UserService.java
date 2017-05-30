@@ -2,6 +2,7 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +15,10 @@ import pl.hycom.pip.messanger.repository.PasswordResetTokenRepository;
 import pl.hycom.pip.messanger.repository.UserRepository;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -92,6 +96,10 @@ public class UserService {
 
     public boolean validatePasswordResetToken(String token) {
         log.info("validatePasswordResetToken method invoke");
+        if (StringUtils.isEmpty(token)) {
+            return false;
+        }
+
         PasswordResetToken resetToken = tokenRepository.findByToken(token);
 
         if(resetToken == null) {

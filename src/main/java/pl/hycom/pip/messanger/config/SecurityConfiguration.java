@@ -32,10 +32,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/savePassword").permitAll()//hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
-                .antMatchers("/db-admin/console/**", "/reset/forgetPassword", "/changePassword/**").permitAll()
+                .antMatchers("/db-admin/console/**", "/reset/forgetPassword", "/changePassword/**", "/send", "/savePassword").permitAll()
                 .antMatchers("/admin/**").hasRole(ROLE_ADMIN)
-                .antMatchers("/send").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
