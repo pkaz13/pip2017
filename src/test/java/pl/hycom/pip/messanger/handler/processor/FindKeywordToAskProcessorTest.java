@@ -50,7 +50,7 @@ public class FindKeywordToAskProcessorTest {
     }
 
     @Test
-    public void findsExactlyInTheMiddle() throws Exception {
+    public void findKeywordThatAppearsInHalfOfProducts() throws Exception {
         // given
         final List<Product> products = new ArrayList<>();
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
@@ -68,7 +68,7 @@ public class FindKeywordToAskProcessorTest {
     }
 
     @Test
-    public void findsClosestToMiddle() throws Exception {
+    public void findKeywordThatAppearsInClosestToHalfOfProducts() throws Exception {
         // given
         final List<Product> products = new ArrayList<>();
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
@@ -130,7 +130,7 @@ public class FindKeywordToAskProcessorTest {
     @Test
     public void throwsExceptionWhenEmptyList() throws Exception {
         //given
-        List<Product> products = new ArrayList<>();
+        List<Product> products = Collections.emptyList();
         List<Keyword> keywordsWanted = Collections.emptyList();
         //when
         Throwable thrown = Assertions.catchThrowable(() -> sut.findKeywordToAsk(products, keywordsWanted));

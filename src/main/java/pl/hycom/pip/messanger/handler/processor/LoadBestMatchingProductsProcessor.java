@@ -99,7 +99,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
                     return commonKeywords.size();
                 }))
                 .entrySet().stream()
-                .sorted(Comparator.comparingInt(entry -> ((Map.Entry<Product, Integer>) entry).getValue()).reversed())
+                .sorted(Comparator.<Map.Entry<Product, Integer>>comparingInt(Map.Entry::getValue).reversed())
                 .collect(Collectors.toList());
 
         if (!productsWithKeywords.isEmpty()) {
