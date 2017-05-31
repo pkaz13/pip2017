@@ -6,10 +6,12 @@ import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.mail.Message;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.PasswordResetTokenRepository;
 import pl.hycom.pip.messanger.repository.RoleRepository;
@@ -120,33 +122,42 @@ public class UserService implements UserDetailsService {
         PasswordResetToken resetToken = tokenRepository.findByToken(token);
         User user = resetToken.getUser();
         if (resetToken == null) {
+            log.info("Token is invalid");
             return false;
         }
 
         if (!user.getEmail().equals(email)) {
+            log.info("Token is invalid");
             return false;
         }
 
         Date currentDate = new Date();
         if (currentDate.compareTo(resetToken.getExpiryDate()) > 0) {
+            log.info("Token expired");
             return false;
         }
+        tokenRepository.delete(resetToken);
+        log.info("Token is valid");
+        log.info("token " + token + " removed from database");
         return true;
     }
 
     public void changePassword(User user, String password) {
-        log.info("changePassword method invoked");
         User userToUpdate = userRepository.findOne(user.getId());
         userToUpdate.setPassword(password);
         userRepository.save(userToUpdate);
-    }
-
-    public User getUserByToken(String token) {
-        PasswordResetToken resetToken = tokenRepository.findByToken(token);
-        return resetToken.getUser();
+        log.info("User " + user.getUsername() + " changed password for " + password);
     }
 
     public PasswordResetToken getTokenByToken(String token) {
         return tokenRepository.findByToken(token);
+    }
+
+    public SimpleMailMessage constructResetTokenEmail(String contextPath, User user, String token) {
+        List<String> to = new ArrayList<>();
+        to.add(user.getEmail());
+        String url = contextPath + "/change/password/token/" + token;
+        Message message = new Message("messenger.recommendations2017@gmail.com", to, "Reset password", url);
+        return message.constructEmail();
     }
 }

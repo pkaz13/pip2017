@@ -10,8 +10,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.EmailService;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created by Piotr on 21.05.2017.
@@ -62,7 +59,7 @@ public class ResetController {
 
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
-        emailService.sendEmail(emailService.constructResetTokenEmail(getURLBase(request), user, token));
+        emailService.sendEmail(userService.constructResetTokenEmail(getURLBase(request), user, token));
         model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
         return "redirect:/login";
     }
@@ -77,7 +74,7 @@ public class ResetController {
     public String changePassword(@Valid PasswordResetToken token, BindingResult bindingResult, Model model,  HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("token", token);
+            model.addAttribute("resetToken", token);
             log.info("Reset token validation error." + bindingResult.getAllErrors());
             return "changePassword";
         }
@@ -86,7 +83,6 @@ public class ResetController {
         String newPassword = request.getParameter("newPassword");
 
         User user = userService.findUserByEmail(userMail);
-        PasswordResetToken resetToken = userService.getTokenByToken(token.getToken());
 
         if (token == null) {
             log.info("token is null");
