@@ -46,7 +46,7 @@ public class ResetController {
     public String sendEmail(HttpServletRequest request, Model model) throws MalformedURLException {
         String mail = request.getParameter("email");
 
-        if (mail == null) {
+        if (mail.isEmpty()) {
             model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email, dumbass."));
             return "redirect:/reset/forget/password";
         }
@@ -73,14 +73,19 @@ public class ResetController {
     @PostMapping(value = "/change/password")
     public String changePassword(@Valid PasswordResetToken token, BindingResult bindingResult, Model model,  HttpServletRequest request) {
 
+        String userMail = request.getParameter("email");
+        String newPassword = request.getParameter("newPassword");
+
+        if (userMail.isEmpty() || newPassword.isEmpty()) {
+            model.addAttribute("resetToken", token);
+            return "changePassword";
+        }
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("resetToken", token);
             log.info("Reset token validation error." + bindingResult.getAllErrors());
             return "changePassword";
         }
-
-        String userMail = request.getParameter("email");
-        String newPassword = request.getParameter("newPassword");
 
         User user = userService.findUserByEmail(userMail);
 
