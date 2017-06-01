@@ -42,10 +42,16 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList()), UserDTO.class);
     }
 
+    public UserDTO findUserById(Integer id) {
+        log.info("Searching for user with id[" + id + "]");
+
+        return orikaMapper.map(userRepository.findOne(id),UserDTO.class);
+    }
+
     public UserDTO addOrUpdateUser(UserDTO user) {
         User userToUpdateOrAdd = orikaMapper.map(user, User.class);
         if (user.getId() != null && user.getId() != 0) {
-            return orikaMapper.map(updateUser(userToUpdateOrAdd), UserDTO.class);
+            return updateUser(user);
         } else {
             return orikaMapper.map(addUser(userToUpdateOrAdd), UserDTO.class);
         }
@@ -65,9 +71,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User updateUser(User user) {
+    public UserDTO updateUser(UserDTO user) {
         log.info("Updating user: " + user);
-        User userToUpdate = userRepository.findOne(user.getId());
+        User userToUpdate = userRepository.findOne(orikaMapper.map(user, User.class).getId());
         Optional<User> userByEmail = userRepository.findByEmail(user.getEmail());
         if (userByEmail.isPresent()) {
             log.info("User with email: " + user.getEmail() + " exists");
@@ -76,9 +82,9 @@ public class UserService implements UserDetailsService {
             userToUpdate.setLastName(user.getLastName());
             userToUpdate.setEmail(user.getEmail());
             userToUpdate.setPhoneNumber(user.getPhoneNumber());
-            return userRepository.save(userToUpdate);
+            return orikaMapper.map(userRepository.save(userToUpdate),UserDTO.class);
         }
-        return userToUpdate;
+        return orikaMapper.map(userToUpdate,UserDTO.class);
     }
 
     public void deleteUser(Integer id) {
