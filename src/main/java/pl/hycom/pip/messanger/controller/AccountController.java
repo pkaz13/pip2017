@@ -1,6 +1,7 @@
 package pl.hycom.pip.messanger.controller;
 
 import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -27,11 +28,14 @@ public class AccountController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MapperFacade orikaMapper;
+
     @GetMapping("/admin/account")
     public String showLoggedUserAccount(Model model, @AuthenticationPrincipal User user)
     {
         if(user!=null) {
-            model.addAttribute("user", user);
+            model.addAttribute("user", orikaMapper.map(user,UserDTO.class));
             return ACCOUNT_VIEW;
         }
         else {

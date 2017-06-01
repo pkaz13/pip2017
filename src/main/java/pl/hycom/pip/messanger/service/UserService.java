@@ -75,7 +75,7 @@ public class UserService implements UserDetailsService {
         log.info("Updating user: " + user);
         User userToUpdate = userRepository.findOne(orikaMapper.map(user, User.class).getId());
         Optional<User> userByEmail = userRepository.findByEmail(user.getEmail());
-        if (userByEmail.isPresent()) {
+        if (!(user.getEmail().equals(userToUpdate.getEmail())) && userByEmail.isPresent()) {
             log.info("User with email: " + user.getEmail() + " exists");
         } else {
             userToUpdate.setFirstName(user.getFirstName());
