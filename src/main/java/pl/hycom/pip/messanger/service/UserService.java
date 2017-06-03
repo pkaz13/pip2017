@@ -2,22 +2,26 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ma.glasnost.orika.MapperFacade;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.mail.Message;
+import pl.hycom.pip.messanger.model.PasswordResetToken;
+import pl.hycom.pip.messanger.repository.PasswordResetTokenRepository;
 import pl.hycom.pip.messanger.repository.RoleRepository;
+import pl.hycom.pip.messanger.repository.UserRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
 import pl.hycom.pip.messanger.repository.model.User;
-import pl.hycom.pip.messanger.repository.UserRepository;
 
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -29,11 +33,11 @@ import java.util.stream.StreamSupport;
 @Log4j2
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private MapperFacade orikaMapper;
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordResetTokenRepository tokenRepository;
+    @Autowired
+    private MapperFacade orikaMapper;
 
     public List<UserDTO> findAllUsers() {
         log.info("Searching all users");
@@ -92,5 +96,61 @@ public class UserService implements UserDetailsService {
         log.info("loadUserByUsername method from UserService invoked");
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User with email=%s was not found", email)));
+    }
+
+    public String generateToken() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
+    public User findUserByEmail(String email) {
+        log.info("findUserByEmail method from UserService invoked");
+        return userRepository.findByEmail(email).get();
+    }
+
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setUser(user);
+        resetToken.setToken(token);
+        resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+        tokenRepository.save(resetToken);
+    }
+
+    public boolean validatePasswordResetToken(String token, String email) {
+        log.info("validatePasswordResetToken method invoke");
+        PasswordResetToken resetToken = tokenRepository.findByToken(token);
+        User user = resetToken.getUser();
+        if (resetToken == null) {
+            log.info("Token is invalid");
+            return false;
+        }
+
+        if (!user.getEmail().equals(email)) {
+            log.info("Token is invalid");
+            return false;
+        }
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            log.info("Token expired");
+            return false;
+        }
+        tokenRepository.delete(resetToken);
+        log.info("token " + token + " is valid");
+        log.info("token " + token + " removed from database");
+        return true;
+    }
+
+    public void changePassword(User user, String password) {
+        User userToUpdate = userRepository.findOne(user.getId());
+        userToUpdate.setPassword(password);
+        userRepository.save(userToUpdate);
+        log.info("User " + user.getUsername() + " changed password for " + password);
+    }
+
+    public SimpleMailMessage constructResetTokenEmail(String contextPath, User user, String token) {
+        List<String> to = new ArrayList<>();
+        to.add(user.getEmail());
+        String url = contextPath + "/change/password/token/" + token;
+        Message message = new Message("messenger.recommendations2017@gmail.com", to, "Reset password", url);
+        return message.constructEmail();
     }
 }

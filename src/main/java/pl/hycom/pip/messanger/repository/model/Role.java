@@ -40,7 +40,9 @@ public class Role implements GrantedAuthority {
     @Column
     private String authority;
 
-    public Role(String roleName) { authority = roleName; }
+    public Role(String roleName) {
+        authority = roleName;
+    }
 
     public enum RoleName {
         ROLE_ADMIN, ROLE_USER
