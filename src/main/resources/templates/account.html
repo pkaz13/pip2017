@@ -14,12 +14,14 @@
         </div>
     </div>
     <div class="account-panel">
-        <form id="account-form" class="form-horizontal" th:action="@{/admin/account}" method="post" th:object="${user}" >
+        <form id="account-form" class="form-horizontal" th:action="@{/admin/account/update}" method="post" th:object="${user}" >
         <div id="image-container">
             <img id="profile-image" src="https://s-media-cache-ak0.pinimg.com/236x/61/2a/76/612a76240b86a3085ef5dd0624e0d172.jpg" th:src="${user.profileImageUrl != null} ? ${user.profileImageUrl} : 'https://s-media-cache-ak0.pinimg.com/236x/61/2a/76/612a76240b86a3085ef5dd0624e0d172.jpg'" />
         </div>
         <div id="inputs-container">
                 <fieldset>
+                    <!--id-->
+                    <input id="idInput" type="hidden" name="idInput" th:field="*{id}"/>
                     <!-- Imie-->
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="nameInput">Imię :</label>
@@ -49,7 +51,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="imageInput">Zdjęcie profilowe :</label>
                         <div class="col-md-5">
-                            <input id="imageInput" name="imageInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" />
+                            <input id="imageInput" name="imageInput" type="text" placeholder="" class="form-control input-md"  disabled="true" th:field="*{profileImageUrl}" />
                         </div>
                     </div>
 
@@ -57,7 +59,7 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="phoneInput">Numer telefonu :</label>
                         <div class="col-md-5">
-                            <input id="phoneInput" name="phoneInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" />
+                            <input id="phoneInput" name="phoneInput" type="text" placeholder="" class="form-control input-md" required="" disabled="true" th:field="*{phoneNumber}" />
                         </div>
                     </div>
 
