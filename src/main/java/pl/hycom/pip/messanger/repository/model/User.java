@@ -1,5 +1,6 @@
 package pl.hycom.pip.messanger.repository.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -88,4 +89,6 @@ public class User implements UserDetails {
         this.password = password;
         this.phoneNumber = phoneNumber;
     }
+
+
 }
