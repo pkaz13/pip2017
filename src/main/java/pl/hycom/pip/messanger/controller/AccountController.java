@@ -57,7 +57,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/admin/account")
+    @PostMapping("/admin/account/update")
     public String updateAccount(@Valid UserDTO user, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
             model.addAttribute("user", user);

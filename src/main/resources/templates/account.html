@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="account-panel">
-        <form id="account-form" class="form-horizontal" th:action="@{/admin/account}" method="post" th:object="${user}" >
+        <form id="account-form" class="form-horizontal" th:action="@{/admin/account/update}" method="post" th:object="${user}" >
         <div id="image-container">
             <img id="profile-image" src="https://s-media-cache-ak0.pinimg.com/236x/61/2a/76/612a76240b86a3085ef5dd0624e0d172.jpg" th:src="${user.profileImageUrl != null} ? ${user.profileImageUrl} : 'https://s-media-cache-ak0.pinimg.com/236x/61/2a/76/612a76240b86a3085ef5dd0624e0d172.jpg'" />
         </div>
