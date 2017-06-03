@@ -1,17 +1,17 @@
 package pl.hycom.pip.messanger.repository.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import lombok.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Monia on 2017-05-20.
@@ -19,6 +19,7 @@ import java.util.Collection;
 @Data
 @Entity
 @Table(name = "USERS")
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -71,16 +72,6 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
-    public User() {}
-
-    public User(String firstName, String lastName, String email, String password, String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
@@ -91,5 +82,21 @@ public class User implements UserDetails {
         return email;
     }
 
+    @NotNull
+    @Column
+    @Pattern(regexp = "^(\\+48)[5-9][0-9]{8}$")
+    private String phoneNumber;
 
+    @Column
+    private String profileImageUrl;
+
+    public User() {}
+
+    public User(String firstName, String lastName, String email, String password, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
 }

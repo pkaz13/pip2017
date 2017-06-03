@@ -43,7 +43,6 @@ import java.util.*;
 public class GreetingService implements InitializingBean {
 
 
-
     private static final String DEFAULT_LOCALE = "default";
 
     @Autowired
@@ -96,7 +95,6 @@ public class GreetingService implements InitializingBean {
             return Collections.emptyList();
         }
     }
-
 
 
     public void addGreetings(@Valid GreetingListWrapper greetingListWrapper) {

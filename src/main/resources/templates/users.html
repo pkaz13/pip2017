@@ -125,7 +125,7 @@
                                     <label class="col-sm-3 control-label" for="firstname_form">Imię</label>
                                     <div class="col-sm-9">
                                         <input class="form-control" id="firstname_form" maxlength="40"
-                                                  th:field="*{firstName}"/>
+                                               th:field="*{firstName}"/>
                                     </div>
                                     <p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Firstname
                                         Error</p>
@@ -147,7 +147,8 @@
                                         <input class="form-control" id="phoneNumber_form"
                                                th:field="*{phoneNumber}" placeholder="+48777888999"/>
                                     </div>
-                                    <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Phone number
+                                    <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Phone
+                                        number
                                         Error</p>
                                 </div>
                             </div>

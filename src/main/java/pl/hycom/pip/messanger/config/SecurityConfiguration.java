@@ -30,20 +30,17 @@ import pl.hycom.pip.messanger.service.UserService;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserService userService;
-
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_ACTUATOR = "ACTUATOR";
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/db-admin/console/**").permitAll()
+                .antMatchers("/db-admin/console/**", "/reset/forget/password/**", "/change/password/**", "/send/**", "/save/password/**", "/change/password/token/**").permitAll()
                 .antMatchers("/admin/**").hasRole(ROLE_ADMIN)
-                .antMatchers("/reset/forgetPassword").permitAll()
-                .antMatchers("/send").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
@@ -63,6 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .withUser("admin").password("admin").roles(ROLE_ADMIN)
 //                .and()
 //                .withUser("test").password("test").roles(ROLE_ACTUATOR);
+        // todo dodac metode passwordEncoder
         authManagerBuilder.userDetailsService(userService);
     }
 
