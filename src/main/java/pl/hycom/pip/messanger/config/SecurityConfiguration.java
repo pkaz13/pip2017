@@ -42,6 +42,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/db-admin/console/**").permitAll()
                 .antMatchers("/admin/**").hasRole(ROLE_ADMIN)
+                .antMatchers("/reset/forgetPassword").permitAll()
+                .antMatchers("/send").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

@@ -163,6 +163,10 @@
 			<artifactId>orika-spring-boot-starter</artifactId>
 			<version>1.1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+			</dependency>
 	</dependencies>
 
 	<build>
