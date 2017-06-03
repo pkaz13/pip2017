@@ -45,7 +45,7 @@ public class User implements UserDetails {
     private String email;
 
     @Column(length = 64)
-    @Size(min = 8, max = 64)
+    @Size(min = 5, max = 64)
     private String password;
 
     @NotNull
@@ -73,6 +73,14 @@ public class User implements UserDetails {
 
     public User() {}
 
+    public User(String firstName, String lastName, String email, String password, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
@@ -82,4 +90,6 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+
 }

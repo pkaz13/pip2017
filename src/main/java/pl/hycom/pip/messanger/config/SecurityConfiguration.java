@@ -47,7 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
                 .and()
-                .formLogin().loginPage("/login").permitAll()
+                .formLogin().loginPage("/login").failureUrl("/login-error.html").permitAll()
 
                 // TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
                 .and()

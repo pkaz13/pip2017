@@ -19,9 +19,13 @@ package pl.hycom.pip.messanger.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Optional;
 
 /**
  * Created by maciek on 06.03.17.
@@ -44,6 +48,12 @@ public class RootController {
             return home();
         }
 
+        return "login";
+    }
+
+    @RequestMapping("/login-error")
+    public String loginError(Model model) {
+        model.addAttribute("error", true);
         return "login";
     }
 
