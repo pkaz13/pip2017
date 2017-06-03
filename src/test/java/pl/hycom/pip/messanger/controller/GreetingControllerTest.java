@@ -80,7 +80,7 @@ public class GreetingControllerTest {
         when(profileClient.getWelcomeMessage()).thenReturn(resp);
 
         final GreetingListWrapper wrapper = new GreetingListWrapper(Collections.singletonList(greeting));
-        String viewResult = controller.addGreetings(wrapper, null,null);
+        String viewResult = controller.addGreetings(wrapper);
         assertThat(viewResult).isEqualTo(GreetingController.REDIRECT_ADMIN_GREETINGS);
         assertThat(wrapper.getGreetings().size()).isEqualTo(1);
         assertThat(wrapper.getGreetings()).contains(new pl.hycom.pip.messanger.controller.model.Greeting(greeting));
