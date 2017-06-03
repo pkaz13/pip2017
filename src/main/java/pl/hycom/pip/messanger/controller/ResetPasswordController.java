@@ -10,6 +10,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.hycom.pip.messanger.controller.model.ResetPassword;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.model.User;
@@ -47,7 +48,7 @@ public class ResetPasswordController {
     }
 
     @PostMapping("reset/password/token/send")
-    public String sendEmail(@Valid ResetPassword resetPassword, BindingResult bindingResult, Model model, HttpServletRequest request) throws MalformedURLException {
+    public String sendEmail(@Valid ResetPassword resetPassword, BindingResult bindingResult, Model model, HttpServletRequest request, RedirectAttributes attributes) throws MalformedURLException {
 
         if(bindingResult.hasErrors()) {
             model.addAttribute("resetPassword", resetPassword);
@@ -55,7 +56,7 @@ public class ResetPasswordController {
         }
 
         if (resetPassword.getUserMail().isEmpty()) {
-            model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email, dumbass."));
+            model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email."));
             return REDIRECT_FORGET_VIEW;
         }
         User user = userService.findUserByEmail(resetPassword.getUserMail());
@@ -68,6 +69,7 @@ public class ResetPasswordController {
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
         emailService.sendEmail(userService.constructResetTokenEmail(getURLBase(request), user, token));
+        attributes.addFlashAttribute("sendOrNotSend", "If user exists, mail was sent.");
         return "redirect:/login";
     }
 
@@ -80,7 +82,7 @@ public class ResetPasswordController {
     }
 
     @PostMapping(value = "/change/password")
-    public String changePassword(@Valid ResetPassword resetPassword, BindingResult bindingResult, Model model) {
+    public String changePassword(@Valid ResetPassword resetPassword, BindingResult bindingResult, Model model, RedirectAttributes attributes) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("resetPassword", resetPassword);
@@ -96,10 +98,12 @@ public class ResetPasswordController {
         if (userService.validatePasswordResetToken(resetPassword.getResetToken(), resetPassword.getUserMail())) {
                 userService.changePassword(userService.findUserByEmail(resetPassword.getUserMail()), resetPassword.getNewPassword());
                 log.info("User " + userService.findUserByEmail(resetPassword.getUserMail()).getUsername() + " changed password for: " + resetPassword.getNewPassword());
+                attributes.addFlashAttribute("passwordChangedOrNotChanged", "If user exists, password was changed.");
                 return "redirect:/login";
         }
         log.info("Failed to change password user " +  userService.findUserByEmail(resetPassword.getUserMail()).getUsername());
-        return REDIRECT_FORGET_VIEW;
+        attributes.addFlashAttribute("passwordChangedOrNotChanged", "If user exists, mail was changed.");
+        return "redirect:/login";
     }
 
     private String getURLBase(HttpServletRequest request) throws MalformedURLException {
