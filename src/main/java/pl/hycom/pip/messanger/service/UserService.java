@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.mail.Message;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
@@ -20,9 +22,11 @@ import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
-import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -38,6 +42,10 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetTokenRepository tokenRepository;
+
+    @Autowired
+    private EmailService emailService;
+
     @Autowired
     private MapperFacade orikaMapper;
 
@@ -59,11 +67,9 @@ public class UserService implements UserDetailsService {
 
     public User addUser(User user) throws EmailNotUniqueException {
         log.info("Adding user: " + user);
-        user.setEmail(user.getEmail().toLowerCase());
-        return trySaveUser(user);
+        return trySaveUser(user, true);
     }
 
-    public User updateUser(User user) throws EmailNotUniqueException{
     private void setUserRoleIfNoneGranted(User user) {
         log.info("setUserRoleIfNoneGranted method invoked for user: " + user);
         if (CollectionUtils.isEmpty(user.getAuthorities())) {
@@ -72,23 +78,34 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User updateUser(User user) {
+    public User updateUser(User user) throws EmailNotUniqueException {
         log.info("Updating user: " + user);
         User userToUpdate = userRepository.findOne(user.getId());
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setFirstName(user.getLastName());
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
         userToUpdate.setEmail(user.getEmail().toLowerCase());
-        return trySaveUser(userToUpdate);
+        setUserRoleIfNoneGranted(userToUpdate);
+        return trySaveUser(userToUpdate, false);
     }
 
-    private User trySaveUser(User user) throws EmailNotUniqueException{
+    private User trySaveUser(User user, boolean isNewUser) throws EmailNotUniqueException{
+        User userToSave = null;
         try {
-            return userRepository.save(user);
-
+            userToSave = userRepository.save(user);
+            if (isNewUser) {
+                String token = generateToken();
+                createPasswordResetTokenForUser(userToSave, token);
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                emailService.sendEmail(constructResetTokenEmail(getURLBase(request), user, token));
+            }
         } catch (DataIntegrityViolationException e) {
             throw new EmailNotUniqueException(e.getCause());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            log.error("Malformed URL has occurred");
         }
+        return userToSave;
     }
 
     public void deleteUser(Integer id) {
@@ -166,5 +183,12 @@ public class UserService implements UserDetailsService {
         String url = contextPath + "/change/password/token/" + token;
         Message message = new Message("messenger.recommendations2017@gmail.com", to, "Reset password", url);
         return message.constructEmail();
+    }
+
+    public String getURLBase(HttpServletRequest request) throws MalformedURLException {
+
+        URL requestURL = new URL(request.getRequestURL().toString());
+        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
+        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
     }
 }

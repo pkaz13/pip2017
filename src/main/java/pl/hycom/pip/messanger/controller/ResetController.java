@@ -59,7 +59,7 @@ public class ResetController {
 
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
-        emailService.sendEmail(userService.constructResetTokenEmail(getURLBase(request), user, token));
+        emailService.sendEmail(userService.constructResetTokenEmail(userService.getURLBase(request), user, token));
         model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
         return "redirect:/login";
     }
@@ -101,12 +101,5 @@ public class ResetController {
         }
         log.info("Failed to change user's password");
         return "redirect:/reset/forget/password";
-    }
-
-    private String getURLBase(HttpServletRequest request) throws MalformedURLException {
-
-        URL requestURL = new URL(request.getRequestURL().toString());
-        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
-        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
     }
 }
