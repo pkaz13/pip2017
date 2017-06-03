@@ -10,6 +10,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.hycom.pip.messanger.controller.model.ResetPassword;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.EmailService;
@@ -27,9 +28,11 @@ import java.net.URL;
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Log4j2
-public class ResetController {
+public class ResetPasswordController {
 
     private static final String FORGET_VIEW = "forgetPassword";
+    private static final String CHANGE_VIEW = "changePassword";
+    private static final String REDIRECT_FORGET_VIEW = "redirect:/reset/password";
 
     @Autowired
     private EmailService emailService;
@@ -37,70 +40,66 @@ public class ResetController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/reset/forget/password")
-    public String getForgetPasswordView() {
+    @GetMapping("/reset/password")
+    public String getForgetPasswordView(Model model) {
+        model.addAttribute("resetPassword", new ResetPassword());
         return FORGET_VIEW;
     }
 
-    @PostMapping("/send")
-    public String sendEmail(HttpServletRequest request, Model model) throws MalformedURLException {
-        String mail = request.getParameter("email");
+    @PostMapping("reset/password/token/send")
+    public String sendEmail(@Valid ResetPassword resetPassword, BindingResult bindingResult, Model model, HttpServletRequest request) throws MalformedURLException {
 
-        if (mail.isEmpty()) {
-            model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email, dumbass."));
-            return "redirect:/reset/forget/password";
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("resetPassword", resetPassword);
+            log.info("ResetPassword validation error." + bindingResult.getAllErrors());
         }
-        User user = userService.findUserByEmail(mail);
+
+        if (resetPassword.getUserMail().isEmpty()) {
+            model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email, dumbass."));
+            return REDIRECT_FORGET_VIEW;
+        }
+        User user = userService.findUserByEmail(resetPassword.getUserMail());
 
         if(user == null) {
             model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
-            return "redirect:/reset/forget/password";
+            return REDIRECT_FORGET_VIEW;
         }
 
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
         emailService.sendEmail(userService.constructResetTokenEmail(getURLBase(request), user, token));
-        model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
         return "redirect:/login";
     }
 
     @GetMapping("/change/password/token/{token}")
     public String getChangePasswordView(@PathVariable("token") final String token, Model model) {
-        model.addAttribute("resetToken", userService.getTokenByToken(token));
-        return "changePassword";
+        ResetPassword resetPassword = new ResetPassword();
+        resetPassword.setResetToken(token);
+        model.addAttribute("resetPassword", resetPassword);
+        return CHANGE_VIEW;
     }
 
     @PostMapping(value = "/change/password")
-    public String changePassword(@Valid PasswordResetToken token, BindingResult bindingResult, Model model,  HttpServletRequest request) {
-
-        String userMail = request.getParameter("email");
-        String newPassword = request.getParameter("newPassword");
-
-        if (userMail.isEmpty() || newPassword.isEmpty()) {
-            model.addAttribute("resetToken", token);
-            return "changePassword";
-        }
+    public String changePassword(@Valid ResetPassword resetPassword, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("resetToken", token);
+            model.addAttribute("resetPassword", resetPassword);
             log.info("Reset token validation error." + bindingResult.getAllErrors());
-            return "changePassword";
+            return CHANGE_VIEW;
         }
 
-        User user = userService.findUserByEmail(userMail);
-
-        if (token == null) {
+        if (resetPassword == null) {
             log.info("token is null");
-            return "redirect:/reset/forget/password";
+            return REDIRECT_FORGET_VIEW;
         }
 
-        if (userService.validatePasswordResetToken(token.getToken(), userMail)) {
-                userService.changePassword(user, newPassword);
-                log.info("User's password changed");
+        if (userService.validatePasswordResetToken(resetPassword.getResetToken(), resetPassword.getUserMail())) {
+                userService.changePassword(userService.findUserByEmail(resetPassword.getUserMail()), resetPassword.getNewPassword());
+                log.info("User " + userService.findUserByEmail(resetPassword.getUserMail()).getUsername() + " changed password for: " + resetPassword.getNewPassword());
                 return "redirect:/login";
         }
-        log.info("Failed to change user's password");
-        return "redirect:/reset/forget/password";
+        log.info("Failed to change password user " +  userService.findUserByEmail(resetPassword.getUserMail()).getUsername());
+        return REDIRECT_FORGET_VIEW;
     }
 
     private String getURLBase(HttpServletRequest request) throws MalformedURLException {

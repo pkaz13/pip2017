@@ -4,6 +4,7 @@ import lombok.Data;
 import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -23,6 +24,6 @@ public class PasswordResetToken {
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     private User user;
 
-    private Date expiryDate;
+    private LocalDateTime expiryDate;
 
 }

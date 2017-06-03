@@ -20,6 +20,7 @@ import pl.hycom.pip.messanger.repository.model.Role;
 import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -107,13 +108,10 @@ public class UserService implements UserDetailsService {
     }
 
     public void createPasswordResetTokenForUser(User user, String token) {
-        int urlActivityLength = 30;
-        Date targetDate = new Date();
-        targetDate = DateUtils.addMinutes(targetDate, urlActivityLength);
         PasswordResetToken resetToken = new PasswordResetToken();
         resetToken.setUser(user);
         resetToken.setToken(token);
-        resetToken.setExpiryDate(targetDate);
+        resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
         tokenRepository.save(resetToken);
     }
 
@@ -131,13 +129,12 @@ public class UserService implements UserDetailsService {
             return false;
         }
 
-        Date currentDate = new Date();
-        if (currentDate.compareTo(resetToken.getExpiryDate()) > 0) {
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             log.info("Token expired");
             return false;
         }
         tokenRepository.delete(resetToken);
-        log.info("Token is valid");
+        log.info("token " + token + " is valid");
         log.info("token " + token + " removed from database");
         return true;
     }
@@ -147,10 +144,6 @@ public class UserService implements UserDetailsService {
         userToUpdate.setPassword(password);
         userRepository.save(userToUpdate);
         log.info("User " + user.getUsername() + " changed password for " + password);
-    }
-
-    public PasswordResetToken getTokenByToken(String token) {
-        return tokenRepository.findByToken(token);
     }
 
     public SimpleMailMessage constructResetTokenEmail(String contextPath, User user, String token) {
