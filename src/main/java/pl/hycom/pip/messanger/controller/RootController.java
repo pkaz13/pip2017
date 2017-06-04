@@ -36,6 +36,11 @@ public class RootController {
         return "redirect:/admin";
     }
 
+    @RequestMapping("/user")
+    public String userHome() {
+        return "user";
+    }
+
     @RequestMapping("/login")
     public String login(HttpServletRequest request) {
 

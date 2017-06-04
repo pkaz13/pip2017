@@ -28,3 +28,7 @@ spring:
     console:
       enabled: true
       path: /db-admin/console
+
+auth:
+  login: admin@example.com
+  password: admin1

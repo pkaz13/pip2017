@@ -18,12 +18,18 @@ package pl.hycom.pip.messanger.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.hycom.pip.messanger.controller.model.RoleDTO;
 import pl.hycom.pip.messanger.repository.RoleRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by Maciek on 2017-05-27.
@@ -34,6 +40,16 @@ import java.util.Optional;
 public class RoleService {
 
     private final RoleRepository roleRepository;
+
+    @Autowired
+    private MapperFacade orikaMapper;
+
+    public List<RoleDTO> findAllRoles() {
+        log.info("Searching all roles");
+
+        return orikaMapper.mapAsList(StreamSupport.stream(roleRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList()), RoleDTO.class);
+    }
 
     public Role addRole(Role role) {
         log.info("Adding role " + role);

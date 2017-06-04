@@ -7,7 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import pl.hycom.pip.messanger.controller.model.RoleDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.service.RoleService;
 import pl.hycom.pip.messanger.service.UserService;
 
 import javax.inject.Inject;
@@ -23,6 +25,8 @@ public class UserController {
     private static final String USERS_VIEW = "users";
 
     private final UserService userService;
+
+    private final RoleService roleService;
 
     @GetMapping("/admin/users")
     public String showUsers(Model model) {
@@ -61,7 +65,9 @@ public class UserController {
 
     private void prepareModel(Model model, UserDTO user) {
         List<UserDTO> allUsers = userService.findAllUsers();
+        List<RoleDTO> allRoles = roleService.findAllRoles();
         model.addAttribute("users", allUsers);
         model.addAttribute("userForm", user);
+        model.addAttribute("authorities", allRoles);
     }
 }

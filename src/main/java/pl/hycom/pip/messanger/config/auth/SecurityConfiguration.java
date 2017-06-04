@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package pl.hycom.pip.messanger.config;
+package pl.hycom.pip.messanger.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -24,27 +24,32 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import pl.hycom.pip.messanger.repository.model.Role;
 import pl.hycom.pip.messanger.service.UserService;
 
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String ROLE_ADMIN = "ADMIN";
-    private static final String ROLE_ACTUATOR = "ACTUATOR";
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthSuccessHandler successHandler;
+
+    private static final String ROLE_ADMIN = Role.RoleName.ROLE_ADMIN.name();
+    private static final String ROLE_ACTUATOR = "ACTUATOR";
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/db-admin/console/**", "/user/password/change/**").permitAll()
-                .antMatchers("/admin/**").hasRole(ROLE_ADMIN)
+                .antMatchers("/db-admin/console/**").permitAll()
+                .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
                 .anyRequest().authenticated()
 
                 .and()
-                .formLogin().loginPage("/login").failureUrl("/login-error.html").permitAll()
+                .formLogin().loginPage("/login").failureUrl("/login-error.html").successHandler(successHandler).permitAll()
 
                 // TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
                 .and()
