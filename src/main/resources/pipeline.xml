@@ -51,4 +51,14 @@
 		</pipelinelink>		
 	</pipelinechain>
 
+	<pipelinechain name="processQuickReply" headlink="loadUserProfileQR">
+		<pipelinelink name="loadUserProfileQR">
+			<processor bean="userProfileProcessor" />
+			<transition returnvalue="1" link="updateKeywordsFromQuickReply"/>
+		</pipelinelink>
+		<pipelinelink name="updateKeywordsFromQuickReply">
+			<processor />
+		</pipelinelink>
+	</pipelinechain>
+
 </pipeline>

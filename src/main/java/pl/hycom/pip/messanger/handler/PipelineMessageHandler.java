@@ -40,6 +40,8 @@ public class PipelineMessageHandler implements TextMessageEventHandler {
     @Override
     public void handle(TextMessageEvent msg) {
 
+        log.info("Received message - starting prepare answer");
+
         Map<String, Object> params = new HashMap<>();
 
         params.put(PipelineProcessor.SENDER_ID, msg.getSender().getId());
