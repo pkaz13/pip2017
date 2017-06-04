@@ -37,10 +37,10 @@ import java.util.Optional;
 @Slf4j
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Value("${auth.login}")
+    @Value("${auth.login:admin@example.com}")
     private String login;
 
-    @Value("${auth.password}")
+    @Value("${auth.password:admin1}")
     private String password;
 
     @Autowired

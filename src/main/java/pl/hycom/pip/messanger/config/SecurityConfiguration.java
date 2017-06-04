@@ -33,6 +33,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthSuccessHandler successHandler;
+
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_ACTUATOR = "ACTUATOR";
 
@@ -45,7 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
                 .and()
-                .formLogin().loginPage("/login").failureUrl("/login-error.html").permitAll()
+                .formLogin().loginPage("/login").failureUrl("/login-error.html").successHandler(successHandler).permitAll()
 
                 // TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
                 .and()
