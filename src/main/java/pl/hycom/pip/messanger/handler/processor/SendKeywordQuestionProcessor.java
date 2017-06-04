@@ -50,7 +50,7 @@ public class SendKeywordQuestionProcessor implements PipelineProcessor {
             sendClient.sendTextMessage(id, message, quickReplies);
             logPayload(quickReplies);
         } catch (MessengerApiException | MessengerIOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
