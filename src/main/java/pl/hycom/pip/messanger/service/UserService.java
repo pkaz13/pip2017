@@ -155,7 +155,7 @@ public class UserService implements UserDetailsService {
     public SimpleMailMessage constructResetTokenEmail(String contextPath, User user, String token) {
         List<String> to = new ArrayList<>();
         to.add(user.getEmail());
-        String url = contextPath + "/change/password/token/" + token;
+        String url = contextPath + "/user/password/change/reset/token/" + token;
         Message message = new Message("messenger.recommendations2017@gmail.com", to, "Reset password", url);
         return message.constructEmail();
     }

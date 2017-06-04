@@ -73,7 +73,7 @@ public class GreetingController {
 
     @PostMapping("/admin/greeting")
     public String addGreeting(@Valid Greeting greeting, BindingResult bindingResult, Model model) {
-        boolean flag = true;
+        boolean isAdditionSuccessfull = true;
 
         if (!greetingService.isValidLocale(greeting.getLocale())) {
             log.error("Not supported locale[" + greeting.getLocale() + "]");
@@ -88,14 +88,14 @@ public class GreetingController {
         }
         try {
             greetingService.addGreeting(greeting);
-            return "redirect:" + ADMIN_GREETINGS + "?success=" + flag;
+            return "redirect:" + ADMIN_GREETINGS + "?success=" + isAdditionSuccessfull;
         } catch (MessengerApiException | MessengerIOException e) {
-            flag = false;
+            isAdditionSuccessfull = false;
             log.error("Error during changing greeting message", e);
             addError(bindingResult, "unexpectedError");
             prepareModel(model, greeting);
             model.addAttribute("errors", bindingResult.getFieldErrors());
-            return "redirect:" + ADMIN_GREETINGS + "?success=" + flag;
+            return "redirect:" + ADMIN_GREETINGS + "?success=" + isAdditionSuccessfull;
         }
 
     }
