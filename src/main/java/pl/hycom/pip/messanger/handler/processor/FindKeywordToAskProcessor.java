@@ -16,7 +16,7 @@
 
 package pl.hycom.pip.messanger.handler.processor;
 
-import com.sun.istack.internal.Nullable;
+import javax.annotation.Nullable;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
