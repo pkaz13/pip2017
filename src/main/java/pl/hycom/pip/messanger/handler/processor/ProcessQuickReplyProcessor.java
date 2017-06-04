@@ -16,6 +16,6 @@ public class ProcessQuickReplyProcessor implements PipelineProcessor {
     @Override
     public int runProcess(PipelineContext ctx) throws PipelineException {
         log.info("Started process of ProcessQuickReplyProcessor");
-        return 0;
+        return 1;
     }
 }
