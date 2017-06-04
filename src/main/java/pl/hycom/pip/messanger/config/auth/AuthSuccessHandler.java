@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package pl.hycom.pip.messanger.config;
+package pl.hycom.pip.messanger.config.auth;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package pl.hycom.pip.messanger.config;
+package pl.hycom.pip.messanger.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -24,6 +24,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import pl.hycom.pip.messanger.repository.model.Role;
 import pl.hycom.pip.messanger.service.UserService;
 
 @Configuration
@@ -36,7 +37,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthSuccessHandler successHandler;
 
-    private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_ADMIN = Role.RoleName.ROLE_ADMIN.name();
     private static final String ROLE_ACTUATOR = "ACTUATOR";
 
     @Override
@@ -44,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/db-admin/console/**").permitAll()
-                .antMatchers("/admin/**").hasRole(ROLE_ADMIN)
+                .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
                 .anyRequest().authenticated()
 
                 .and()
