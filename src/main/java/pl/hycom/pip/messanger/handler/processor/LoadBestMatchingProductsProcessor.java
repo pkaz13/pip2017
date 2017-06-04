@@ -21,13 +21,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import lombok.extern.log4j.Log4j2;
-import pl.hycom.pip.messanger.repository.model.Keyword;
-import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
+import pl.hycom.pip.messanger.repository.model.Keyword;
+import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import java.security.InvalidParameterException;
@@ -101,10 +99,10 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
                     return commonKeywords.size();
                 }))
                 .entrySet().stream()
-                .sorted(Comparator.comparingInt(entry -> ((Map.Entry<Product, Integer>) entry).getValue()).reversed())
+                .sorted(Comparator.<Map.Entry<Product, Integer>>comparingInt(Map.Entry::getValue).reversed())
                 .collect(Collectors.toList());
 
-        if (productsWithKeywords.size() > 0) {
+        if (!productsWithKeywords.isEmpty()) {
             int maxMatchingKeywords = productsWithKeywords.get(0).getValue();
             return productsWithKeywords.stream()
                     .filter(entry -> entry.getValue().equals(maxMatchingKeywords))
@@ -116,7 +114,7 @@ public class LoadBestMatchingProductsProcessor implements PipelineProcessor {
     }
 
     private List<Keyword> getKeywordsThatWereInAnyProduct(List<Product> products, List<Keyword> keywords) {
-        if (keywords == null || keywords.isEmpty() || products == null || products.isEmpty()) {
+        if (CollectionUtils.isEmpty(products) || CollectionUtils.isEmpty(keywords)) {
             return Collections.emptyList();
         }
 

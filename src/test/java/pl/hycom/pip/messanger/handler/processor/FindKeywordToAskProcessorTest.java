@@ -36,7 +36,7 @@ public class FindKeywordToAskProcessorTest {
 
     @Before
     public void initKeywords() {
-        keywords = Arrays.asList(new Keyword("K1"), new Keyword("K2"), new Keyword("K3"), new Keyword("K4"), new Keyword("K5"));
+        keywords = Arrays.asList(new Keyword("K0"), new Keyword("K1"), new Keyword("K2"), new Keyword("K3"), new Keyword("K4"));
     }
 
     private Product createProduct(List<Keyword> keywords) {
@@ -50,7 +50,7 @@ public class FindKeywordToAskProcessorTest {
     }
 
     @Test
-    public void findsExactlyInTheMiddle() throws Exception {
+    public void findKeywordThatAppearsInHalfOfProducts() throws Exception {
         // given
         final List<Product> products = new ArrayList<>();
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
@@ -61,6 +61,15 @@ public class FindKeywordToAskProcessorTest {
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(4))));
 
         List<Keyword> keywordsWanted = Collections.emptyList();
+        /*
+        keyword 0 appears in 5 products
+        keyword 1 appears in 4 products
+        keyword 2 appears in 4 products
+        keyword 3 appears in 2 products
+        keyword 4 appears in 3 products
+        Total 6 products, so we want keyword that appears in closest to 3 products (keyword 4)
+         */
+
         // when
         Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
         // then
@@ -68,7 +77,7 @@ public class FindKeywordToAskProcessorTest {
     }
 
     @Test
-    public void findsClosestToMiddle() throws Exception {
+    public void findKeywordThatAppearsInClosestToHalfOfProducts() throws Exception {
         // given
         final List<Product> products = new ArrayList<>();
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))));
@@ -81,6 +90,14 @@ public class FindKeywordToAskProcessorTest {
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(3))));
 
         List<Keyword> keywordsWanted = Collections.emptyList();
+        /*
+        keyword 0 appears in 7 products
+        keyword 1 appears in 7 products
+        keyword 2 appears in 7 products
+        keyword 3 appears in 3 products
+        Total 8 products, so we want keyword that appears in closest to 4 products (keyword 3)
+         */
+
         // when
         Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
         // then
@@ -101,6 +118,15 @@ public class FindKeywordToAskProcessorTest {
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(3))));
 
         List<Keyword> keywordsWanted = Collections.singletonList(keywords.get(3));
+        /*
+        keyword 0 appears in 7 products
+        keyword 1 appears in 3 products
+        keyword 2 appears in 7 products
+        keyword 3 appears in 4 products, but appears in user's request
+        keyword 4 appears in 2 products
+        Total 8 products, so we want keyword that appears in closest to 4 products but not in keywordsWanted (keyword 1)
+         */
+
         // when
         Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
         // then
@@ -121,6 +147,9 @@ public class FindKeywordToAskProcessorTest {
         products.add(createProduct(Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(3))));
 
         List<Keyword> keywordsWanted = keywords;
+        /*
+         * All keywords were mentioned by user so there is no keyword we could possibly ask
+         */
         // when
         Keyword foundKeyword = sut.findKeywordToAsk(products, keywordsWanted);
         // then
@@ -130,7 +159,7 @@ public class FindKeywordToAskProcessorTest {
     @Test
     public void throwsExceptionWhenEmptyList() throws Exception {
         //given
-        List<Product> products = new ArrayList<>();
+        List<Product> products = Collections.emptyList();
         List<Keyword> keywordsWanted = Collections.emptyList();
         //when
         Throwable thrown = Assertions.catchThrowable(() -> sut.findKeywordToAsk(products, keywordsWanted));

@@ -71,7 +71,14 @@ public class LoadBestMatchingProductsProcessorTest {
 
         List<Keyword> excludedKeywords = Collections.emptyList();
         List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3));
-
+        /*
+        Product 0 contains 2 wanted keywords (0,2)
+        Product 1 contains 3 wanted keywords (0,2,3)
+        Product 2 contains 3 wanted keywords (0,2,3)
+        Product 3 contains 1 wanted keyword  (0)
+        Product 4 contains 3 wanted keywords (0,2,3)
+        Product 5 contains 1 wanted keyword  (1)
+         */
         //when
         List<Product> bestFittingProducts = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
 
@@ -92,6 +99,10 @@ public class LoadBestMatchingProductsProcessorTest {
 
         List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(0));
         List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(2), keywords.get(3));
+        /*
+        Product 0 contains 1 wanted keywords (2)   but contains excluded keyword (0)
+        Product 1 contains 2 wanted keywords (2,3) but contains excluded keyword (0)
+         */
 
         //when
         List<Product> bestFittingProducts = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
@@ -116,6 +127,14 @@ public class LoadBestMatchingProductsProcessorTest {
 
         List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(4));
         List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3));
+        /*
+        Product 0 contains 2 wanted keywords (0,2)
+        Product 1 contains 3 wanted keywords (0,2,3)
+        Product 2 contains 3 wanted keywords (0,2,3) but contains excluded keyword (4)
+        Product 3 contains 1 wanted keyword  (0)     but contains excluded keyword (4)
+        Product 4 contains 3 wanted keywords (0,2,3)
+        Product 5 contains 1 wanted keyword  (1)
+         */
 
         //when
         List<Product> bestFittingProducts = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
@@ -128,19 +147,17 @@ public class LoadBestMatchingProductsProcessorTest {
     @Test
     public void findBestFittingProductsTestWithKeywordThatIsAlsoExcluded() {
         //given
-        List<Product> givenProducts = Arrays.asList(
-                createProduct(1, Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2))),
-                createProduct(2, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3))),
-                createProduct(3, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3), keywords.get(4))),
-                createProduct(4, Arrays.asList(keywords.get(0), keywords.get(5), keywords.get(4))),
-                createProduct(5, Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3), keywords.get(5))),
-                createProduct(6, Arrays.asList(keywords.get(0), keywords.get(1)))
+        List<Product> givenProducts = Collections.singletonList(
+                createProduct(1, Arrays.asList(keywords.get(0), keywords.get(1), keywords.get(2)))
         );
         Mockito.when(productService.findAllProductsContainingAtLeastOneKeyword(any()))
                 .thenReturn(givenProducts);
 
         List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(0));
         List<Keyword> keywordsFromRequest = Arrays.asList(keywords.get(0), keywords.get(2), keywords.get(3));
+        /*
+        Keyword excluded is also keyword from request. Such operation cannot occur
+         */
 
         //when
         Throwable thrown = Assertions.catchThrowable(() -> processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords));
@@ -165,7 +182,9 @@ public class LoadBestMatchingProductsProcessorTest {
 
         List<Keyword> excludedKeywords = Collections.singletonList(keywords.get(1));
         List<Keyword> keywordsFromRequest = Collections.singletonList(keywords.get(0));
-
+        /*
+        There are 100 products, all of them contain keyword 0 and every second of them contains excluded keyword
+         */
         //when
         List<Product> products = processor.tryFindBestMatchingProducts(keywordsFromRequest, excludedKeywords);
 
