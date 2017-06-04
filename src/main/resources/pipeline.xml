@@ -57,7 +57,7 @@
 			<transition returnvalue="1" link="updateKeywordsFromQuickReply"/>
 		</pipelinelink>
 		<pipelinelink name="updateKeywordsFromQuickReply">
-			<processor bean="ProcessQuickReplyProcessor"/>
+			<processor bean="processQuickReplyProcessor"/>
 		</pipelinelink>
 	</pipelinechain>
 
