@@ -58,6 +58,7 @@
 		</pipelinelink>
 		<pipelinelink name="updateKeywordsFromQuickReply">
 			<processor bean="processQuickReplyProcessor"/>
+			<transition returnvalue="1" link="loadProducts"/>
 		</pipelinelink>
 	</pipelinechain>
 
