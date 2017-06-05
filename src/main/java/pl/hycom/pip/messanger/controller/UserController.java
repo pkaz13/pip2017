@@ -12,11 +12,13 @@ import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.service.RoleService;
 import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.service.UserService;
+import pl.hycom.pip.messanger.util.RequestHelper;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +43,7 @@ public class UserController {
     @RolesAllowed(ROLE_ADMIN)
     @PostMapping("/admin/users")
     public String addOrUpdateUser(@Valid UserDTO user, BindingResult bindingResult,
-                                  Model model, @RequestParam(value = "role") int[] roles) {
+                                  Model model, @RequestParam(value = "role") int[] roles, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, user);
@@ -52,20 +54,32 @@ public class UserController {
 
         try {
             userService.setUserRoles(user, roles);
-            userService.addOrUpdateUser(user);
+            userService.addOrUpdateUser(user, RequestHelper.getURLBase(request));
             return "redirect:/admin/users";
         } catch (EmailNotUniqueException e) {
             prepareModel(model, user);
             model.addAttribute("error", new ObjectError("validation.error.user.exists", "Użytkownik z takim adresem email już istnieje."));
+            return USERS_VIEW;
+        } catch (MalformedURLException e) {
+            prepareModel(model, user);
+            model.addAttribute("error", new ObjectError("file.error.malformed.url", "Nie udało się wysłać maila do ustawienia hasła."));
             return USERS_VIEW;
         }
     }
 
     @RolesAllowed(ROLE_ADMIN)
     @DeleteMapping("/admin/users/{userId}/delete")
-    @ResponseBody public void deleteProduct(@PathVariable("userId") final Integer id) {
-        userService.deleteUser(id);
-        log.info("User[" + id + "] deleted!");
+    public String deleteUser(@PathVariable("userId") final Integer id, Model model) {
+        boolean result = userService.isChosenAccountCurrentUser(id);
+        if(!result) {
+            userService.deleteUser(id);
+            log.info("User[" + id + "] deleted!");
+            return "redirect:/admin/users";
+        } else {
+            prepareModel(model, new UserDTO());
+            model.addAttribute("error", new ObjectError("delete.error.user.cannot.delete.own.account", "Użytkownik nie może usunąć własnego konta"));
+            return USERS_VIEW;
+        }
     }
 
     private void prepareModel(Model model, UserDTO user) {

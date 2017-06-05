@@ -25,10 +25,12 @@ $(document).ready(function() {
         $.ajax({
             url: '/admin/users/' + id + '/delete',
             type: 'DELETE',
-            success: function(result) {
-                window.location = "/admin/users"
+            data: {CSRFToken: token, CSRF: header},
+            success: function(xhr, status, error) {
+                window.location = "/admin/users?success=true";
             },
-            error: function (result) {
+            error: function (xhr, status, error) {
+                window.location = "/admin/users?success=false";
             }
         });
     }

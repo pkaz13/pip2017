@@ -6,12 +6,12 @@ import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.hycom.pip.messanger.controller.model.RoleDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.mail.Message;
@@ -51,6 +51,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private MapperFacade orikaMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<UserDTO> findAllUsers() {
         log.info("Searching all users");
 
@@ -64,18 +67,18 @@ public class UserService implements UserDetailsService {
         return orikaMapper.map(userRepository.findOne(id),UserDTO.class);
     }
 
-    public UserDTO addOrUpdateUser(UserDTO user) throws EmailNotUniqueException{
+    public UserDTO addOrUpdateUser(UserDTO user, String requestUrl) throws EmailNotUniqueException{
         User userToUpdateOrAdd = orikaMapper.map(user, User.class);
         if (user.getId() != null && user.getId() != 0) {
-            return orikaMapper.map(updateUser(userToUpdateOrAdd), UserDTO.class);
+            return orikaMapper.map(updateUser(userToUpdateOrAdd, requestUrl), UserDTO.class);
         } else {
-            return orikaMapper.map(addUser(userToUpdateOrAdd), UserDTO.class);
+            return orikaMapper.map(addUser(userToUpdateOrAdd, requestUrl), UserDTO.class);
         }
     }
 
-    public User addUser(User user) throws EmailNotUniqueException {
+    public User addUser(User user, String requestUrl) throws EmailNotUniqueException {
         log.info("Adding user: " + user);
-        return trySaveUser(user, true);
+        return trySaveUser(user, true, requestUrl);
     }
 
     private void setDefaultRole(User user) {
@@ -86,7 +89,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User updateUser(User user) throws EmailNotUniqueException {
+    public User updateUser(User user, String requestUrl) throws EmailNotUniqueException {
         log.info("Updating user: " + user);
         User userToUpdate = userRepository.findOne(user.getId());
         userToUpdate.setFirstName(user.getFirstName());
@@ -99,32 +102,33 @@ public class UserService implements UserDetailsService {
         } else {
             userToUpdate.setRoles(roles);
         }
-        return trySaveUser(userToUpdate, false);
+        return trySaveUser(userToUpdate, false, requestUrl);
     }
 
-    private User trySaveUser(User user, boolean isNewUser) throws EmailNotUniqueException{
+    private User trySaveUser(User user, boolean isNewUser, String requestUrl) throws EmailNotUniqueException{
         User userToSave = null;
         try {
             userToSave = userRepository.save(user);
             if (isNewUser) {
                 String token = generateToken();
                 createPasswordResetTokenForUser(userToSave, token);
-                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-                emailService.sendEmail(constructResetTokenEmail(RequestHelper.getURLBase(request), user, token));
+                emailService.sendEmail(constructResetTokenEmail(requestUrl, user, token));
             }
         } catch (DataIntegrityViolationException e) {
             throw new EmailNotUniqueException(e.getCause());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            log.error("Malformed URL has occurred");
         }
         return userToSave;
     }
 
     public void deleteUser(Integer id) {
         log.info("Deleting user[" + id + "]");
-
         userRepository.delete(id);
+    }
+
+    public boolean isChosenAccountCurrentUser(Integer id) {
+        User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findOne(id);
+        return auth.getId().equals(user.getId());
     }
 
     @Override
@@ -177,7 +181,7 @@ public class UserService implements UserDetailsService {
 
     public void changePassword(User user, String password) {
         User userToUpdate = userRepository.findOne(user.getId());
-        userToUpdate.setPassword(password);
+        userToUpdate.setPassword(passwordEncoder.encode((password)));
         userRepository.save(userToUpdate);
         log.info("User " + user.getUsername() + " changed password for " + password);
     }

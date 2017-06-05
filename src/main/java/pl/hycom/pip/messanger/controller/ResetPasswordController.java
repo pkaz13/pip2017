@@ -69,7 +69,7 @@ public class ResetPasswordController {
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
         emailService.sendEmail(userService.constructResetTokenEmail(RequestHelper.getURLBase(request), user, token));
-        attributes.addFlashAttribute("sendOrNotSend", "If user exists, mail was sent.");
+        attributes.addFlashAttribute("sendOrNotSend", "Mail do resetowania hasła został wysłany na podany adres e-mail");
         return "redirect:/login";
     }
 
@@ -96,7 +96,7 @@ public class ResetPasswordController {
 
         if (userService.validatePasswordResetToken(resetPassword.getResetToken(), resetPassword.getUserMail())) {
                 userService.changePassword(userService.findUserByEmail(resetPassword.getUserMail()), resetPassword.getNewPassword());
-                attributes.addFlashAttribute("passwordChangedOrNotChanged", "Jeśli użytkownik istnieje hasło zostało zmienione");
+                attributes.addFlashAttribute("passwordChangedOrNotChanged", "Hasło zostało zmienione");
                 return "redirect:/login";
         }
         log.info("Failed to change password user " +  userService.findUserByEmail(resetPassword.getUserMail()).getUsername());
