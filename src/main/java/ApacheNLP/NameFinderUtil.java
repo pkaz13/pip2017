@@ -1,4 +1,4 @@
-package NLP;
+package ApacheNLP;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.util.Span;

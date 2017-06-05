@@ -1,4 +1,4 @@
-package NLP;
+package ApacheNLP;
 
 
 import opennlp.tools.sentdetect.SentenceDetectorME;

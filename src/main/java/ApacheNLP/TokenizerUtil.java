@@ -1,4 +1,4 @@
-package NLP;
+package ApacheNLP;
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;

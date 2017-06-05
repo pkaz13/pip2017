@@ -1,4 +1,4 @@
-package NLP;
+package ApacheNLP;
 import java.io.IOException;
 import java.util.Objects;
 

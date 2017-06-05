@@ -1,4 +1,4 @@
-package NLP;
+package ApacheNLP;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ public class NameFinder {
     public static void main(String args[]) throws IOException {
         String tokenModelFile = "C:/OpenNLP/en-token.bin";
         String modelFile = "C:/OpenNLP/en-ner-person.bin";
-        String inputFile = "C:/OpenNLP/names.txt";
+        String inputFile = "C:/OpenNLP/names_en.txt";
 
         String[] result = NameFinderUtil.getNames(tokenModelFile, modelFile, inputFile);
 
@@ -19,3 +19,4 @@ public class NameFinder {
 
     }
 }
+

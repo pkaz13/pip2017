@@ -1,4 +1,4 @@
-package NLP;
+package ApacheNLP;
 
 /**
  * Created by Piotr on 2017-05-29.
