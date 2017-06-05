@@ -47,6 +47,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/db-admin/console/**").permitAll()
                 .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
                 .antMatchers("/user/**").hasAuthority(ROLE_USER)
+                .antMatchers("/account/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").failureUrl("/login-error.html").successHandler(successHandler).permitAll();
     }

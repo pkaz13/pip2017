@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -31,7 +32,6 @@ public class UserController {
     private final RoleService roleService;
 
     private static final String ROLE_ADMIN = "ADMIN";
-
     @GetMapping("/admin/users")
     public String showUsers(Model model) {
         prepareModel(model, new UserDTO());
@@ -40,7 +40,8 @@ public class UserController {
 
     @RolesAllowed(ROLE_ADMIN)
     @PostMapping("/admin/users")
-    public String addOrUpdateUser(@Valid UserDTO user, BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String addOrUpdateUser(@Valid UserDTO user, BindingResult bindingResult,
+                                  Model model, @RequestParam(value = "role") int[] roles) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, user);
@@ -50,6 +51,7 @@ public class UserController {
         }
 
         try {
+            userService.setUserRoles(user, roles);
             userService.addOrUpdateUser(user);
             return "redirect:/admin/users";
         } catch (EmailNotUniqueException e) {
@@ -69,6 +71,8 @@ public class UserController {
     private void prepareModel(Model model, UserDTO user) {
         List<UserDTO> allUsers = userService.findAllUsers();
         List<RoleDTO> allRoles = roleService.findAllRoles();
+        List<Integer> rolesIDs = allRoles.stream().mapToInt(RoleDTO::getId).boxed().collect(Collectors.toList());
+        model.addAttribute("rolesId", rolesIDs);
         model.addAttribute("users", allUsers);
         model.addAttribute("userForm", user);
         model.addAttribute("authorities", allRoles);

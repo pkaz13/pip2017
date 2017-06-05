@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import pl.hycom.pip.messanger.controller.model.RoleDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.mail.Message;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
         return trySaveUser(user, true);
     }
 
-    private void setUserRoleIfNoneGranted(User user) {
+    private void setDefaultRole(User user) {
         log.info("setUserRoleIfNoneGranted method invoked for user: " + user);
         if (CollectionUtils.isEmpty(user.getAuthorities())) {
             roleRepository.findByAuthorityIgnoreCase(Role.RoleName.ROLE_USER.name())
@@ -92,7 +92,12 @@ public class UserService implements UserDetailsService {
         userToUpdate.setLastName(user.getLastName());
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
         userToUpdate.setEmail(user.getEmail().toLowerCase());
-        setUserRoleIfNoneGranted(userToUpdate);
+        Collection<Role> roles = user.getRoles();
+        if (CollectionUtils.isEmpty(roles)) {
+            setDefaultRole(userToUpdate);
+        } else {
+            userToUpdate.setRoles(roles);
+        }
         return trySaveUser(userToUpdate, false);
     }
 
@@ -189,5 +194,13 @@ public class UserService implements UserDetailsService {
         URL requestURL = new URL(request.getRequestURL().toString());
         String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
         return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
+    }
+
+    public void setUserRoles(UserDTO user, int[] rolesId) {
+        Set<Role> roles = new HashSet<>();
+        for (int i : rolesId) {
+            roles.add(roleRepository.findOne(i));
+        }
+        user.setRoles(orikaMapper.mapAsSet(roles, RoleDTO.class));
     }
 }

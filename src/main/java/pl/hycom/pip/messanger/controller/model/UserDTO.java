@@ -8,6 +8,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Monia on 2017-05-27.
@@ -39,4 +40,5 @@ public class UserDTO {
     private Set<RoleDTO> roles = new HashSet<>();
 
     private String profileImageUrl;
+
 }

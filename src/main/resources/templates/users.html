@@ -141,7 +141,7 @@
                                         Error</p>
                                 </div>
                                 <div class="form-group"
-                                     th:classappend="${#fields.hasErrors('phoneNumber')}? 'has-error'">
+                                     >
                                     <label class="col-sm-3 control-label" for="phoneNumber_form">Numer telefonu</label>
                                     <div class="col-sm-9">
                                         <input class="form-control" id="phoneNumber_form"
@@ -151,13 +151,12 @@
                                         number
                                         Error</p>
                                 </div>
-                                <div class="form-group"
-                                     th:classappend="${#fields.hasErrors('phoneNumber')}? 'has-error'">
+                                <div class="form-group">
                                     <label class="col-sm-3 control-label" for="roles_form">Role</label>
                                     <div class="col-sm-9">
                                         <ul>
                                             <li th:each="role : ${authorities}">
-                                                <input type="checkbox" th:field="*{roles}" th:value="${role.toString()}" id="roles_form" />
+                                                <input type="checkbox" name="role" th:value="${role.id}" id="roles_form"/>
                                                 <label th:text="${role.authority}" ></label>
                                             </li>
                                         </ul>
