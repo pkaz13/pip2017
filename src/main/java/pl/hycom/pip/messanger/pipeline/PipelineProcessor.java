@@ -27,6 +27,7 @@ public interface PipelineProcessor {
     String KEYWORDS_FOUND = "keywordsFound";
     String KEYWORD_TO_BE_ASKED = "keywordToBeAsked";
     String KEYWORDS_EXCLUDED = "keywordsExcluded";
+    String ANSWER = "answer";
 
     int runProcess(@NonNull PipelineContext ctx) throws PipelineException;
 }

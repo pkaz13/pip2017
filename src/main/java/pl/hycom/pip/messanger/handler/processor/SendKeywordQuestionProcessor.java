@@ -70,12 +70,6 @@ public class SendKeywordQuestionProcessor implements PipelineProcessor {
     private String getPayload(List<Keyword> keywords, List<Keyword> excludedKeywords, Keyword keywordToBeAsked) {
         Gson gson = new Gson();
         Payload payload = new Payload(keywords, excludedKeywords, keywordToBeAsked);
-//        Map<String, List<Keyword>> payloadMap = new HashMap<>();
-//        payloadMap.put(KEYWORDS, keywords);
-//        payloadMap.put(KEYWORDS_EXCLUDED, excludedKeywords);
-//        List<Keyword> keywordsToBeAsked = new ArrayList<Keyword>();
-//        keywordsToBeAsked.add(keywordToBeAsked);
-//        payloadMap.put(KEYWORD_TO_BE_ASKED, keywordsToBeAsked);
         return gson.toJson(payload);
     }
 }
