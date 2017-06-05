@@ -28,6 +28,7 @@ public class PipelineQuickReplyHandler implements QuickReplyMessageEventHandler 
     @Override
     public void handle(QuickReplyMessageEvent msg) {
         log.info("Received quick reply event");
+        log.info("Payload: " + msg.getQuickReply().getPayload());
 
         Map<String, Object> params = new HashMap<>();
 
