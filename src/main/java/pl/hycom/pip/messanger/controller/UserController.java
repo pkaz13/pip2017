@@ -34,6 +34,8 @@ public class UserController {
     private final RoleService roleService;
 
     private static final String ROLE_ADMIN = "ADMIN";
+
+    @RolesAllowed(ROLE_ADMIN)
     @GetMapping("/admin/users")
     public String showUsers(Model model) {
         prepareModel(model, new UserDTO());
@@ -77,7 +79,8 @@ public class UserController {
             return "redirect:/admin/users";
         } else {
             prepareModel(model, new UserDTO());
-            model.addAttribute("error", new ObjectError("delete.error.user.cannot.delete.own.account", "Użytkownik nie może usunąć własnego konta"));
+            ObjectError error = new ObjectError("user.cannot.delete.own.account", "Użytkownik nie może usunąć własnego konta");
+            model.addAttribute("error", error);
             return USERS_VIEW;
         }
     }
