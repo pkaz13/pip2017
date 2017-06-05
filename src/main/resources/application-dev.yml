@@ -24,6 +24,7 @@ spring:
       auth: true
       starttls.enable: true
       starttls.required: true
+      ssl.trust: smtp.gmail.com
   h2:
     console:
       enabled: true

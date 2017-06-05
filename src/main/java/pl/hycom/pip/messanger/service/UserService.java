@@ -9,18 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.mail.Message;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.PasswordResetTokenRepository;
 import pl.hycom.pip.messanger.repository.RoleRepository;
+import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
+import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
-import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -36,6 +43,10 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetTokenRepository tokenRepository;
+
+    @Autowired
+    private EmailService emailService;
+
     @Autowired
     private MapperFacade orikaMapper;
 
@@ -52,19 +63,18 @@ public class UserService implements UserDetailsService {
         return orikaMapper.map(userRepository.findOne(id),UserDTO.class);
     }
 
-    public UserDTO addOrUpdateUser(UserDTO user) {
+    public UserDTO addOrUpdateUser(UserDTO user) throws EmailNotUniqueException{
         User userToUpdateOrAdd = orikaMapper.map(user, User.class);
         if (user.getId() != null && user.getId() != 0) {
-            return updateUser(user);
+            return orikaMapper.map(updateUser(userToUpdateOrAdd), UserDTO.class);
         } else {
             return orikaMapper.map(addUser(userToUpdateOrAdd), UserDTO.class);
         }
     }
 
-    public User addUser(User user) {
+    public User addUser(User user) throws EmailNotUniqueException {
         log.info("Adding user: " + user);
-        setUserRoleIfNoneGranted(user);
-        return userRepository.save(user);
+        return trySaveUser(user, true);
     }
 
     private void setUserRoleIfNoneGranted(User user) {
@@ -75,20 +85,34 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public UserDTO updateUser(UserDTO user) {
+    public User updateUser(User user) throws EmailNotUniqueException {
         log.info("Updating user: " + user);
-        User userToUpdate = userRepository.findOne(orikaMapper.map(user, User.class).getId());
-        Optional<User> userByEmail = userRepository.findByEmail(user.getEmail());
-        if (!(user.getEmail().equals(userToUpdate.getEmail())) && userByEmail.isPresent()) {
-            log.info("User with email: " + user.getEmail() + " exists");
-        } else {
-            userToUpdate.setFirstName(user.getFirstName());
-            userToUpdate.setLastName(user.getLastName());
-            userToUpdate.setEmail(user.getEmail());
-            userToUpdate.setPhoneNumber(user.getPhoneNumber());
-            return orikaMapper.map(userRepository.save(userToUpdate),UserDTO.class);
+        User userToUpdate = userRepository.findOne(user.getId());
+        userToUpdate.setFirstName(user.getFirstName());
+        userToUpdate.setFirstName(user.getLastName());
+        userToUpdate.setPhoneNumber(user.getPhoneNumber());
+        userToUpdate.setEmail(user.getEmail().toLowerCase());
+        setUserRoleIfNoneGranted(userToUpdate);
+        return trySaveUser(userToUpdate, false);
+    }
+
+    private User trySaveUser(User user, boolean isNewUser) throws EmailNotUniqueException{
+        User userToSave = null;
+        try {
+            userToSave = userRepository.save(user);
+            if (isNewUser) {
+                String token = generateToken();
+                createPasswordResetTokenForUser(userToSave, token);
+                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+                emailService.sendEmail(constructResetTokenEmail(getURLBase(request), user, token));
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new EmailNotUniqueException(e.getCause());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            log.error("Malformed URL has occurred");
         }
-        return orikaMapper.map(userToUpdate,UserDTO.class);
+        return userToSave;
     }
 
     public void deleteUser(Integer id) {
@@ -158,5 +182,12 @@ public class UserService implements UserDetailsService {
         String url = contextPath + "/user/password/change/reset/token/" + token;
         Message message = new Message("messenger.recommendations2017@gmail.com", to, "Reset password", url);
         return message.constructEmail();
+    }
+
+    public String getURLBase(HttpServletRequest request) throws MalformedURLException {
+
+        URL requestURL = new URL(request.getRequestURL().toString());
+        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
+        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
     }
 }

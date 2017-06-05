@@ -116,7 +116,7 @@
                                     <label class="col-sm-3 control-label" for="email_form">Email</label>
                                     <div class="col-sm-9">
                                         <input id="email_form" class="form-control autofocus" maxlength="40"
-                                               th:field="*{email}"/>
+                                               th:field="*{email}" placeholder="email@example.com"/>
                                     </div>
                                     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</p>
                                 </div>
@@ -145,7 +145,7 @@
                                     <label class="col-sm-3 control-label" for="phoneNumber_form">Numer telefonu</label>
                                     <div class="col-sm-9">
                                         <input class="form-control" id="phoneNumber_form"
-                                               th:field="*{phoneNumber}"/>
+                                               th:field="*{phoneNumber}" placeholder="+48777888999"/>
                                     </div>
                                     <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Phone
                                         number

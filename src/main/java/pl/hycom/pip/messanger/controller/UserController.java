@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import pl.hycom.pip.messanger.controller.model.RoleDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.service.RoleService;
+import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.service.UserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -28,12 +30,15 @@ public class UserController {
 
     private final RoleService roleService;
 
+    private static final String ROLE_ADMIN = "ADMIN";
+
     @GetMapping("/admin/users")
     public String showUsers(Model model) {
         prepareModel(model, new UserDTO());
         return USERS_VIEW;
     }
 
+    @RolesAllowed(ROLE_ADMIN)
     @PostMapping("/admin/users")
     public String addOrUpdateUser(@Valid UserDTO user, BindingResult bindingResult, Model model, HttpServletRequest request) {
 
@@ -44,21 +49,19 @@ public class UserController {
             return USERS_VIEW;
         }
 
-        if (userService.loadUserByUsername(user.getEmail()) != null) {
+        try {
+            userService.addOrUpdateUser(user);
+            return "redirect:/admin/users";
+        } catch (EmailNotUniqueException e) {
             prepareModel(model, user);
-            model.addAttribute("error", new ObjectError("userExists", "Użytkownik z takim adresem email już istnieje."));
-
+            model.addAttribute("error", new ObjectError("validation.error.user.exists", "Użytkownik z takim adresem email już istnieje."));
             return USERS_VIEW;
         }
-
-        userService.addOrUpdateUser(user);
-
-        return "redirect:/admin/users";
     }
 
+    @RolesAllowed(ROLE_ADMIN)
     @DeleteMapping("/admin/users/{userId}/delete")
-    public @ResponseBody
-    void deleteProduct(@PathVariable("userId") final Integer id) {
+    @ResponseBody public void deleteProduct(@PathVariable("userId") final Integer id) {
         userService.deleteUser(id);
         log.info("User[" + id + "] deleted!");
     }

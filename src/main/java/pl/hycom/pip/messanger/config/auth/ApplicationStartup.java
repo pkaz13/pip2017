@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.repository.model.Role;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.RoleService;
@@ -71,7 +72,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         Optional<Role> role = roleService.findRoleByName(ROLE_ADMIN);
         if (role.isPresent()) {
             user.setRoles(Collections.singleton(role.get()));
-            userService.addUser(user);
+            try {
+                userService.addUser(user);
+            } catch (EmailNotUniqueException e) {
+                e.printStackTrace();
+            }
         } else {
             log.warn("ApplicationStartup.initializeAdminUser() - Initializing admin failed!!");
         }
