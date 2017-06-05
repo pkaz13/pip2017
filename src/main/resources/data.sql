@@ -9,10 +9,7 @@ values
 (7, 'lodówka','Biała chłodziarko-zamrażarka Amica FK205.4 ','https://d.allegroimg.com/s1024/004902/eafa87eb44479fbada01afad438d/Chlodziarko-zamrazarka-Amica-FK205.4-przod'),
 (8, 'lodówka','Chłodziarko-zamrażarka Amica FK3296.4F to model wolnostojący','https://6.allegroimg.com/s1024/0015d6/f9edfa9641ed9f06639d88057506/Chlodziarko-zamrazarka-Amica-FK3296.3F-FK3296.3F'),
 (9, 'lodówka','Chłodziarka Amica FM1044 to wolnostojące urządzenie z komorą niskich temperatur','https://8.allegroimg.com/s1024/0042ac/757a038e43adae2a24108ecedd98/Chlodziarka-Amica-FM104.4-Chlodziarka'),
-(10, 'Prod1','Prod1','https://3.allegroimg.com/s1024/00d44a/09ecb53b43f3a5f823df04cac473/Chlodziarko-zamrazarka-Manta-CLF050-CLF050'),
-(11, 'Prod2','Prod2','https://3.allegroimg.com/s1024/00d44a/09ecb53b43f3a5f823df04cac473/Chlodziarko-zamrazarka-Manta-CLF050-CLF050'),
-(12, 'Prod3','Prod3','https://3.allegroimg.com/s1024/00d44a/09ecb53b43f3a5f823df04cac473/Chlodziarko-zamrazarka-Manta-CLF050-CLF050'),
-(13, 'Prod4','Prod4','https://3.allegroimg.com/s1024/00d44a/09ecb53b43f3a5f823df04cac473/Chlodziarko-zamrazarka-Manta-CLF050-CLF050');
+(10, 'lodówka','Manta CLF050 to podblatowa chłodziarko-zamrażarka wolnostojąca o wysokości 49cm','https://3.allegroimg.com/s1024/00d44a/09ecb53b43f3a5f823df04cac473/Chlodziarko-zamrazarka-Manta-CLF050-CLF050');
 
 insert into KEYWORDS (id, word)
 values
@@ -30,11 +27,7 @@ values
 (12, 'Rabat 10%'),
 (13, 'Wyprzedaż'),
 (14, 'Gwarancja 5 lat'),
-(15, 'Cicha praca'),
-(16, 'Key1'),
-(17, 'Key2'),
-(18, 'Key3'),
-(19, 'Key4');
+(15, 'Cicha praca');
 
 insert into PRODUCTS_KEYWORDS (PRODUCT_ID,KEYWORDS_ID)
 values
@@ -52,20 +45,7 @@ values
 (8,12),
 (9,13),
 (10,14),
-(5,15),
-(10,16),
-(10,17),
-(10,18),
-(10,19),
-(11,16),
-(11,17),
-(11,18),
-(12,16),
-(12,18),
-(12,19),
-(13,16),
-(13,17),
-(13,19);
+(5,15);
 
 insert into Users (id, first_name, last_name, email, password, phone_number, credentials_non_expired, account_non_expired, account_non_locked, enabled)
 VALUES
