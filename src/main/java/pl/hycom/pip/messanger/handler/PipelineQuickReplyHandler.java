@@ -13,7 +13,6 @@ import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class PipelineQuickReplyHandler implements QuickReplyMessageEventHandler 
         }
 
         params.put(PipelineProcessor.SENDER_ID, event.getSender().getId());
-        params.put(PipelineProcessor.MESSAGE, Arrays.toString(keywords.toArray()));
+        params.put(PipelineProcessor.MESSAGE, keywords.stream().map(Keyword::getWord).toString());
         params.put(PipelineProcessor.KEYWORDS_EXCLUDED, keywordsExcluded);
 
         try {
