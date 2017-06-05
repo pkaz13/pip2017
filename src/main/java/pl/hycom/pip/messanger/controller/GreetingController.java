@@ -105,12 +105,12 @@ public class GreetingController {
 
     @DeleteMapping("/admin/deleteGreeting/{locale}")
     public String removeGreeting(@PathVariable String locale, Model model) {
-//        if (StringUtils.equals(locale, DEFAULT_LOCALE)) {
-//            prepareModel(model);
-//            String message = getMessage("greetings.invalidOperation");
-//            model.addAttribute("errors", Collections.singletonList(message));
-//            return VIEW_GREETINGS;
-//        }
+        if (StringUtils.equals(locale, DEFAULT_LOCALE)) {
+            prepareModel(model);
+            String message = getMessage("greetings.invalidOperation");
+            model.addAttribute("errors", Collections.singletonList(message));
+            return VIEW_GREETINGS;
+        }
         try {
             greetingService.removeGreeting(locale);
             log.info("Deleting greeting succeeded");
