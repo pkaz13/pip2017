@@ -14,7 +14,7 @@
                         <h3 class="panel-title">Enter your account mail</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form" method="post" th:action="@{/user/password/change/reset/token/send}" th:object="${userEmail}">
+                        <form role="form" method="post" th:action="@{/account/password/change/reset/token/send}" th:object="${userEmail}">
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" id="userMailInput" th:field="*{userMail}" placeholder="Email"/>

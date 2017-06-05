@@ -15,7 +15,7 @@
                     <h3 class="panel-title">Change password</h3>
                 </div>
                 <div class="panel-body">
-                    <form role="form" th:action="@{/user/password/change/save}" method="post" th:object="${resetPassword}">
+                    <form role="form" th:action="@{/account/password/change/save}" method="post" th:object="${resetPassword}">
                         <fieldset>
                             <div class="form-group">
                                 <input type="hidden" th:field="*{resetToken}" name="token"/>
