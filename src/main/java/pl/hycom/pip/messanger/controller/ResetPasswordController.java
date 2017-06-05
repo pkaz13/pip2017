@@ -17,6 +17,7 @@ import pl.hycom.pip.messanger.controller.model.UserEmail;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.EmailService;
 import pl.hycom.pip.messanger.service.UserService;
+import pl.hycom.pip.messanger.util.RequestHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -67,7 +68,7 @@ public class ResetPasswordController {
 
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
-        emailService.sendEmail(userService.constructResetTokenEmail(getURLBase(request), user, token));
+        emailService.sendEmail(userService.constructResetTokenEmail(RequestHelper.getURLBase(request), user, token));
         attributes.addFlashAttribute("sendOrNotSend", "If user exists, mail was sent.");
         return "redirect:/login";
     }
@@ -95,18 +96,11 @@ public class ResetPasswordController {
 
         if (userService.validatePasswordResetToken(resetPassword.getResetToken(), resetPassword.getUserMail())) {
                 userService.changePassword(userService.findUserByEmail(resetPassword.getUserMail()), resetPassword.getNewPassword());
-                attributes.addFlashAttribute("passwordChangedOrNotChanged", "If user exists, password was changed.");
+                attributes.addFlashAttribute("passwordChangedOrNotChanged", "Jeśli użytkownik istnieje hasło zostało zmienione");
                 return "redirect:/login";
         }
         log.info("Failed to change password user " +  userService.findUserByEmail(resetPassword.getUserMail()).getUsername());
         attributes.addFlashAttribute("passwordChangedOrNotChanged", "If user exists, mail was changed.");
         return "redirect:/login";
-    }
-
-    private String getURLBase(HttpServletRequest request) throws MalformedURLException {
-
-        URL requestURL = new URL(request.getRequestURL().toString());
-        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
-        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
     }
 }

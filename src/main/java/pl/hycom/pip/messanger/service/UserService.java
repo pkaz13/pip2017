@@ -22,6 +22,7 @@ import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
+import pl.hycom.pip.messanger.util.RequestHelper;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -109,7 +110,7 @@ public class UserService implements UserDetailsService {
                 String token = generateToken();
                 createPasswordResetTokenForUser(userToSave, token);
                 HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-                emailService.sendEmail(constructResetTokenEmail(getURLBase(request), user, token));
+                emailService.sendEmail(constructResetTokenEmail(RequestHelper.getURLBase(request), user, token));
             }
         } catch (DataIntegrityViolationException e) {
             throw new EmailNotUniqueException(e.getCause());
@@ -187,13 +188,6 @@ public class UserService implements UserDetailsService {
         String url = contextPath + "/account/password/change/reset/token/" + token;
         Message message = new Message("messenger.recommendations2017@gmail.com", to, "Reset password", url);
         return message.constructEmail();
-    }
-
-    public String getURLBase(HttpServletRequest request) throws MalformedURLException {
-
-        URL requestURL = new URL(request.getRequestURL().toString());
-        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
-        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
     }
 
     public void setUserRoles(UserDTO user, int[] rolesId) {
