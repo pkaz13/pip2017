@@ -62,4 +62,4 @@ insert into ROLES (id, authority) VALUES
   (2, 'ROLE_USER');
 
 INSERT INTO USERS_ROLES (USER_ID, ROLES_ID)
-    VALUES (1,1), (1,2), (2,2), (3,2), (4,2), (5,2), (6,1), (7,2);
+    VALUES (1,1), (1,2), (2,2), (3,2), (3,1), (4,2), (5,2), (6,1), (7,2);

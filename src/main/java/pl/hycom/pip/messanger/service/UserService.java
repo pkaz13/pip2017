@@ -89,7 +89,7 @@ public class UserService implements UserDetailsService {
         log.info("Updating user: " + user);
         User userToUpdate = userRepository.findOne(user.getId());
         userToUpdate.setFirstName(user.getFirstName());
-        userToUpdate.setFirstName(user.getLastName());
+        userToUpdate.setLastName(user.getLastName());
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
         userToUpdate.setEmail(user.getEmail().toLowerCase());
         setUserRoleIfNoneGranted(userToUpdate);
