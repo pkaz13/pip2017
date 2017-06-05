@@ -51,36 +51,4 @@
 		</pipelinelink>		
 	</pipelinechain>
 
-	<pipelinechain name="processQuickReply" headlink="loadUserProfileQR">
-		<pipelinelink name="loadUserProfileQR">
-			<processor bean="userProfileProcessor" />
-			<transition returnvalue="1" link="updateKeywordsFromQuickReply"/>
-		</pipelinelink>
-		<pipelinelink name="updateKeywordsFromQuickReply">
-			<processor bean="processQuickReplyProcessor"/>
-			<transition returnvalue="1" link="loadProductsQR"/>
-		</pipelinelink>
-		<pipelinelink name="loadProductsQR">
-			<processor bean="loadBestMatchingProductsProcessor"/>
-			<transition returnvalue="1" link="sendProductsResponseQR" />
-			<transition returnvalue="2" link="findKeywordToAskQR"/>
-		</pipelinelink>
-		<pipelinelink name="findKeywordToAskQR">
-			<processor bean="findKeywordToAskProcessor"/>
-			<transition returnvalue="1" link="sendKeywordQuestionQR"/>
-			<transition returnvalue="2" link="sendProductsResponseQR"/>
-		</pipelinelink>
-		<pipelinelink name="sendKeywordQuestionQR">
-			<processor bean="sendKeywordQuestionProcessor"/>
-			<transition returnvalue="1" link="logContextQR"/>
-		</pipelinelink>
-		<pipelinelink name="sendProductsResponseQR">
-			<processor bean="generateMessageProcessor" />
-			<transition returnvalue="1" link="logContextQR" />
-		</pipelinelink>
-		<pipelinelink name="logContextQR">
-			<processor bean="logContextProcessor" />
-		</pipelinelink>
-	</pipelinechain>
-
 </pipeline>
