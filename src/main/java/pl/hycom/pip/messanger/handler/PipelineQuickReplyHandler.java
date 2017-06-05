@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by patry on 04/06/17.
@@ -53,7 +54,7 @@ public class PipelineQuickReplyHandler implements QuickReplyMessageEventHandler 
         }
 
         params.put(PipelineProcessor.SENDER_ID, event.getSender().getId());
-        params.put(PipelineProcessor.MESSAGE, keywords.stream().map(Keyword::getWord).toString());
+        params.put(PipelineProcessor.MESSAGE, keywords.stream().map(Keyword::getWord).collect(Collectors.toList()).toString());
         params.put(PipelineProcessor.KEYWORDS_EXCLUDED, keywordsExcluded);
 
         try {
