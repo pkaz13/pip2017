@@ -8,11 +8,13 @@ import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.hycom.pip.messanger.handler.model.Payload;
 import pl.hycom.pip.messanger.pipeline.PipelineContext;
 import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class SendKeywordQuestionProcessor implements PipelineProcessor {
         List<Keyword> keywords = ctx.get(KEYWORDS, List.class);
         List<Keyword> excludedKeywords = ctx.get(KEYWORDS_EXCLUDED, List.class);
         String message = messageBuilder.append("Keyword: ").append(keywordToBeAsked.getWord()).toString();
-        String payload = getPayload(keywords, excludedKeywords);
+        String payload = getPayload(keywords, excludedKeywords, keywordToBeAsked);
         List<QuickReply> quickReplies = getQuickReplies(payload);
 
         sendQuickReply(id, message, quickReplies);
@@ -65,11 +67,15 @@ public class SendKeywordQuestionProcessor implements PipelineProcessor {
                 .build();
     }
 
-    private String getPayload(List<Keyword> keywords, List<Keyword> excludedKeywords) {
+    private String getPayload(List<Keyword> keywords, List<Keyword> excludedKeywords, Keyword keywordToBeAsked) {
         Gson gson = new Gson();
-        Map<String, List<Keyword>> payloadMap = new HashMap<>();
-        payloadMap.put(KEYWORDS, keywords);
-        payloadMap.put(KEYWORDS_EXCLUDED, excludedKeywords);
-        return gson.toJson(payloadMap);
+        Payload payload = new Payload(keywords, excludedKeywords, keywordToBeAsked);
+//        Map<String, List<Keyword>> payloadMap = new HashMap<>();
+//        payloadMap.put(KEYWORDS, keywords);
+//        payloadMap.put(KEYWORDS_EXCLUDED, excludedKeywords);
+//        List<Keyword> keywordsToBeAsked = new ArrayList<Keyword>();
+//        keywordsToBeAsked.add(keywordToBeAsked);
+//        payloadMap.put(KEYWORD_TO_BE_ASKED, keywordsToBeAsked);
+        return gson.toJson(payload);
     }
 }
