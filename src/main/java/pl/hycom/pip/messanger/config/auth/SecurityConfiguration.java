@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private AuthSuccessHandler successHandler;
 
     private static final String ROLE_ADMIN = Role.RoleName.ROLE_ADMIN.name();
-    private static final String ROLE_ACTUATOR = "ACTUATOR";
+    private static final String ROLE_USER = Role.RoleName.ROLE_USER.name();
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -46,25 +46,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/db-admin/console/**").permitAll()
                 .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
+                .antMatchers("/user/**").hasAuthority(ROLE_USER)
                 .anyRequest().authenticated()
-
                 .and()
-                .formLogin().loginPage("/login").failureUrl("/login-error.html").successHandler(successHandler).permitAll()
-
-                // TODO: usunąć kiedy zrezygnujemy z consoli do łączenia się z H2
-                .and()
-                .csrf().ignoringAntMatchers("/db-admin/console/**")
-
-                .and()
-                .headers().frameOptions().disable();
+                .formLogin().loginPage("/login").failureUrl("/login-error.html").successHandler(successHandler).permitAll();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
-//        authManagerBuilder.inMemoryAuthentication()
-//                .withUser("admin").password("admin").roles(ROLE_ADMIN)
-//                .and()
-//                .withUser("test").password("test").roles(ROLE_ACTUATOR);
         // todo dodac metode passwordEncoder
         authManagerBuilder.userDetailsService(userService);
     }

@@ -157,7 +157,7 @@
                                     <div class="col-sm-9">
                                         <ul>
                                             <li th:each="role : ${authorities}">
-                                                <input type="checkbox" th:field="*{roles}" th:value="${role}" id="roles_form" />
+                                                <input type="checkbox" th:field="*{roles}" th:value="${role.toString()}" id="roles_form" />
                                                 <label th:text="${role.authority}" ></label>
                                             </li>
                                         </ul>
