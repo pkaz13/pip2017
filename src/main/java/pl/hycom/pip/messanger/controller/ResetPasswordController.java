@@ -12,17 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.hycom.pip.messanger.controller.model.ResetPassword;
-
 import pl.hycom.pip.messanger.controller.model.UserEmail;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.EmailService;
 import pl.hycom.pip.messanger.service.UserService;
-import pl.hycom.pip.messanger.util.RequestHelper;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by Piotr on 21.05.2017.
@@ -48,7 +44,7 @@ public class ResetPasswordController {
     }
 
     @PostMapping("account/password/change/reset/token/send")
-    public String sendEmail(@Valid UserEmail userEmail, BindingResult bindingResult, Model model, HttpServletRequest request, RedirectAttributes attributes) throws MalformedURLException {
+    public String sendEmail(@Valid UserEmail userEmail, BindingResult bindingResult, Model model, RedirectAttributes attributes) throws MalformedURLException {
 
         if(bindingResult.hasErrors()) {
             model.addAttribute("userEmail", userEmail);
@@ -68,7 +64,7 @@ public class ResetPasswordController {
 
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
-        emailService.sendEmail(userService.constructResetTokenEmail(RequestHelper.getURLBase(request), user, token));
+        emailService.sendEmail(userService.constructResetTokenEmail(user, token));
         attributes.addFlashAttribute("sendOrNotSend", "Mail do resetowania hasła został wysłany na podany adres e-mail");
         return "redirect:/login";
     }

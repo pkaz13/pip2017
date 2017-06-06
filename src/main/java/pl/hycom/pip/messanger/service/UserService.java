@@ -5,30 +5,26 @@ import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.hycom.pip.messanger.controller.model.RoleDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.mail.Message;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.PasswordResetTokenRepository;
 import pl.hycom.pip.messanger.repository.RoleRepository;
-import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
-import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
-import pl.hycom.pip.messanger.util.RequestHelper;
+import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -44,6 +40,15 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetTokenRepository tokenRepository;
+
+    @Value("${messenger.port:8080}")
+    private String port;
+
+    @Value("${messenger.host:localhost}")
+    private String host;
+
+    @Value("${messenger.protocol:http}")
+    private String protocol;
 
     @Autowired
     private EmailService emailService;
@@ -112,7 +117,7 @@ public class UserService implements UserDetailsService {
             if (isNewUser) {
                 String token = generateToken();
                 createPasswordResetTokenForUser(userToSave, token);
-                emailService.sendEmail(constructResetTokenEmail(requestUrl, user, token));
+                emailService.sendEmail(constructResetTokenEmail(user, token));
             }
         } catch (DataIntegrityViolationException e) {
             throw new EmailNotUniqueException(e.getCause());
@@ -186,10 +191,10 @@ public class UserService implements UserDetailsService {
         log.info("User " + user.getUsername() + " changed password for " + password);
     }
 
-    public SimpleMailMessage constructResetTokenEmail(String contextPath, User user, String token) {
+    public SimpleMailMessage constructResetTokenEmail(User user, String token) {
         List<String> to = new ArrayList<>();
         to.add(user.getEmail());
-        String url = contextPath + "/account/password/change/reset/token/" + token;
+        String url = protocol + "://" + host + ":" + port + "/account/password/change/reset/token/" + token;
         Message message = new Message("messenger.recommendations2017@gmail.com", to, "Reset password", url);
         return message.constructEmail();
     }
