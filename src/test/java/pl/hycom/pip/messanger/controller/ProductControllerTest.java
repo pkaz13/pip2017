@@ -18,6 +18,7 @@ import pl.hycom.pip.messanger.MessengerRecommendationsApplication;
 import pl.hycom.pip.messanger.repository.ProductRepository;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.model.Product;
+import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ public class ProductControllerTest {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private KeywordService keywordService;
 
     @Autowired
     private ProductRepository productRepository;
@@ -147,6 +151,7 @@ public class ProductControllerTest {
     @After
     public void cleanAll() {
         productService.deleteAllProducts();
+        keywordService.deleteAllKeywords();
     }
 
 }

@@ -7,16 +7,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import pl.hycom.pip.messanger.MessengerRecommendationsApplication;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 /**
  * Created by piotr on 15.05.2017.
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MessengerRecommendationsApplication.class)
 @WebAppConfiguration
+@ContextConfiguration
 @ActiveProfiles({ "dev", "testdb" })
 @Log4j2
 public class GreetingControllerIntegrationTest {
@@ -42,7 +44,7 @@ public class GreetingControllerIntegrationTest {
     public void removeGreetingTest() throws Exception {
         String locale = "pl_PL";
 
-        this.mockMvc.perform(get("/admin/deleteGreeting/"+locale))
+        this.mockMvc.perform(delete("/admin/deleteGreeting/" + locale))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/admin/greetings"));
     }

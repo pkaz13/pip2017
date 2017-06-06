@@ -97,7 +97,7 @@ public class GreetingControllerTest {
         BindingResult bindingResult = new DirectFieldBindingResult(greet, "adddedGreeting");
 
         String ViewResult = controller.addGreeting(greet, bindingResult, model);
-        assertThat(ViewResult).isEqualTo("redirect:/admin/greetings");
+        assertThat(ViewResult).isEqualTo("redirect:/admin/greetings?success=true");
     }
 
     @Test
