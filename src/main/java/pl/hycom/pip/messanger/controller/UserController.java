@@ -49,12 +49,11 @@ public class UserController {
     @RolesAllowed(ROLE_ADMIN)
     @PostMapping("/admin/users")
     public String addOrUpdateUser(@Valid UserDTO user, BindingResult bindingResult,
-                                  Model model, HttpServletRequest request) {
+                                  Model model) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, user);
             log.info("Validation user error!" + bindingResult.getAllErrors());
-
             return USERS_VIEW;
         }
 

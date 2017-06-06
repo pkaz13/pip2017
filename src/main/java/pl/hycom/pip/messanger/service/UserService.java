@@ -123,7 +123,7 @@ public class UserService implements UserDetailsService {
             if (isNewUser) {
                 String token = generateToken();
                 createPasswordResetTokenForUser(userToSave, token);
-                emailService.sendEmail(constructResetTokenEmail(requestUrl, user, token));
+                emailService.sendEmail(constructResetTokenEmail(user, token));
             }
             if(isCurrentAccount) {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
