@@ -192,11 +192,8 @@ public class UserService implements UserDetailsService {
         return message.constructEmail();
     }
 
-    public void setUserRoles(UserDTO user, int[] rolesId) {
-        Set<Role> roles = new HashSet<>();
-        for (int i : rolesId) {
-            roles.add(roleRepository.findOne(i));
-        }
-        user.setRoles(orikaMapper.mapAsSet(roles, RoleDTO.class));
+    //lub Set<String>
+    public Set<Integer> findUserRoles(Integer id) {
+        return userRepository.findOne(id).getRoles().stream().map(Role::getId).collect(Collectors.toSet());
     }
 }
