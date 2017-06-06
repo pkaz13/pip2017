@@ -72,13 +72,11 @@ public class AccountController {
         }
         else {
             try {
-                userService.addOrUpdateUser(user, RequestHelper.getURLBase(request));
+                userService.addOrUpdateUser(user);
             } catch (EmailNotUniqueException e) {
                 model.addAttribute("user", user);
                 model.addAttribute("error", new ObjectError("validation.error.user.exists", "Użytkownik z takim adresem email już istnieje."));
                 return ACCOUNT_VIEW;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             }
             return "redirect:/user/account/"+user.getId();
         }
