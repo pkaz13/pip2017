@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -45,7 +46,7 @@ public class UserController {
     @RolesAllowed(ROLE_ADMIN)
     @PostMapping("/admin/users")
     public String addOrUpdateUser(@Valid UserDTO user, BindingResult bindingResult,
-                                  Model model, @RequestParam(value = "role") int[] roles, HttpServletRequest request) {
+                                  Model model, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             prepareModel(model, user);
@@ -55,7 +56,6 @@ public class UserController {
         }
 
         try {
-            userService.setUserRoles(user, roles);
             userService.addOrUpdateUser(user, RequestHelper.getURLBase(request));
             return "redirect:/admin/users";
         } catch (EmailNotUniqueException e) {
@@ -93,5 +93,14 @@ public class UserController {
         model.addAttribute("users", allUsers);
         model.addAttribute("userForm", user);
         model.addAttribute("authorities", allRoles);
+    }
+
+    @RolesAllowed(ROLE_ADMIN)
+    @GetMapping("/admin/users/{userId}/roles")
+    @ResponseBody
+    public Set<Integer> getUserRoles(@PathVariable("userId") final Integer id) {
+        log.info("Searching for user's [" + id + "] roles");
+
+        return userService.findUserRoles(id);
     }
 }
