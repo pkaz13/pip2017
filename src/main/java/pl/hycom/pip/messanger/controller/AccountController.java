@@ -36,7 +36,7 @@ public class AccountController {
     @Autowired
     private MapperFacade orikaMapper;
 
-    @GetMapping("/admin/account")
+    @GetMapping("/user/account")
     public String showLoggedUserAccount(Model model, @AuthenticationPrincipal User user)
     {
         if(user!=null) {
@@ -49,7 +49,7 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/admin/account/{userId}")
+    @GetMapping("/user/account/{userId}")
     public String showAccount(Model model, @PathVariable("userId") final Integer userId) {
         UserDTO user =userService.findUserById(userId);
         if(user!=null) {
@@ -62,7 +62,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/admin/account/update")
+    @PostMapping("/user/account/update")
     public String updateAccount(@Valid UserDTO user, BindingResult bindingResult, Model model, HttpServletRequest request) {
         if(bindingResult.hasErrors()) {
             model.addAttribute("user", user);
@@ -80,7 +80,7 @@ public class AccountController {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            return "redirect:/admin/account/"+user.getId();
+            return "redirect:/user/account/"+user.getId();
         }
     }
 
