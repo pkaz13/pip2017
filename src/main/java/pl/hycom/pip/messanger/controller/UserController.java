@@ -2,6 +2,9 @@ package pl.hycom.pip.messanger.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +12,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import pl.hycom.pip.messanger.controller.model.RoleDTO;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
+import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.RoleService;
 import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.service.UserService;
@@ -71,17 +75,16 @@ public class UserController {
 
     @RolesAllowed(ROLE_ADMIN)
     @DeleteMapping("/admin/users/{userId}/delete")
-    public String deleteUser(@PathVariable("userId") final Integer id, Model model) {
-        boolean result = userService.isChosenAccountCurrentUser(id);
-        if(!result) {
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") final Integer id, Model model,  @AuthenticationPrincipal User user) {
+        if(!user.getId().equals(id)) {
             userService.deleteUser(id);
             log.info("User[" + id + "] deleted!");
-            return "redirect:/admin/users";
+            return ResponseEntity.ok(true);
         } else {
             prepareModel(model, new UserDTO());
             ObjectError error = new ObjectError("user.cannot.delete.own.account", "Użytkownik nie może usunąć własnego konta");
             model.addAttribute("error", error);
-            return USERS_VIEW;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
         }
     }
 

@@ -30,16 +30,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.hycom.pip.messanger.controller.model.KeywordDTO;
-import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
@@ -82,7 +79,7 @@ public class KeywordController {
     }
 
     @DeleteMapping("/admin/keywords/{keywordId}/delete")
-    public String deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
+    public ResponseEntity<?> deleteKeyword(@PathVariable("keywordId") final Integer id, Model model) {
 
         KeywordDTO keywordToDelete = keywordService.findKeywordById(id);
         if (!productService.isAnyProductContainingAtLeastOneKeyword(Arrays.asList(keywordToDelete))) {
@@ -93,10 +90,9 @@ public class KeywordController {
             ObjectError error = new ObjectError("keywordInUsage", "Słowo kluczowe jest przypisane do produktu.");
             model.addAttribute("error", error);
             log.info("cannot delete keyword = " + keywordToDelete);
-            return KEYWORDS_VIEW;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
         }
-
-        return "redirect:/admin/keywords";
+        return ResponseEntity.ok(true);
     }
 
     private void prepareModel(Model model, KeywordDTO keyword) {

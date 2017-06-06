@@ -22,7 +22,6 @@ import pl.hycom.pip.messanger.util.RequestHelper;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by Piotr on 21.05.2017.
@@ -56,20 +55,20 @@ public class ResetPasswordController {
         }
 
         if (userEmail.getUserMail().isEmpty()) {
-            model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email."));
+            model.addAttribute("error", new ObjectError("mailIsEmpty", "Proszę wpisać adres email"));
             return REDIRECT_FORGET_VIEW;
         }
         User user = userService.findUserByEmail(userEmail.getUserMail());
 
         if(user == null) {
-            model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
+            model.addAttribute("info", new ObjectError("sendOrNotSend", "Email został wysłany"));
             return REDIRECT_FORGET_VIEW;
         }
 
         String token = userService.generateToken();
         userService.createPasswordResetTokenForUser(user, token);
         emailService.sendEmail(userService.constructResetTokenEmail(RequestHelper.getURLBase(request), user, token));
-        attributes.addFlashAttribute("sendOrNotSend", "Mail do resetowania hasła został wysłany na podany adres e-mail");
+        attributes.addFlashAttribute("sendOrNotSend", "Email do resetowania hasła został wysłany na podany adres e-mail");
         return "redirect:/login";
     }
 

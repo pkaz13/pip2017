@@ -6,6 +6,8 @@ import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,13 +24,9 @@ import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
-import pl.hycom.pip.messanger.util.RequestHelper;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -78,7 +76,7 @@ public class UserService implements UserDetailsService {
 
     public User addUser(User user, String requestUrl) throws EmailNotUniqueException {
         log.info("Adding user: " + user);
-        return trySaveUser(user, true, requestUrl);
+        return trySaveUser(user, true, false, requestUrl);
     }
 
     private void setDefaultRole(User user) {
@@ -102,10 +100,12 @@ public class UserService implements UserDetailsService {
         } else {
             userToUpdate.setRoles(roles);
         }
-        return trySaveUser(userToUpdate, false, requestUrl);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean  isCurrentAccount = user.getId() == currentUser.getId();
+        return trySaveUser(userToUpdate, false, isCurrentAccount, requestUrl);
     }
 
-    private User trySaveUser(User user, boolean isNewUser, String requestUrl) throws EmailNotUniqueException{
+    private User trySaveUser(User user, boolean isNewUser, boolean isCurrentAccount, String requestUrl) throws EmailNotUniqueException{
         User userToSave = null;
         try {
             userToSave = userRepository.save(user);
@@ -113,6 +113,10 @@ public class UserService implements UserDetailsService {
                 String token = generateToken();
                 createPasswordResetTokenForUser(userToSave, token);
                 emailService.sendEmail(constructResetTokenEmail(requestUrl, user, token));
+            }
+            if(isCurrentAccount) {
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (DataIntegrityViolationException e) {
             throw new EmailNotUniqueException(e.getCause());
@@ -123,12 +127,6 @@ public class UserService implements UserDetailsService {
     public void deleteUser(Integer id) {
         log.info("Deleting user[" + id + "]");
         userRepository.delete(id);
-    }
-
-    public boolean isChosenAccountCurrentUser(Integer id) {
-        User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findOne(id);
-        return auth.getId().equals(user.getId());
     }
 
     @Override
