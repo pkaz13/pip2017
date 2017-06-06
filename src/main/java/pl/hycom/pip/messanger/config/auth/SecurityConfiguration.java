@@ -49,7 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/db-admin/console/**").permitAll()
                 .antMatchers("/admin/**").hasAuthority(ROLE_ADMIN)
-                .antMatchers("/user/**").hasAuthority(ROLE_USER)
+                .antMatchers("/user/**").hasAnyAuthority(ROLE_ADMIN, ROLE_USER)
                 .antMatchers("/account/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

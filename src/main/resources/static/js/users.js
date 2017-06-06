@@ -53,6 +53,13 @@ $(document).ready(function() {
             $(this).find('.button-submit').text("Aktualizuj");
             $("#id_form_div").show();
 
+            $.ajax({
+                url: "/admin/users/"+userId+"/roles",
+                success: function(data) {
+                    $("#roles_form").val(data);
+                }
+            });
+
             var columns = $("#user-" + userId).find('td');
             $("#id_form").val(columns.eq(0).text());
             $("#id_form_static").text(columns.eq(0).text());
