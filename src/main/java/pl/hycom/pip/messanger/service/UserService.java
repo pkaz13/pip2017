@@ -21,9 +21,9 @@ import pl.hycom.pip.messanger.mail.Message;
 import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.PasswordResetTokenRepository;
 import pl.hycom.pip.messanger.repository.RoleRepository;
-import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.repository.UserRepository;
 import pl.hycom.pip.messanger.repository.model.Role;
+import pl.hycom.pip.messanger.repository.model.User;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService {
             userToUpdate.setRoles(roles);
         }
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        boolean  isCurrentAccount = user.getId() == currentUser.getId();
+        boolean isCurrentAccount = user.getId().equals(currentUser.getId());
         return trySaveUser(userToUpdate, false, isCurrentAccount);
     }
 

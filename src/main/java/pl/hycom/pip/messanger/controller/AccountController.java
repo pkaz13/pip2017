@@ -15,11 +15,9 @@ import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
 import pl.hycom.pip.messanger.repository.model.User;
 import pl.hycom.pip.messanger.service.UserService;
-import pl.hycom.pip.messanger.util.RequestHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.MalformedURLException;
 
 /**
  * Created by Rafal Lebioda on 25.05.2017.
