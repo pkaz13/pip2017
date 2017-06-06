@@ -14,10 +14,7 @@ import pl.hycom.pip.messanger.pipeline.PipelineException;
 import pl.hycom.pip.messanger.pipeline.PipelineProcessor;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by szale_000 on 2017-05-28.
@@ -38,7 +35,7 @@ public class SendKeywordQuestionProcessor implements PipelineProcessor {
         Keyword keywordToBeAsked = ctx.get(KEYWORD_TO_BE_ASKED, Keyword.class);
         List<Keyword> keywords = ctx.get(KEYWORDS, List.class);
         List<Keyword> excludedKeywords = ctx.get(KEYWORDS_EXCLUDED, List.class);
-        String message = messageBuilder.append("Keyword: ").append(keywordToBeAsked.getWord()).toString();
+        String message = messageBuilder.append("Znaleziono za duzo wynikow, czy jestes zainteresowany produktem ktory jest ").append(keywordToBeAsked.getWord()).toString();
         String payload = getPayload(keywords, excludedKeywords, keywordToBeAsked);
         List<QuickReply> quickReplies = getQuickReplies(payload);
 

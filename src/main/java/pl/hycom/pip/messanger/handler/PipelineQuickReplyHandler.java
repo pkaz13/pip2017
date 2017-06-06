@@ -47,9 +47,9 @@ public class PipelineQuickReplyHandler implements QuickReplyMessageEventHandler 
         Keyword keywordAsked = payload.getKeywordToBeAsked();
 
         String answer = event.getText();
-        if (StringUtils.equals(answer, YES_ANSWER)) {
+        if (YES_ANSWER.equals(answer)) {
             keywords.add(keywordAsked);
-        } else {
+        } else if (NO_ANSWER.equals(answer)) {
             keywordsExcluded.add(keywordAsked);
         }
 
