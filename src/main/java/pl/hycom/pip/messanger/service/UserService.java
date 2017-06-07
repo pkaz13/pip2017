@@ -160,7 +160,7 @@ public class UserService implements UserDetailsService {
 
     public User findUserByEmail(String email) {
         log.info("findUserByEmail method from UserService invoked");
-        return userRepository.findByEmail(email).get();
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     public void createPasswordResetTokenForUser(User user, String token) {
