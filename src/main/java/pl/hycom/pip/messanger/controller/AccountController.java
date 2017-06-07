@@ -35,16 +35,14 @@ public class AccountController {
     private MapperFacade orikaMapper;
 
     @GetMapping("/user/account")
-    public String showLoggedUserAccount(Model model, @AuthenticationPrincipal User user)
-    {
+    public String showLoggedUserAccount(Model model, @AuthenticationPrincipal User user) {
         if(user!=null) {
             model.addAttribute("user", orikaMapper.map(user,UserDTO.class));
             return ACCOUNT_VIEW;
         }
-        else {
-            log.info(" There is no user logged in");
-            return "redirect:/admin";
-        }
+        
+        log.info(" There is no user logged in");
+        return "redirect:/admin";
     }
 
     @GetMapping("/user/account/{userId}")
@@ -54,10 +52,9 @@ public class AccountController {
             model.addAttribute("user", user);
             return ACCOUNT_VIEW;
         }
-        else {
-            log.error("There is no user with id = "+userId);
-            return "redirect:/admin/users";
-        }
+        
+        log.error("There is no user with id = "+userId);
+        return "redirect:/admin/users";   
     }
 
     @PostMapping("/user/account/update")
@@ -68,16 +65,16 @@ public class AccountController {
             log.info("Validation user account error !!!");
             return ACCOUNT_VIEW;
         }
-        else {
-            try {
-                userService.addOrUpdateUser(user);
-            } catch (EmailNotUniqueException e) {
-                model.addAttribute("user", user);
-                model.addAttribute("error", new ObjectError("validation.error.user.exists", "Użytkownik z takim adresem email już istnieje."));
-                return ACCOUNT_VIEW;
-            }
-            return "redirect:/user/account/"+user.getId();
+        
+        try {
+            userService.addOrUpdateUser(user);
+        } catch (EmailNotUniqueException e) {
+            model.addAttribute("user", user);
+            model.addAttribute("error", new ObjectError("validation.error.user.exists", "Użytkownik z takim adresem email już istnieje."));
+            return ACCOUNT_VIEW;
         }
+        
+        return "redirect:/user/account/"+user.getId();
     }
 
 }
