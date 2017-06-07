@@ -1,14 +1,14 @@
 package pl.hycom.pip.messanger.controller.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * Created by Monia on 2017-05-27.
