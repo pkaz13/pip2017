@@ -95,12 +95,4 @@ public class UserController {
         model.addAttribute("authorities", allRoles);
     }
 
-    @RolesAllowed(ROLE_ADMIN)
-    @GetMapping("/admin/users/{userId}/roles")
-    @ResponseBody
-    public Set<Integer> getUserRoles(@PathVariable("userId") final Integer id) {
-        log.info("Searching for user's [" + id + "] roles");
-
-        return userService.findUserRoles(id);
-    }
 }

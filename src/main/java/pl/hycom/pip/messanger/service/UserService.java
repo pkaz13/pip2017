@@ -210,8 +210,4 @@ public class UserService implements UserDetailsService {
         return message.constructEmail();
     }
 
-    // lub Set<String>
-    public Set<Integer> findUserRoles(Integer id) {
-        return userRepository.findOne(id).getRoles().stream().map(Role::getId).collect(Collectors.toSet());
-    }
 }
