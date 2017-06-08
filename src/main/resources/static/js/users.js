@@ -52,7 +52,7 @@ $(document).ready(function() {
             $(this).find('.button-submit').text("Aktualizuj");
             $("#id_form_div").show();
 
-            $("#id_form").text($("#usr-"+userId+"-id").text());
+            $("#id_form").val($("#usr-"+userId+"-id").text());
             $("#id_form_static").text($("#usr-"+userId+"-id").text());
             $("#email_form").val($("#usr-"+userId+"-email").text());
             $("#firstname_form").val($("#usr-"+userId+"-name").text());
