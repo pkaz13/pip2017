@@ -45,7 +45,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/db-admin/console/**").permitAll()
-                .antMatchers("/admin/**", "/user/**").authenticated()
                 .antMatchers("/account/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
