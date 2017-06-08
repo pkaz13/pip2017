@@ -99,7 +99,7 @@ public class UserService implements UserDetailsService {
     private void setDefaultRole(User user) {
         log.info("setUserRoleIfNoneGranted method invoked for user: " + user);
         if (CollectionUtils.isEmpty(user.getAuthorities())) {
-            roleRepository.findByAuthorityIgnoreCase(Role.RoleName.ROLE_USER.name())
+            roleRepository.findByAuthorityIgnoreCase(Role.Name.USER)
                     .ifPresent(role -> user.setRoles(Collections.singleton(role)));
         }
     }

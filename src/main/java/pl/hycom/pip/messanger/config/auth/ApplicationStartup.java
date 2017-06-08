@@ -54,8 +54,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private final String ROLE_ADMIN = Role.RoleName.ROLE_ADMIN.name();
-    private final String ROLE_USER = Role.RoleName.ROLE_USER.name();
+    private final String ROLE_ADMIN = Role.Name.ADMIN;
+    private final String ROLE_USER = Role.Name.USER;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {

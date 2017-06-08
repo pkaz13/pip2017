@@ -37,9 +37,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
-    private static final String ROLE_ADMIN = Role.RoleName.ROLE_ADMIN.name();
-    private static final String ROLE_USER = Role.RoleName.ROLE_USER.name();
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
