@@ -1,4 +1,4 @@
-package PolishNLP;
+package pl.hycom.pip.nlp;
 
 /**
  * Created by Piotr on 2017-06-05.
