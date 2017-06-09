@@ -74,7 +74,7 @@ public class Analyze {
         JSONObject liner2 = new JSONObject();
         liner2.put("model", "top9");
         id = nlpProcess("liner2", id, liner2);
-        return nlpGetOutput(message);
+        return nlpGetOutput(id);
 
     }
 
