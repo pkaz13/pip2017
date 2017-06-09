@@ -2,7 +2,6 @@ package pl.hycom.pip.messanger.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -91,11 +90,11 @@ public class UserService implements UserDetailsService {
 
     public User addUser(User user) throws EmailNotUniqueException {
         log.info("Adding user: " + user);
-        setDefaultRole(user);
+        addDefaultRoleIfNeeded(user);
         return trySaveUser(user, true, false);
     }
 
-    private void setDefaultRole(User user) {
+    private void addDefaultRoleIfNeeded(User user) {
         log.info("setUserRoleIfNoneGranted method invoked for user: " + user);
         if (CollectionUtils.isEmpty(user.getAuthorities())) {
             roleRepository.findByAuthorityIgnoreCase(Role.Name.USER)
@@ -111,12 +110,10 @@ public class UserService implements UserDetailsService {
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
         userToUpdate.setEmail(user.getEmail().toLowerCase());
         userToUpdate.setProfileImageUrl(user.getProfileImageUrl());
-        Collection<Role> roles = user.getRoles();
-        if (CollectionUtils.isEmpty(roles)) {
-            setDefaultRole(userToUpdate);
-        } else {
-            userToUpdate.setRoles(roles);
-        }
+        userToUpdate.setRoles(user.getRoles());
+
+        addDefaultRoleIfNeeded(userToUpdate);
+
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         boolean isCurrentAccount = user.getId().equals(currentUser.getId());
         return trySaveUser(userToUpdate, false, isCurrentAccount);
