@@ -29,7 +29,7 @@ public class ResetPasswordController {
 
     private static final String FORGET_VIEW = "password/forget";
     private static final String CHANGE_VIEW = "password/change";
-    private static final String REDIRECT_FORGET_VIEW = "redirect:/user/password/change";
+    private static final String REDIRECT_FORGET_VIEW = "redirect:/account/password/change";
 
     @Autowired
     private EmailService emailService;
@@ -48,17 +48,19 @@ public class ResetPasswordController {
 
         if(bindingResult.hasErrors()) {
             model.addAttribute("userEmail", userEmail);
+            model.addAttribute("errors", bindingResult.getFieldErrors());
             log.info("ResetPassword validation error." + bindingResult.getAllErrors());
+            return FORGET_VIEW;
         }
 
         if (userEmail.getUserMail().isEmpty()) {
-            model.addAttribute("error", new ObjectError("mailIsEmpty", "You need to write your email."));
+            model.addAttribute("error", new ObjectError("mailIsEmpty", "Proszę wpisać adres email"));
             return REDIRECT_FORGET_VIEW;
         }
         User user = userService.findUserByEmail(userEmail.getUserMail());
 
         if(user == null) {
-            model.addAttribute("info", new ObjectError("sendOrNotSend", "If user exists, mail was sent."));
+            model.addAttribute("info", new ObjectError("sendOrNotSend", "Email został wysłany"));
             return REDIRECT_FORGET_VIEW;
         }
 
@@ -81,6 +83,7 @@ public class ResetPasswordController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("resetPassword", resetPassword);
+            model.addAttribute("errors", bindingResult.getFieldErrors());
             log.info("Reset token validation error." + bindingResult.getAllErrors());
             return CHANGE_VIEW;
         }

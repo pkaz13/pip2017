@@ -49,5 +49,4 @@ public class GreetingControllerIntegrationTest {
                 .andExpect(view().name("redirect:/admin/greetings"));
     }
 
-
 }

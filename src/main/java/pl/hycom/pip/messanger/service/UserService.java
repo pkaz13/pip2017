@@ -1,33 +1,39 @@
 package pl.hycom.pip.messanger.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import ma.glasnost.orika.MapperFacade;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.inject.Inject;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
 import pl.hycom.pip.messanger.controller.model.UserDTO;
 import pl.hycom.pip.messanger.exception.EmailNotUniqueException;
-import pl.hycom.pip.messanger.mail.Message;
-import pl.hycom.pip.messanger.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.PasswordResetTokenRepository;
 import pl.hycom.pip.messanger.repository.RoleRepository;
 import pl.hycom.pip.messanger.repository.UserRepository;
+import pl.hycom.pip.messanger.repository.model.PasswordResetToken;
 import pl.hycom.pip.messanger.repository.model.Role;
 import pl.hycom.pip.messanger.repository.model.User;
-
-import javax.inject.Inject;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import pl.hycom.pip.messanger.service.EmailService.Message;
 
 /**
  * Created by Monia on 2017-05-20.
@@ -69,71 +75,72 @@ public class UserService implements UserDetailsService {
     public UserDTO findUserById(Integer id) {
         log.info("Searching for user with id[" + id + "]");
 
-        return orikaMapper.map(userRepository.findOne(id),UserDTO.class);
+        return orikaMapper.map(userRepository.findOne(id), UserDTO.class);
     }
 
-    public UserDTO addOrUpdateUser(UserDTO user, String requestUrl) throws EmailNotUniqueException{
+    public UserDTO addOrUpdateUser(UserDTO user) throws EmailNotUniqueException {
         User userToUpdateOrAdd = orikaMapper.map(user, User.class);
         if (user.getId() != null && user.getId() != 0) {
-            return orikaMapper.map(updateUser(userToUpdateOrAdd, requestUrl), UserDTO.class);
+            return orikaMapper.map(updateUser(userToUpdateOrAdd), UserDTO.class);
         } else {
-            return orikaMapper.map(addUser(userToUpdateOrAdd, requestUrl), UserDTO.class);
+            return orikaMapper.map(addUser(userToUpdateOrAdd), UserDTO.class);
         }
     }
 
-    public User addUser(User user, String requestUrl) throws EmailNotUniqueException {
+    public User addUser(User user) throws EmailNotUniqueException {
         log.info("Adding user: " + user);
-        return trySaveUser(user, true, requestUrl);
+        addDefaultRoleIfNeeded(user);
+        return trySaveUser(user, true, false);
     }
 
-    private void setDefaultRole(User user) {
+    private void addDefaultRoleIfNeeded(User user) {
         log.info("setUserRoleIfNoneGranted method invoked for user: " + user);
         if (CollectionUtils.isEmpty(user.getAuthorities())) {
-            roleRepository.findByAuthorityIgnoreCase(Role.RoleName.ROLE_USER.name())
-                    .ifPresent(role -> user.setRoles(Collections.singleton(role)));
+            roleRepository.findByAuthorityIgnoreCase(Role.Name.USER).ifPresent(role -> user.getRoles().add(role));
         }
     }
 
-    public User updateUser(User user, String requestUrl) throws EmailNotUniqueException {
+    public User updateUser(User user) throws EmailNotUniqueException {
         log.info("Updating user: " + user);
         User userToUpdate = userRepository.findOne(user.getId());
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setLastName(user.getLastName());
         userToUpdate.setPhoneNumber(user.getPhoneNumber());
         userToUpdate.setEmail(user.getEmail().toLowerCase());
-        Collection<Role> roles = user.getRoles();
-        if (CollectionUtils.isEmpty(roles)) {
-            setDefaultRole(userToUpdate);
-        } else {
-            userToUpdate.setRoles(roles);
-        }
-        return trySaveUser(userToUpdate, false, requestUrl);
+        userToUpdate.setProfileImageUrl(user.getProfileImageUrl());
+        userToUpdate.setRoles(user.getRoles());
+
+        addDefaultRoleIfNeeded(userToUpdate);
+
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean isCurrentAccount = user.getId().equals(currentUser.getId());
+        return trySaveUser(userToUpdate, false, isCurrentAccount);
     }
 
-    private User trySaveUser(User user, boolean isNewUser, String requestUrl) throws EmailNotUniqueException{
-        User userToSave = null;
+    private User trySaveUser(User user, boolean isNewUser, boolean isCurrentAccount) throws EmailNotUniqueException {
         try {
-            userToSave = userRepository.save(user);
+            User userToSave = userRepository.save(user);
+
             if (isNewUser) {
                 String token = generateToken();
                 createPasswordResetTokenForUser(userToSave, token);
                 emailService.sendEmail(constructResetTokenEmail(user, token));
             }
+
+            if (isCurrentAccount) {
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            return userToSave;
+
         } catch (DataIntegrityViolationException e) {
             throw new EmailNotUniqueException(e.getCause());
         }
-        return userToSave;
     }
 
     public void deleteUser(Integer id) {
         log.info("Deleting user[" + id + "]");
         userRepository.delete(id);
-    }
-
-    public boolean isChosenAccountCurrentUser(Integer id) {
-        User auth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findOne(id);
-        return auth.getId().equals(user.getId());
     }
 
     @Override
@@ -149,7 +156,7 @@ public class UserService implements UserDetailsService {
 
     public User findUserByEmail(String email) {
         log.info("findUserByEmail method from UserService invoked");
-        return userRepository.findByEmail(email).get();
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     public void createPasswordResetTokenForUser(User user, String token) {
@@ -199,8 +206,4 @@ public class UserService implements UserDetailsService {
         return message.constructEmail();
     }
 
-    //lub Set<String>
-    public Set<Integer> findUserRoles(Integer id) {
-        return userRepository.findOne(id).getRoles().stream().map(Role::getId).collect(Collectors.toSet());
-    }
 }
