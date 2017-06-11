@@ -206,4 +206,8 @@ public class UserService implements UserDetailsService {
         return message.constructEmail();
     }
 
+    public void deleteAllPasswordResetTokens() {
+        tokenRepository.deleteAll();
+    }
+
 }

@@ -2,6 +2,7 @@ package pl.hycom.pip.messanger.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class GreetingControllerIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void removeGreetingTest() throws Exception {
         String locale = "pl_PL";
 
