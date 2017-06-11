@@ -141,7 +141,7 @@ public class ProductDTOServiceTest {
         product3.addKeyword(keyword3);
     }
 
-    @Ignore
+    
     @Test
     public void addProductWithKeywordsTest() {
         log.info("Test of addProduct method from ProductService class");
