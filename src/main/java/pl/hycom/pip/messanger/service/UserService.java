@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -170,24 +171,28 @@ public class UserService implements UserDetailsService {
     public boolean validatePasswordResetToken(String token, String email) {
         log.info("validatePasswordResetToken method invoke");
         PasswordResetToken resetToken = tokenRepository.findByToken(token);
-        User user = resetToken.getUser();
         if (resetToken == null) {
             log.info("Token is invalid");
             return false;
         }
 
+        User user = resetToken.getUser();
         if (!user.getEmail().equals(email)) {
             log.info("Token is invalid");
             return false;
         }
 
         if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            log.info("Token expired");
+            log.warn("Token[" + resetToken + "] expired - removing");
+            tokenRepository.delete(resetToken);
             return false;
         }
+
         tokenRepository.delete(resetToken);
-        log.info("token " + token + " is valid");
-        log.info("token " + token + " removed from database");
+
+        log.info("Token " + token + " is valid");
+        log.info("Token " + token + " removed from database");
+
         return true;
     }
 
@@ -206,8 +211,13 @@ public class UserService implements UserDetailsService {
         return message.constructEmail();
     }
 
-    public void deleteAllPasswordResetTokens() {
-        tokenRepository.deleteAll();
+    @Scheduled(fixedDelay = 5 * 60 * 1000) // every 5 minutes
+    public void deleteExpiredTokens() {
+        log.info("deleteExpiredTokens method from Scheduler invoked");
+
+        Long numberOfDeletedTokens = tokenRepository.deleteByExpiryDateLessThan(LocalDateTime.now());
+
+        log.info("Deleted[" + numberOfDeletedTokens + "] old tokens");
     }
 
 }
