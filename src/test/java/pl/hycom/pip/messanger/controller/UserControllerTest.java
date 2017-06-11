@@ -129,7 +129,6 @@ public class UserControllerTest {
 
     @After
     public void cleanAll() {
-        userService.deleteAllPasswordResetTokens();
         userService.deleteUser(user.getId());
         userService.deleteUser(user1.getId());
         userService.deleteUser(user2.getId());
