@@ -16,15 +16,8 @@
 
 package pl.hycom.pip.messanger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-
+import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -34,13 +27,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.extern.log4j.Log4j2;
-import ma.glasnost.orika.MapperFacade;
 import pl.hycom.pip.messanger.repository.model.Keyword;
 import pl.hycom.pip.messanger.repository.model.Product;
 import pl.hycom.pip.messanger.service.KeywordService;
 import pl.hycom.pip.messanger.service.ProductService;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -49,11 +45,10 @@ import pl.hycom.pip.messanger.service.ProductService;
 @Log4j2
 public class ProductDTOServiceTest {
 
-    @Autowired
-    private MapperFacade orikaMapper;
-
     @Value("${messenger.recommendation.products-amount:3}")
     Integer expectedNumberOfProducts;
+    @Autowired
+    private MapperFacade orikaMapper;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -276,9 +271,7 @@ public class ProductDTOServiceTest {
 
     @After
     public void cleanAll() {
-
-        keywordService.deleteAllKeywords();
         productService.deleteAllProducts();
-
+        keywordService.deleteAllKeywords();
     }
 }
