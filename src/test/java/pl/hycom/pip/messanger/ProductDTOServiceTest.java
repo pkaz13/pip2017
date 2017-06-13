@@ -18,7 +18,10 @@ package pl.hycom.pip.messanger;
 
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,7 +141,6 @@ public class ProductDTOServiceTest {
 
 
     @Test
-    @Transactional
     public void addProductWithKeywordsTest() {
         log.info("Test of addProduct method from ProductService class");
 
@@ -220,7 +222,7 @@ public class ProductDTOServiceTest {
         assertEquals("size of returned list should be equal to the value of getRandomProducts parameter - 4", 4, productService.getRandomProducts(4).size());
     }
 
-    @Ignore
+
     @Test
     @Transactional
     public void addKeywordToProductTest() {
@@ -272,8 +274,7 @@ public class ProductDTOServiceTest {
 
     @After
     public void cleanAll() {
-        keywordService.deleteAllKeywords();
         productService.deleteAllProducts();
-
+        keywordService.deleteAllKeywords();
     }
 }
