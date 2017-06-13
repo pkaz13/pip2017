@@ -272,7 +272,8 @@ public class ProductDTOServiceTest {
 
     @After
     public void cleanAll() {
-        productService.deleteAllProducts();
         keywordService.deleteAllKeywords();
+        productService.deleteAllProducts();
+
     }
 }
