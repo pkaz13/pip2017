@@ -138,7 +138,7 @@ public class ProductDTOServiceTest {
 
 
     @Test
-    @Ignore
+    @Transactional
     public void addProductWithKeywordsTest() {
         log.info("Test of addProduct method from ProductService class");
 
